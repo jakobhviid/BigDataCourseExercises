@@ -4,7 +4,7 @@ from json import dumps
 
 client = InsecureClient('http://namenode:9870', user='root')
 
-with client.read('/alice.txt', encoding='utf-8') as reader:
+with client.read('/alice-in-wonderland.txt', encoding='utf-8') as reader:
     # Using Python's collections' Counter to count occurences of a word in a string, and return the 10 most common
     wordcount = Counter(reader.read().split()).most_common(10)
     

@@ -9,7 +9,7 @@ client = InsecureClient('http://namenode:9870', user='root')
 # Make wordcount reachable outside of the with-statement
 wordcount = None
 
-with client.read('/alice.txt', encoding='utf-8') as reader:
+with client.read('/alice-in-wonderland.txt', encoding='utf-8') as reader:
     wordcount = Counter(reader.read().split()).most_common(10)
 
     

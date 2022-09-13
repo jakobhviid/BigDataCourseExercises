@@ -6,7 +6,7 @@ client = InsecureClient('http://namenode:9870', user='root')
 first_line = ''
 
 # Reading a file, using a delimiter makes it return a list
-with client.read('/alice.txt', encoding='utf-8', delimiter='\n') as reader:
+with client.read('/alice-in-wonderland.txt', encoding='utf-8', delimiter='\n') as reader:
   for line in reader:
     print(line)
     first_line = line
