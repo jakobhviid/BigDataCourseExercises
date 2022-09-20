@@ -29,6 +29,8 @@ services:
       SERVICE_PRECONDITION: "namenode:9870"
     env_file:
       - ./hadoop.env
+    depends_on: 
+      - namenode
     networks:
       shared_network:
 
@@ -44,6 +46,8 @@ services:
       SERVICE_PRECONDITION: "namenode:9870"
     env_file:
       - ./hadoop.env
+    depends_on: 
+      - namenode
     networks:
       shared_network:
 
@@ -59,6 +63,8 @@ services:
       SERVICE_PRECONDITION: "namenode:9870"
     env_file:
       - ./hadoop.env
+    depends_on: 
+      - namenode
     networks:
       shared_network:
 
