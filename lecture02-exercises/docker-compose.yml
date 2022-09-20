@@ -1,7 +1,7 @@
-version: "3.5"
+version: "3.9"
 
 services:
-  namenode: #Master (metadata/chunk)
+  namenode:
     image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
     container_name: namenode
     restart: always
@@ -15,70 +15,59 @@ services:
     env_file:
       - ./hadoop.env
     networks:
-      cscourse:
-        ipv4_address: 172.200.0.2
+      shared_network:
 
-  datanode1: #Slave1
+  datanode1:
     image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
     container_name: datanode1
     restart: always
-    ports:
-      - 9864:9864
     volumes:
       - hadoop_datanode1:/hadoop/dfs/data
+    ports:
+      - 9864:9864
     environment:
       SERVICE_PRECONDITION: "namenode:9870"
     env_file:
       - ./hadoop.env
     networks:
-      cscourse:
-        ipv4_address: 172.200.0.3
+      shared_network:
 
-  datanode2: #Slave2
+  datanode2:
     image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
     container_name: datanode2
     restart: always
-    ports:
-      - 9865:9864
     volumes:
       - hadoop_datanode2:/hadoop/dfs/data
+    ports:
+      - 9865:9864
     environment:
       SERVICE_PRECONDITION: "namenode:9870"
     env_file:
       - ./hadoop.env
     networks:
-      cscourse:
-        ipv4_address: 172.200.0.4
+      shared_network:
 
-  datanode3: #Slave3
+  datanode3:
     image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
     container_name: datanode3
     restart: always
-    ports:
-      - 9866:9864
     volumes:
       - hadoop_datanode3:/hadoop/dfs/data
+    ports:
+      - 9866:9864
     environment:
       SERVICE_PRECONDITION: "namenode:9870"
     env_file:
       - ./hadoop.env
     networks:
-      cscourse:
-        ipv4_address: 172.200.0.5
+      shared_network:
 
 networks:
-  cscourse:
-    name: hadoop
-    ipam:
-      config:
-        - subnet: 172.200.0.0/24
+  shared_network:
+    name: "shared_network"
 
 volumes:
   hadoop_namenode:
-    name: namenode
   hadoop_datanode1:
-    name: datanode1
   hadoop_datanode2:
-    name: datanode2
   hadoop_datanode3:
-    name: datanode3
