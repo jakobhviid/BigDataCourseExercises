@@ -30,5 +30,5 @@ df = spark \
 sentences = df.selectExpr("CAST(value AS STRING)")
 
 # TODO!
-# Count the sentiment of each sentence
+# Count the sentiment of each word
 # Write it back to Kafka
