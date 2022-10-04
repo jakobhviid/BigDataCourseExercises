@@ -9,6 +9,7 @@ services:
       - 9870:9870
       - 9000:9000
     volumes:
+      - ./stream-in:/stream-in
       - hadoop_namenode:/hadoop/dfs/name
     environment:
       - CLUSTER_NAME=test

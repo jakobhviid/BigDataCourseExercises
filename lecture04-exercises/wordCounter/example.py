@@ -16,11 +16,12 @@ spark = SparkSession.builder.appName('wordCount') \
     
 # Create a read stream from Kafka and a topic
 df = spark \
-  .readStream \
-  .format("kafka") \
-  .option("kafka.bootstrap.servers", "kafka:9092") \
-  .option("subscribe", "sentences") \
-  .load()
+    .readStream \
+    .format("kafka") \
+    .option("kafka.bootstrap.servers", "kafka:9092") \
+    .option("startingOffsets", "earliest")\
+    .option("subscribe", "sentences") \
+    .load()
 
 # Cast to string
 sentences = df.selectExpr("CAST(value AS STRING)")
@@ -28,20 +29,17 @@ sentences = df.selectExpr("CAST(value AS STRING)")
 # Split the sentences into words
 # Note "explode" and "split" are SQL functions in Spark, not Python!
 words = sentences.select(
-   explode(
-       split(sentences.value, " ")
-   ).alias("word")
+explode(
+    split(sentences.value, " ")
+).alias("word")
 )
 
 # Generate running word count by using SQL
 wordCounts = words.groupBy("word").count().sort(col('count'))
 
-# Only print words with more than 100 counts
-filteredWordCounts = wordCounts.where('count > 100')
-
 # Add a new column to our Dataframe, where the column name is "value" and the content is "(word, count)" as an SQL array
 columns = [col('word'), col('count')]
-mergedColumns = filteredWordCounts.withColumn('value', array(columns))
+mergedColumns = wordCounts.withColumn('value', array(columns))
 
 # Select the "mergedColumns.value" column, and convert to JSON with the alias "value", cast it to a string
 # The "value" column is required by Kafka!
