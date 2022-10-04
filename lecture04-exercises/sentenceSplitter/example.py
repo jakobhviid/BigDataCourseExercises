@@ -32,4 +32,5 @@ df.selectExpr("CAST(value AS STRING)").writeStream \
     .format('kafka') \
     .option("kafka.bootstrap.servers", "kafka:9092") \
     .option("topic", "sentences") \
+    .outputMode("append") \
     .start().awaitTermination()
