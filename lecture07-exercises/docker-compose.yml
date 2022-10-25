@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.2.1
+    ports:
+      - 2183:2181
+    restart: unless-stopped
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2183
+
+  kafka:
+    image: confluentinc/cp-kafka:7.2.1
+    ports:
+      - 9096:9092
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2183
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,DOCKER_LISTENER:PLAINTEXT"
+      KAFKA_LISTENERS: INTERNAL://0.0.0.0:9091,EXTERNAL://0.0.0.0:19092,DOCKER_LISTENER://0.0.0.0:9096
+      KAFKA_ADVERTISED_LISTENERS: "INTERNAL://kafka:9091,EXTERNAL://host.docker.internal:19092,DOCKER_LISTENER://kafka:9096"
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_BROKER_ID: 1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_PARTITION_ASSIGNMENT_STRATEGY: org.apache.kafka.clients.consumer.RoundRobinAssignor
+    restart:  unless-stopped
+    depends_on:
+      - zookeeper
+
+  kowl:
+    image: quay.io/cloudhut/kowl:master # We use the master tag as we want to use the latest features e.g. creation of topics.
+    ports:
+      - 8000:8080
+    restart: unless-stopped
+    depends_on:
+      - zookeeper
+      - kafka
+    environment:
+      KAFKA_BROKERS: kafka:9096
+
+networks:
+  default:
+    name: datahub_network # This is the name of the network that is created by datahub docker quickstart
