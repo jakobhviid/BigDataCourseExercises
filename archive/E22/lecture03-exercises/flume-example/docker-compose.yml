@@ -1,0 +1,13 @@
+version: '3.9'
+
+services:
+  flume:
+    build: .
+    volumes:
+      - ./source:/logs
+    networks:
+      shared_network:
+
+networks:
+  shared_network:
+    external: true
