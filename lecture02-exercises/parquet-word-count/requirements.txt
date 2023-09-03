@@ -1,3 +1,0 @@
-hdfs[avro]
-pyarrow
-pandas
