@@ -4,6 +4,8 @@ This repository contains the exercises related to the course [Big data and data 
 
 ## Objective
 
+WIP
+
 ```mermaid
 graph
 
