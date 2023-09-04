@@ -1,10 +1,18 @@
 # Big data and data science technologies course exercises
 This repository contains the exercises related to the course [Big data and data science technologies](https://odin.sdu.dk/sitecore/index.php?a=fagbesk&id=81974&lang=en) at University of Southern Denmark.
 
+## Instructors
+This year instructors completed the course last year (E22) and will be facilitating and responsible for the exercises.  
+
+Nicklas Marc Pedersen and Anders Launer Bæk-Petersen will be available on Discord channel for this course and any kind of feedback is more than welcome.
 
 ## Objective
 
-WIP
+The objective of the exercises is to navigate you through the practical aspects of the curriculum. The diagram below illustrates the technology stack and frameworks that will be used during this semester. 
+We have this semester chosen to transition from a docker compose orchestrator to Kubernetes to minimize the gap between a single host system to a multi-node system. 
+
+The diagram will be updated iteratively along with the progress of the course.
+
 
 ```mermaid
 graph
@@ -51,8 +59,10 @@ end
 
 ```
 
+
+
 ## Content of the repository
-The root of this repository will be related to the content of the current semester and the folder `archive` will contain material for the previous semester.
+The root of this repository will be related to the content of the current semester and the folder `archive` will contain material for the previous semester. The `lectures` folder and `services` folder contain the exercise material for the current semester. 
 
 ```
 .
@@ -62,9 +72,8 @@ The root of this repository will be related to the content of the current semest
 │   └── E22
 ├── lectures
 │   └── {01,02,03,...}
-│       ├── README.md
-│       └── content
-│           └── {01,02,03,...}-exercise.md
+│       ├── exercises.md
+│       └── ...
 └── services
     ├── README.md
     ├── datahub
