@@ -2,7 +2,8 @@
 
 ## Introduction to the instructors
 
-### asdas
+### Nicklas Marc Pedersen
+WIP
 
 ### Anders Launer Bæk-Petersen
 
