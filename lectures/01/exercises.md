@@ -3,7 +3,12 @@
 ## Introduction to the instructors
 
 ### Nicklas Marc Pedersen
-WIP
+
+- 9th semester Software Engineering student
+- Writing Master's thesis with Jakob as my supervisor
+- Been instructor / supervisor for different courses
+  - Instructor in Operating Systems and Distributed Systems for 3th semester Software Engineering
+  - Supervisor in semester projects for 2nd and 3th semester Software Engineering
 
 ### Anders Launer Bæk-Petersen
 
