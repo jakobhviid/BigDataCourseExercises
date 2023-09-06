@@ -1,4 +1,4 @@
-# Lecture 01 - Kubernetes fundaments
+# Lecture 01 - Kubernetes fundamentals
 
 ## Introduction to the instructors
 
@@ -136,7 +136,7 @@ Now that you have deployed the application the next step is to try and connect t
 
 Connecting to a service can be done in different ways. The simplest way to connect to a service from outside of the cluster is to use either the `kubectl port-forward` command, or the `minikube service` command.
 
-To use the `kubectl port-forward` command, run the following command `kubectl port-forward svc/hello-kuberentes 8080:8080`. The command will open a port on your local machine and forward traffic to a port on the service. In this case, it is 8080 on both your local machine and the service, but it could be changed to `9000:8080` to use port 9000 on your local machine and forward it to port 8080 on the service. Open a browser and go to [http://localhost:8080](http://localhost:8080) to access the service.
+To use the `kubectl port-forward` command, run the following command `kubectl port-forward svc/hello-kubernetes 8080:8080`. The command will open a port on your local machine and forward traffic to a port on the service. In this case, it is 8080 on both your local machine and the service, but it could be changed to `9000:8080` to use port 9000 on your local machine and forward it to port 8080 on the service. Open a browser and go to [http://localhost:8080](http://localhost:8080) to access the service.
 
 To use the `minikube service` command, run the following command `minikube service hello-kubernetes`. The command will pick a random open port on your local machine, port-forward to the service using that port, and open a window with the correct path in your default browser. You can read more about the command [here](https://minikube.sigs.k8s.io/docs/commands/service/).
 
