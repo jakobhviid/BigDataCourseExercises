@@ -101,7 +101,7 @@ You need a working Kubernetes cluster to solve the exercises for this lecture an
 
 To install minikube, go to their [getting started](https://minikube.sigs.k8s.io/docs/start/) page and follow the instructions. Note: If you are on Windows we suggest you install using [chocolatey](https://chocolatey.org/install#individual) because it can be used to install other tools that will be used for the exercises.
 
-The tool used to communicate with a Kubernetes cluster is called "kubectl". It is also installed with minikube and can be used using `minikube kubectl -- <command>`. You can also just [install kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl).
+The tool used to communicate with a Kubernetes cluster is called "kubectl". It is also installed with minikube and can be used using `minikube kubectl -- <command>`. You can also just [install kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl). Other tools might assume that the kubectl command exists, so you should install kubectl aswell.
 
 Once minikube is installed, you can start and stop it using `minikube start` and `minikube stop`. If you use Docker Desktop, you may notice that it has created a container and a volume called "minikube".
 
@@ -181,7 +181,7 @@ The hello-kubernetes application that you deployed earlier has a Helm chart. Go 
 
 To install the chart using the default values, simply open a terminal inside the hello-kubernetes repository you just cloned and type the command `helm install hello-kubernetes ./deploy/helm/hello-kubernetes`. This will install the Helm Chart located at `./deploy/helm/hello-kubernetes` and give the release the name "hello-kubernetes". You can see the status of the Helm release using `helm status hello-kubernetes`. Get a list of the pods and services and see what was created.
 
-You should see that it created 3 pods and 1 service. This is similar to the deployment you made before, except this is installed using Helm. But now that it is installed you should try to connect to it like before, just remember that the service is now called something different. Hint: `kubectl get services`.
+You should see that it created 2 pods and 1 service. This is similar to the deployment you made before, except this is installed using Helm. But now that it is installed you should try to connect to it like before, just remember that the service is now called something different. Hint: `kubectl get services`.
 
 A Helm chart can be configured using "values". The default values can be found inside the Helm chart. Open the file located at `./deploy/helm/hello-kubernetes/values.yaml` and see the different values. We want to try to increase the amount of replicas using the `deployment.replicaCount` value. Because we want to modify an existing release, we need to use the `helm upgrade` command. Use `helm upgrade hello-kubernetes ./deploy/helm/hello-kubernetes --set deployment.replicaCount=5` to set the replica count to 5. Now get a list of the pods and notice how the amount of pods changed.
 
