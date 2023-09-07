@@ -101,6 +101,8 @@ You need a working Kubernetes cluster to solve the exercises for this lecture an
 
 To install minikube, go to their [getting started](https://minikube.sigs.k8s.io/docs/start/) page and follow the instructions. Note: If you are on Windows we suggest you install using [chocolatey](https://chocolatey.org/install#individual) because it can be used to install other tools that will be used for the exercises.
 
+The tool used to communicate with a Kubernetes cluster is called "kubectl". It is also installed with minikube and can be used using `minikube kubectl -- <command>`. You can also just [install kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl).
+
 Once minikube is installed, you can start and stop it using `minikube start` and `minikube stop`. If you use Docker Desktop, you may notice that it has created a container and a volume called "minikube".
 
 ### Exercise 2 - Deploy "Hello World" application
