@@ -148,7 +148,7 @@ Try to refresh the webpage a few times and notice how the values change. You sho
 
 ### Exercise 4 - Scaling the application
 
-Some programs are stateless and designed to have multiple instances of the same program running. In the case of the hello-kubernetes application, you can increase and decrease the amount of replicas with no problem. It may be desirable to scale your deployment up or down to match the demand of the application. There are two ways to scale deployments in Kubernetes - manual, or automatic. Automatic scaling will not be covered in this exercise.
+Some applications are designed to have multiple instances running. In the case of the hello-kubernetes application, you can increase and decrease the amount of replicas with no problem. It may be desirable to scale your deployment up or down to match the demand of the application. There are two ways to scale deployments in Kubernetes - manual, or automatic. Automatic scaling will not be covered in this exercise.
 
 To manually scale a deployment, you would modify the `replicas` field of the deployment resource. This can be done by either modifying the yaml file and reapplying it, or by using the edit command. To edit the deployment using the edit command, use the following: `kubectl edit deployment/hello-kubernetes`. This will open a window with your default text editor. Simply modify the file, save it, and close the window to modify the resource.
 
