@@ -163,7 +163,7 @@ When scaling the amount of replicas, the service will automatically start/stop r
 
 ### Exercise 5 - Adding more nodes
 
-You are using minikube is on your local machine to run Kubernetes. In the real world, you would have many virtual machines on many different physical machines. Each virtual machine would run Kubernetes and be connected to the other machines to form a Kubernetes cluster. The cluster you have on your machine only has a single node. You can verify this using `kubectl get nodes`. But with minikube you can very easily add and remove nodes.
+You are using minikube on your local machine to run Kubernetes. In the real world, you would have many virtual machines on many different physical machines. Each virtual machine would run Kubernetes and be connected to the other machines to form a Kubernetes cluster. The cluster you have on your machine only has a single node. You can verify this using `kubectl get nodes`. But with minikube you can very easily add and remove nodes.
 
 Use `minikube node add` to add a new node to the cluster and `minikube node delete <name of node>` to delete a node.
 
