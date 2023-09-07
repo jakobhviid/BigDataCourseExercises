@@ -103,7 +103,7 @@ To install minikube, go to their [getting started](https://minikube.sigs.k8s.io/
 
 The tool used to communicate with a Kubernetes cluster is called "kubectl". It is also installed with minikube and can be used using `minikube kubectl -- <command>`. You can also just [install kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl). Other tools might assume that the kubectl command exists, so you should install kubectl aswell.
 
-Once minikube is installed, you can start and stop it using `minikube start` and `minikube stop`. If you use Docker Desktop, you may notice that it has created a container and a volume called "minikube".
+Once minikube is installed, you can start and stop it using `minikube start` and `minikube stop`. If you use Docker Desktop, you may notice that it has created a container and a volume called "minikube". **Note**: The first time you start minikube you should use `minikube start --cni=flannel` or you might have problems with [exercise 5](#exercise-5---adding-more-nodes).
 
 ### Exercise 2 - Deploy "Hello World" application
 
