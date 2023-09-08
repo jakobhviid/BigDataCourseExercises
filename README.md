@@ -35,6 +35,9 @@ subgraph Kubernetes
         transconnect(Kafka connect)
         transspark(Spark structured streaming)
     end
+    subgraph Interactive containers
+        ubuntupy(Python Data Scouce)
+    end
     
     subgraph Querying
         subgraph Hive
@@ -53,6 +56,8 @@ subgraph Kubernetes
         uiconcontrol(Confluent control)
         uidatahub(Datahub)
     end
+
+ubuntupy <--> namenode
 
 end
 
