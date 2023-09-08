@@ -44,6 +44,83 @@ Once all operator pods have the "Running" status, you can then proceed to create
 
 It might take a long time to create the ZooKeeper and HDFS clusters. This is because the images are relatively large (almost 3GB in total) and the upload speed of the Stackable image registry is relatively low. To see what is going on with a specific pod you can use the `kubectl describe` command.
 
+### Exercise 2 - Interacting with HDFS cluster using CLI
+
+Now that we have a HDFS cluster lets now try and use it. HDFS has a CLI tool for interacting with HDFS clusters. Because the cluster is running inside of Kubernetes, we also need to access it from inside Kubernetes.
+
+Much like you created an interactive container with Ubuntu [last week](../01/exercises.md#exercise-7---interactive-container) you now need to create an interactive container using the `apache/hadoop:3` image.
+
+**Task**: Create interactive container with the `apache/hadoop:3` image
+
+HDFS works much like a normal file system. The commands to interact with HDFS are also similar to the commands you would use on a Unix system (such as Linux and Mac). For example, to list files and folders in a directory you would use the following command `hdfs dfs -ls /`.
+
+**Tasks**:
+
+1. Use the command `hdfs dfs -ls /`. What does it tell you?
+2. Compare the output to `ls -laL /`
+
+Because we have not configured the HDFS CLI tool to use the HDFS cluster it fails back to the local file system. The command `hdfs dfs -ls /` is actually equivilant to `ls -laL /`.
+
+To use the HDFS cluster we need to tell the HDFS CLI to use the HDFS cluster we have made. This is done using the `-fs` option, for example: `hdfs dfs -fs hdfs://namenode:port`. You also need to use the "stackable" user when interacting with the HDFS cluster. This can be done by setting an environment variable for the current shell session: `export HADOOP_USER_NAME=stackable`.
+
+**Task**: Try to list the files inside the root directory in the HDFS cluster
+
+**Note**: Make sure you connect to the active name node. Only one name node may be active, the other ones are in "standby" mode and will only be promoted in case of a failover. You know if it is not the active one if the result of the command is `Operation category READ is not supported in state standby`.
+
+<details>
+  <summary><strong>Hint</strong>: hostname and port</summary>
+
+  There is a service made for each name node. The port is 8020.
+</details>
+
+<details>
+  <summary><strong>Hint</strong>: Full example</summary>
+
+  Use `kubectl get service` to get a list of all services. If you have two name nodes then the services should be called "simple-hdfs-namenode-default-0" and "simple-hdfs-namenode-default-1".
+  
+  You can choose either one of them but it may not be the active one. If it is not the active one then try a different name node. The port for HDFS NameNode metadata service is 8020, which is what HDFS clients use.
+
+  Before we run a command inside the interactive container we need to set the HDFS username: `export HADOOP_USER_NAME=stackable`.
+
+  The full command would for example be `hdfs dfs -fs hdfs://simple-hdfs-namenode-default-0:8020 -ls /` for name node 0.
+</details>
+
+You should see that there are no files in the directory. We will fix this now.
+
+**Task**: Create a file inside the interactive container called "test.txt" and add some text to it.
+
+<details>
+  <summary><strong>Hint</strong>: Creating a file</summary>
+
+  The container does not have nano or vim installed. You can simply create a file by echoing some text and piping it into a file: `echo "hello" > test.txt`. Verify that the file exists by using `ls` and verify its contents using `cat test.txt`.
+</details>
+
+To add a file to the HDFS cluster using the HDFS CLI you can use the put command.
+
+**Task**: Upload the file to the HDFS cluster
+
+<details>
+  <summary><strong>Hint</strong>: Uploading the file</summary>
+
+  `hdfs dfs -put ./test.txt /test.txt`
+</details>
+
+Now that you have uploaded a file to HDFS you can try to list the files to verify that it is added. Similarly to Unix systems you can use the `cat` command to read files.
+
+**Task**: Read the contents of the file you just uploaded to HDFS
+
+<details>
+  <summary><strong>Hint</strong>: Reading the file</summary>
+
+  `hdfs dfs -cat /test.txt`
+</details>
+
+**Task**: Try to delete the file from HDFS
+
+**Hint**: Run the command `hdfs dfs` to get a list of all commands and options.
+
+You are now able to list files and folders, read files, upload files, and delete files, using HDFS.
+
 ### Exercise 3 - Access txt data on HDFS from a Python client (Read and write)
 
 Now we want to access HDFS from a client. To do this we will create a Python client that can read and write to HDFS.
