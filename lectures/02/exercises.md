@@ -10,28 +10,39 @@ WIP: Create and issue on github if you encountering errors
 
 ## Exercises
 
-### Exercise 1 - Composing a HDFS Cluster
+### Exercise 1 - Set up HDFS cluster
 
-- To work with HDFS we need to setup a HDFS cluster.
-- Questions:
-  -  
+You will need a working HDFS cluster to solve the exercises for today. To set up HDFS, we will be using a [Kubernetes operator](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/) made by a company called [Stackable](https://stackable.tech/). Kubernetes operators are custom controllers that automate the management of applications within Kubernetes clusters and may make use of [custom resources](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/).
 
-### Exercise 2 - Accessing the namenode and interacting with the HDFS CLI
+To keep the cluster tidy we will install the Stackable operators inside its own namespace. A namespace is a Kubernetes resource that can be used to better organize resources.
 
-Now that we have a HDFS cluster, lets try and access a node, and play around. 
-- To access the HDFS cluster do the following: TODO: update cmd -> `docker exec -ti namenode /bin/bash`
+**Task**: Create a namespace called `stackable`.
 
-Now we have access to the namenode container that is able to interact with the HDFS CLI. 
-Now lets try to run some HDFS shell commands:
+To install the operators needed to set up the HDFS cluster you can follow their [installation guide using Helm](https://docs.stackable.tech/home/stable/hdfs/getting_started/installation#_helm). This is similar to the [exercise 6 from last week](../01/exercises.md#exercise-6---deploying-application-using-helm) where you installed the hello-kubernetes application using helm, except now install something using a helm repository.
 
-- We will use the `hdfs dfs -[command] [path]` command
-  - `hdfs dfs -ls [path]` to list all files in a specified folder.
-  - `hdfs dfs -cat [path]` to print the contents of a file on a specific path.
-  - `hdfs dfs -put [sourcePath] [targetPath]` to add a file to hdfs. The source path points to a file inside the container, and the target path should point to a path inside hdfs.
+**Task**: Install the nessesary Stackable operators to set up a HDFS cluster inside the `stackable` namespace. **Hint**: `helm install -n stackable ...`.
 
-You might want to create a file first:
-  - Create file: `echo "Hello world" > hello-world.txt` 
-  - Put into HDFS: `hdfs dfs -put hello-world.txt /lecture02/` 
+You can verify that the operators are installed by checking if there are 4 pods inside the stackable namespace, one for each operator you installed.
+
+**Hint**: To get resources inside a specific namespace add `-n stackable` to the kubectl command, for example: `kubectl -n stackable get pods`.
+
+Once all operator pods have the "Running" status, you can then proceed to create the HDFS cluster. You can follow the [Stackable guide to create a HDFS cluster](https://docs.stackable.tech/home/stable/hdfs/getting_started/first_steps). But before you can create the HDFS cluster you will need to create a ZooKeeper cluster. ZooKeeper is a centralized application for storing and syncronizes state and is used by HDFS for [failure detection and automatic failover](https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/HDFSHighAvailabilityWithNFS.html#Automatic_Failover). ZooKeeper has a hierical data model where each node can have children nodes associated with it. Each node is called a ZNode. You can read more about how ZooKeeper stores data [here](https://zookeeper.apache.org/doc/r3.1.2/zookeeperProgrammers.html#ch_zkDataModel).
+
+**Note**: If you are using minikube and have multiple nodes you need to start the cluster using `minikube start --cni=flannel` for the next steps to work properly.
+
+**Tasks**:
+
+1. Create a ZooKeeper cluster with 1 replica
+2. Create a ZNode for the HDFS cluster
+3. Create a HDFS cluster with 2 name nodes, 1 journal node, and 1 data node
+
+**Hint**: Follow the Stackable guide.
+
+**Note**: For a highly available HDFS setup you will need a ZooKeeper cluster with atleast 3 nodes to maintain quorum, and a HDFS cluster made up of atleast 2 JournalNodes, 2 NameNodes, 2 DataNodes and a replica factor of 2. This might be excessive for a laptop so the exercises will assume a minimal setup.
+
+**Note**: A minimal HDFS cluster should also work with only 1 name node but for some reason it fails to start when using only 1 replica.
+
+It might take a long time to create the ZooKeeper and HDFS clusters. This is because the images are relatively large (almost 3GB in total) and the upload speed of the Stackable image registry is relatively low. To see what is going on with a specific pod you can use the `kubectl describe` command.
 
 ### Exercise 3 - Access txt data on HDFS from a Python client (Read and write)
 
