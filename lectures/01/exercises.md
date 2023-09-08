@@ -216,5 +216,6 @@ Kubernetes resources can be deleted using the `kubectl delete` command. You can 
 - To begin with, we will delete the first hello-kubernetes deployment that you made using the yaml manifest file: `kubectl delete -f hello-kubernetes.yaml`
 - Next we will uninstall the hello-kubernetes release of the hello-kubernetes Helm chart: `helm uninstall hello-kubernetes`
 - Delete the ubuntu container: `kubectl delete pods/ubuntu`
+- Stop running nodes: `minikube stop`
 
 You can get a list of the pods and services to verify that they are deleted.
