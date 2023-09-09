@@ -72,19 +72,21 @@ To use the HDFS cluster we need to tell the HDFS CLI to use the HDFS cluster we 
 <details>
   <summary><strong>Hint</strong>: hostname and port</summary>
 
-  There is a service made for each name node. The port is 8020.
+  The port that the HDFS client uses is 8020.
+
+  There is a service called simple-hdfs-namenode-default with no ip. The service is a ["headless service"](https://kubernetes.io/docs/concepts/services-networking/service/#headless-services). This means that the service does not provide load balancing and proxying, but it does provide DNS resolution for pods that match the selector: `pod-name.service-name` will return the IP of the pod.
 </details>
 
 <details>
   <summary><strong>Hint</strong>: Full example</summary>
 
-  Use `kubectl get service` to get a list of all services. If you have two name nodes then the services should be called "simple-hdfs-namenode-default-0" and "simple-hdfs-namenode-default-1".
-  
-  You can choose either one of them but it may not be the active one. If it is not the active one then try a different name node. The port for HDFS NameNode metadata service is 8020, which is what HDFS clients use.
+  The service called "simple-hdfs-namenode-default" is a ["headless service"](https://kubernetes.io/docs/concepts/services-networking/service/#headless-services). 
+
+  Use `kubectl get pods` to get a list of all pods. If you have two name nodes then the pods should be called "simple-hdfs-namenode-default-0" and "simple-hdfs-namenode-default-1". To get the IP of the pod running name node 0, tha would be the following domain `simple-hdfs-namenode-default-0.simple-hdfs-namenode-default`. You can choose either one of the pods but it may not be the active one. If it is not the active one then try a different name node. The port for HDFS NameNode metadata service is 8020, which is what HDFS clients use.
 
   Before we run a command inside the interactive container we need to set the HDFS username: `export HADOOP_USER_NAME=stackable`.
 
-  The full command would for example be `hdfs dfs -fs hdfs://simple-hdfs-namenode-default-0:8020 -ls /` for name node 0.
+  The full command would for example be `hdfs dfs -fs hdfs://simple-hdfs-namenode-default-0.simple-hdfs-namenode-default:8020 -ls /` for name node 0.
 </details>
 
 You should see that there are no files in the directory. We will fix this now.
