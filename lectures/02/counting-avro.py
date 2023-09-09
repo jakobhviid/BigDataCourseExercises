@@ -2,14 +2,12 @@
 from collections import Counter
 from hdfs.ext.avro import AvroReader, AvroWriter
 
-from client import client
+from client import get_hdfs_client
 
 def main():
-        
-    
+    client = get_hdfs_client()
 
-    
-    # Create a AvroWriter instance with the client and file name
+    # Create an AvroWriter instance with the client and file name
     with client.read("/alice-in-wonderland.txt", encoding="utf-8") as reader, AvroWriter(
         client, "/word-count.avro", overwrite=True
     ) as writer:
@@ -19,16 +17,16 @@ def main():
         for (key, count) in wordcount:
             writer.write({"word": key, "count": count})
 
-    # # Read the written file
-    # with AvroReader(client, "/word-count.avro") as reader:
-    #     schema = reader.schema  # The inferred schema.
-    #     content = reader.content  # The remote file's HDFS content object.
+    # Read the written file
+    with AvroReader(client, "/word-count.avro") as reader:
+        schema = reader.schema  # The inferred schema.
+        # content = reader.content  # The remote file's HDFS content object.
 
-    #     # Print the inferred schema
-    #     print(schema)
-    #     print("\n")
-    #     # Print a list of the data
-    #     print(list(reader))
+        # Print the inferred schema
+        print(schema)
+        print("\n")
+        # Print a list of the data
+        print(list(reader))
 
 if __name__ == "__main__":
     main()

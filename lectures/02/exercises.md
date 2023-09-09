@@ -194,7 +194,7 @@ You should see that the script prints the entire Alice in Wonderland text to the
 
 You can read more about the HDFS Python library [here](https://hdfscli.readthedocs.io/en/latest/quickstart.html#python-bindings).
 
-### Exercise 6 - Analyzing file and saving result in JSON file using Python
+### Exercise 6 - Analyzing file and saving result in JSON format using Python
 
 Now that we have a dataset in HDFS and know how to interact with HDFS, we will analyze the data and save the results to a JSON file in HDFS.
 
@@ -209,15 +209,20 @@ You should see that the script reads the Alice in Wonderland file and counts all
 3. Run the script
 4. Read the result. What are the five most common words in Alice in Wonderland, and how many times are they repeated?
 
-### Exercise 5 - Create avro data to HDFS from a Python client
+### Exercise 7 - Analyzing file and saving result in Avro format using Python
 
+Instead of saving the result as a JSON file, we will now try to save it as an Avro file.
 
-Now that we have a python client that can write from HDFS. we can try to write JSON from HDFS.
-TODO: Interactive session
-complete `counting-avro.py`
+**Task**: Open the [`counting-avro.py`](./counting-avro.py) file and try to understand it.
 
-Questions:
-- What are the five least common words in TODO?? Alice in Wonderland, and how many times are they repeated?
+You should see that the script reads the Alice in Wonderland file similarly to [exercise 6](#exercise-6---analyzing-file-and-saving-result-in-json-file-using-python), but saving the file is a bit different.
+
+**Tasks**:
+
+1. Copy the script to the container
+2. Install required libraries
+3. Run the script
+4. Read the result
 
 ### Exercise 6 - Create parquet data to HDFS from a Python client
 
