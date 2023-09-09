@@ -19,6 +19,7 @@ graph
 
 subgraph Kubernetes
     subgraph Storage 
+        pvolume(persistent volume)
     
         subgraph HDFS
             namenode(NameNode)
@@ -36,7 +37,7 @@ subgraph Kubernetes
         transspark(Spark structured streaming)
     end
     subgraph Interactive containers
-        ubuntupy(Python Data Scouce)
+        ubuntupy(anderslaunerbaek/anbae-big-data-course:latest)
         apachehadoop(apache/hadoop:3)
     end
     
@@ -59,6 +60,7 @@ subgraph Kubernetes
     end
 
 ubuntupy & apachehadoop <--> namenode
+pvolume <--> ubuntupy
 
 end
 
