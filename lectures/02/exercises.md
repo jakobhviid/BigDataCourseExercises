@@ -172,6 +172,27 @@ For the next exercises you will be working with the Alice in Wonderland book. It
 
 </details>
 
+### Exercise 5 - Interacting with HDFS cluster using Python
+
+We now want to try to interact with the HDFS cluster using Python. To do this, there are a few files provided:
+
+- [client.py](./client.py) - This file is used to create a HDFS client
+- [simple-client.py](./simple-client.py) - This script contains examples for how to read a file and how to create a file.
+
+**Task**: Open the files and understand what they do.
+
+Create an [interactive container](../01/exercises.md#exercise-7---interactive-container) with the `python:3` image and [attach vscode to it](#attach-visual-studio-code-to-a-container-in-a-kubernetes-cluster).
+
+**Tasks**:
+
+1. Copy the `simple-client.py` and `client.py` files to the container
+2. Install `hdfs` library using pip `pip install hdfs`
+3. Configure `client.py` to use the correct name nodes
+4. Run the `simple-client.py` script and observe what it does
+
+You should see that the script prints the entire Alice in Wonderland text to the console and that it then creates a file called "write.txt" with some text.
+
+You can read more about the HDFS Python library [here](https://hdfscli.readthedocs.io/en/latest/quickstart.html#python-bindings).
 
 ### Exercise 4 - Create JSON data to HDFS from a Python client
 
