@@ -131,7 +131,7 @@ Now that you have uploaded a file to HDFS you can try to list the files to verif
 
 You are now able to list files and folders, read files, upload files, and delete files, using HDFS.
 
-### Exercise 4 (optional) - Mount HDFS config to interactive container
+### Exercise 3 (optional) - Mount HDFS config to interactive container
 
 Instead of manually specifying the uri ("hdfs://namenode:port") and making sure you connect to the correct name node you can let the HDFS client decide this for you using a HDFS config file(s) (called "core-site.xml" and "hdfs-site.xml").
 
@@ -155,7 +155,7 @@ Before we mount it we want to take a look at the ConfigMap and try to understand
 
 To create the interactive container and mount the config, use the provided [hdfs-cli.yaml file](./hdfs-cli.yaml)
 
-### Exercise 5 - Attach vscode to pod
+### Exercise 4 - Attach vscode to pod
 
 If you install the Kubernetes extension for Visual Studio Code then you can connect to the container using vscode. This will allow you to run commands and create files using vscode, but inside the container. You can read about it [here](https://code.visualstudio.com/docs/devcontainers/attach-container#_attach-to-a-container-in-a-kubernetes-cluster).
 
