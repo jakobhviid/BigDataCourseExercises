@@ -155,18 +155,22 @@ Before we mount it we want to take a look at the ConfigMap and try to understand
 
 To create the interactive container and mount the config, use the provided [hdfs-cli.yaml file](./hdfs-cli.yaml)
 
-### Exercise 4 - Attach vscode to pod
+### Exercise 4 - Uploading Alice in Wonderland to HDFS
 
-If you install the [Kubernetes extension](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools) for Visual Studio Code then you can connect to the container using vscode. This will allow you to run commands and create files using vscode, but inside the container. You can read about it [here](https://code.visualstudio.com/docs/devcontainers/attach-container#_attach-to-a-container-in-a-kubernetes-cluster).
+For the next exercises you will be working with the Alice in Wonderland book. It can be found [here](https://www.gutenberg.org/files/11/11-0.txt) as raw text.
 
-Simply install the extension and click on the Kubernetes icon in the primary side bar. Then select the cluster you want to use, click on workloads, pods, and then right.click the pod you want to attach to and then click "Attach Visual Studio Code". This will open a new vscode window that is connected to the pod.
+**Task**: Upload Alice in Wonderland to HDFS
 
-### Exercise 3 - Access txt data on HDFS from a Python client (Read and write)
+**Hint**: Download using `wget -O alice-in-wonderland.txt https://www.gutenberg.org/files/11/11-0.txt`
 
-Now we want to access HDFS from a client. To do this we will create a Python client that can read and write to HDFS.
+<details>
+  <summary><strong>Hint</strong>: Full example</summary>
 
-TODO: Interactive session
-complete `simple-client.py`
+  1. Gain interactive shell inside a pod running apache/hadoop:3. You can use the pod from [exercise 3](#exercise-3-optional---mount-hdfs-config-to-interactive-container).
+  2. Download Alice in Wonderland using `wget -O alice-in-wonderland.txt https://www.gutenberg.org/files/11/11-0.txt`.
+  3. Upload Alice in Wonderland to HDFS using `hdfs dfs -put ./alice-in-wonderland.txt /`
+
+</details>
 
 
 ### Exercise 4 - Create JSON data to HDFS from a Python client
