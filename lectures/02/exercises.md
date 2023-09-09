@@ -12,28 +12,116 @@ WIP: Create and issue on github if you encountering errors
 
 ## Exercises
 
-### Exercise 1 - Composing a HDFS Cluster
+### Exercise 1 - Set up HDFS cluster
 
-- To work with HDFS we need to setup a HDFS cluster.
-- Questions:
-  -  
+You will need a working HDFS cluster to solve the exercises for today. To set up HDFS, we will be using a [Kubernetes operator](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/) made by a company called [Stackable](https://stackable.tech/). Kubernetes operators are custom controllers that automate the management of applications within Kubernetes clusters and may make use of [custom resources](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/).
 
-### Exercise 2 - Accessing the namenode and interacting with the HDFS CLI
+To keep the cluster tidy we will install the Stackable operators inside its own namespace. A namespace is a Kubernetes resource that can be used to better organize resources.
 
-Now that we have a HDFS cluster, lets try and access a node, and play around. 
-- To access the HDFS cluster do the following: TODO: update cmd -> `docker exec -ti namenode /bin/bash`
+**Task**: Create a namespace called `stackable`.
 
-Now we have access to the namenode container that is able to interact with the HDFS CLI. 
-Now lets try to run some HDFS shell commands:
+To install the operators needed to set up the HDFS cluster you can follow their [installation guide using Helm](https://docs.stackable.tech/home/stable/hdfs/getting_started/installation#_helm). This is similar to the [exercise 6 from last week](../01/exercises.md#exercise-6---deploying-application-using-helm) where you installed the hello-kubernetes application using helm, except now install something using a helm repository.
 
-- We will use the `hdfs dfs -[command] [path]` command
-  - `hdfs dfs -ls [path]` to list all files in a specified folder.
-  - `hdfs dfs -cat [path]` to print the contents of a file on a specific path.
-  - `hdfs dfs -put [sourcePath] [targetPath]` to add a file to hdfs. The source path points to a file inside the container, and the target path should point to a path inside hdfs.
+**Task**: Install the nessesary Stackable operators to set up a HDFS cluster inside the `stackable` namespace. **Hint**: `helm install -n stackable ...`.
 
-You might want to create a file first:
-  - Create file: `echo "Hello world" > hello-world.txt` 
-  - Put into HDFS: `hdfs dfs -put hello-world.txt /lecture02/` 
+You can verify that the operators are installed by checking if there are 4 pods inside the stackable namespace, one for each operator you installed.
+
+**Hint**: To get resources inside a specific namespace add `-n stackable` to the kubectl command, for example: `kubectl -n stackable get pods`.
+
+Once all operator pods have the "Running" status, you can then proceed to create the HDFS cluster. You can follow the [Stackable guide to create a HDFS cluster](https://docs.stackable.tech/home/stable/hdfs/getting_started/first_steps). But before you can create the HDFS cluster you will need to create a ZooKeeper cluster. ZooKeeper is a centralized application for storing and syncronizes state and is used by HDFS for [failure detection and automatic failover](https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/HDFSHighAvailabilityWithNFS.html#Automatic_Failover). ZooKeeper has a hierical data model where each node can have children nodes associated with it. Each node is called a ZNode. You can read more about how ZooKeeper stores data [here](https://zookeeper.apache.org/doc/r3.1.2/zookeeperProgrammers.html#ch_zkDataModel).
+
+**Note**: If you are using minikube and have multiple nodes you need to start the cluster using `minikube start --cni=flannel` for the next steps to work properly.
+
+**Tasks**:
+
+1. Create a ZooKeeper cluster with 1 replica
+2. Create a ZNode for the HDFS cluster
+3. Create a HDFS cluster with 2 name nodes, 1 journal node, and 1 data node
+
+**Hint**: Follow the Stackable guide.
+
+**Note**: For a highly available HDFS setup you will need a ZooKeeper cluster with atleast 3 nodes to maintain quorum, and a HDFS cluster made up of atleast 2 JournalNodes, 2 NameNodes, 2 DataNodes and a replica factor of 2. This might be excessive for a laptop so the exercises will assume a minimal setup.
+
+**Note**: A minimal HDFS cluster should also work with only 1 name node but for some reason it fails to start when using only 1 replica.
+
+It might take a long time to create the ZooKeeper and HDFS clusters. This is because the images are relatively large (almost 3GB in total) and the upload speed of the Stackable image registry is relatively low. To see what is going on with a specific pod you can use the `kubectl describe` command.
+
+### Exercise 2 - Interacting with HDFS cluster using CLI
+
+Now that we have a HDFS cluster lets now try and use it. HDFS has a CLI tool for interacting with HDFS clusters. Because the cluster is running inside of Kubernetes, we also need to access it from inside Kubernetes.
+
+Much like you created an interactive container with Ubuntu [last week](../01/exercises.md#exercise-7---interactive-container) you now need to create an interactive container using the `apache/hadoop:3` image.
+
+**Task**: Create interactive container with the `apache/hadoop:3` image
+
+HDFS works much like a normal file system. The commands to interact with HDFS are also similar to the commands you would use on a Unix system (such as Linux and Mac). For example, to list files and folders in a directory you would use the following command `hdfs dfs -ls /`.
+
+**Tasks**:
+
+1. Use the command `hdfs dfs -ls /`. What does it tell you?
+2. Compare the output to `ls -laL /`
+
+Because we have not configured the HDFS CLI tool to use the HDFS cluster it fails back to the local file system. The command `hdfs dfs -ls /` is actually equivilant to `ls -laL /`.
+
+To use the HDFS cluster we need to tell the HDFS CLI to use the HDFS cluster we have made. This is done using the `-fs` option, for example: `hdfs dfs -fs hdfs://namenode:port`. You also need to use the "stackable" user when interacting with the HDFS cluster. This can be done by setting an environment variable for the current shell session: `export HADOOP_USER_NAME=stackable`.
+
+**Task**: Try to list the files inside the root directory in the HDFS cluster
+
+**Note**: Make sure you connect to the active name node. Only one name node may be active, the other ones are in "standby" mode and will only be promoted in case of a failover. You know if it is not the active one if the result of the command is `Operation category READ is not supported in state standby`.
+
+<details>
+  <summary><strong>Hint</strong>: hostname and port</summary>
+
+  There is a service made for each name node. The port is 8020.
+</details>
+
+<details>
+  <summary><strong>Hint</strong>: Full example</summary>
+
+  Use `kubectl get service` to get a list of all services. If you have two name nodes then the services should be called "simple-hdfs-namenode-default-0" and "simple-hdfs-namenode-default-1".
+  
+  You can choose either one of them but it may not be the active one. If it is not the active one then try a different name node. The port for HDFS NameNode metadata service is 8020, which is what HDFS clients use.
+
+  Before we run a command inside the interactive container we need to set the HDFS username: `export HADOOP_USER_NAME=stackable`.
+
+  The full command would for example be `hdfs dfs -fs hdfs://simple-hdfs-namenode-default-0:8020 -ls /` for name node 0.
+</details>
+
+You should see that there are no files in the directory. We will fix this now.
+
+**Task**: Create a file inside the interactive container called "test.txt" and add some text to it.
+
+<details>
+  <summary><strong>Hint</strong>: Creating a file</summary>
+
+  The container does not have nano or vim installed. You can simply create a file by echoing some text and piping it into a file: `echo "hello" > test.txt`. Verify that the file exists by using `ls` and verify its contents using `cat test.txt`.
+</details>
+
+To add a file to the HDFS cluster using the HDFS CLI you can use the put command.
+
+**Task**: Upload the file to the HDFS cluster
+
+<details>
+  <summary><strong>Hint</strong>: Uploading the file</summary>
+
+  `hdfs dfs -put ./test.txt /test.txt`
+</details>
+
+Now that you have uploaded a file to HDFS you can try to list the files to verify that it is added. Similarly to Unix systems you can use the `cat` command to read files.
+
+**Task**: Read the contents of the file you just uploaded to HDFS
+
+<details>
+  <summary><strong>Hint</strong>: Reading the file</summary>
+
+  `hdfs dfs -cat /test.txt`
+</details>
+
+**Task**: Try to delete the file from HDFS
+
+**Hint**: Run the command `hdfs dfs` to get a list of all commands and options.
+
+You are now able to list files and folders, read files, upload files, and delete files, using HDFS.
 
 ### Exercise 3 - Access txt data on HDFS from a Python client (Read and write)
 
