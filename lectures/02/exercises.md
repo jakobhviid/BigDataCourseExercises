@@ -186,7 +186,7 @@ Create an [interactive container](../01/exercises.md#exercise-7---interactive-co
 **Tasks**:
 
 1. Copy the `simple-client.py` and `client.py` files to the container
-2. Install `hdfs` library using pip `pip install hdfs`
+2. Install `hdfs` library using `pip install hdfs`
 3. Configure `client.py` to use the correct name nodes
 4. Run the `simple-client.py` script and observe what it does
 
@@ -194,15 +194,20 @@ You should see that the script prints the entire Alice in Wonderland text to the
 
 You can read more about the HDFS Python library [here](https://hdfscli.readthedocs.io/en/latest/quickstart.html#python-bindings).
 
-### Exercise 4 - Create JSON data to HDFS from a Python client
+### Exercise 6 - Analyzing file and saving result in JSON file using Python
 
+Now that we have a dataset in HDFS and know how to interact with HDFS, we will analyze the data and save the results to a JSON file in HDFS.
 
-Now that we have a python client that can write from HDFS. We can try to write JSON from HDFS.
-TODO: Interactive session
-complete `counting-json.py`
+**Task**: Open the [`counting-json.py`](./counting-json.py) file and try to understand it.
 
-Questions:
-- What are the five most common words in TODO?? Alice in Wonderland, and how many times are they repeated?
+You should see that the script reads the Alice in Wonderland file and counts all words in the file. It then saves the 10 most common words to a file called "word-count.json".
+
+**Tasks**:
+
+1. Copy the script to the container
+2. Install required libraries
+3. Run the script
+4. Read the result. What are the five most common words in Alice in Wonderland, and how many times are they repeated?
 
 ### Exercise 5 - Create avro data to HDFS from a Python client
 
