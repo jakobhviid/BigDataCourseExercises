@@ -4,6 +4,8 @@
 WIP: Create and issue on github if you encountering errors
 
 
+## Use VS Code to attach to a container in a Kubernetes cluster
+
 
 
 ## Subject and objective for these exercises
