@@ -42,7 +42,7 @@ Once all operator pods have the "Running" status, you can then proceed to create
 
 **Note**: For a highly available HDFS setup you will need a ZooKeeper cluster with atleast 3 nodes to maintain quorum, and a HDFS cluster made up of atleast 2 JournalNodes, 2 NameNodes, 2 DataNodes and a replica factor of 2. This might be excessive for a laptop so the exercises will assume a minimal setup.
 
-**Note**: A minimal HDFS cluster should also work with only 1 name node but for some reason it fails to start when using only 1 replica.
+**Note**: A minimal HDFS cluster should also work with only 1 name node but for some reason it does not with with the Stackable operator.
 
 It might take a long time to create the ZooKeeper and HDFS clusters. This is because the images are relatively large (almost 3GB in total) and the upload speed of the Stackable image registry is relatively low. To see what is going on with a specific pod you can use the `kubectl describe` command.
 
@@ -67,7 +67,7 @@ To use the HDFS cluster we need to tell the HDFS CLI to use the HDFS cluster we 
 
 **Task**: Try to list the files inside the root directory in the HDFS cluster
 
-**Note**: Make sure you connect to the active name node. Only one name node may be active, the other ones are in "standby" mode and will only be promoted in case of a failover. You know if it is not the active one if the result of the command is `Operation category READ is not supported in state standby`.
+**Note**: Make sure you connect to the active name node. Only one name node is active, the other ones are in "standby" mode and will only be promoted in case of a failover. You know if it is not the active one if the result of the command is `Operation category READ is not supported in state standby`.
 
 <details>
   <summary><strong>Hint</strong>: hostname and port</summary>
@@ -120,6 +120,12 @@ Now that you have uploaded a file to HDFS you can try to list the files to verif
 **Task**: Try to delete the file from HDFS
 
 **Hint**: Run the command `hdfs dfs` to get a list of all commands and options.
+
+<details>
+  <summary><strong>Hint</strong>: Deleting the file</summary>
+
+  `hdfs dfs -rm /test.txt`
+</details>
 
 You are now able to list files and folders, read files, upload files, and delete files, using HDFS.
 
