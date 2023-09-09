@@ -37,6 +37,7 @@ subgraph Kubernetes
     end
     subgraph Interactive containers
         ubuntupy(Python Data Scouce)
+        apachehadoop(apache/hadoop:3)
     end
     
     subgraph Querying
@@ -57,7 +58,7 @@ subgraph Kubernetes
         uidatahub(Datahub)
     end
 
-ubuntupy <--> namenode
+ubuntupy & apachehadoop <--> namenode
 
 end
 
@@ -87,8 +88,12 @@ The root of this repository will be related to the content of the current semest
     ├── datahub
     │   └── README.md
     ├── hdfs
+    │   ├── ... 
     │   └── README.md
     ├── hive
+    │   └── README.md
+    ├── interactive
+    │   ├── ...
     │   └── README.md
     ├── kafka
     │   └── README.md
