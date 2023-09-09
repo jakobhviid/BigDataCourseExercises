@@ -129,6 +129,30 @@ Now that you have uploaded a file to HDFS you can try to list the files to verif
 
 You are now able to list files and folders, read files, upload files, and delete files, using HDFS.
 
+### Exercise 3 (optional) - Mount HDFS config to interactive container
+
+Instead of manually specifying the uri ("hdfs://namenode:port") and making sure you connect to the correct name node you can let the HDFS client decide this for you using a HDFS config file(s) (called "core-site.xml" and "hdfs-site.xml").
+
+The Stackable operator creates a Kubernetes resource called a ConfigMap. A ConfigMap is a resource that contains key-value pairs used for configuration. It can be used in various ways, but we want to mount the ConfigMap as a file to the interactive container.
+
+Before we mount it we want to take a look at the ConfigMap and try to understand it.
+
+**Task**: Get the contents of the ConfigMap resource using the `kubectl describe` command.
+
+**Hint**: The ConfigMap resource should be called "simple-hdfs".
+
+<details>
+  <summary><strong>Hint</strong>: Full example</summary>
+
+  List all ConfigMaps using `kubectl get configmap`.
+
+  There should be a ConfigMap called "simple-hdfs".
+
+  Describe the ConfigMap using `kubectl describe configmap/simple-hdfs`.
+</details>
+
+To create the interactive container and mount the config, use the provided [hdfs-cli.yaml file](./hdfs-cli.yaml)
+
 ### Exercise 3 - Access txt data on HDFS from a Python client (Read and write)
 
 Now we want to access HDFS from a client. To do this we will create a Python client that can read and write to HDFS.
