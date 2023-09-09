@@ -224,19 +224,20 @@ You should see that the script reads the Alice in Wonderland file similarly to [
 3. Run the script
 4. Read the result
 
-### Exercise 6 - Create parquet data to HDFS from a Python client
+### Exercise 8 - Analyzing file and saving result in Parquet format using Python
 
+We will now try to save a Parquet file to HDFS.
 
-Now that we have a python client that can write from HDFS. we can try to write JSON from HDFS.
-TODO: Interactive session
-complete `counting-parquet.py`
+**Tasks**: Open the [`counting-parquet.py`](./counting-parquet.py) file and try to understand it.
 
-Questions:
-- What is the schema??
-- Hvordan vil tabellen se ud med i bred format?
+**Tasks**:
 
+1. Copy the script to the container
+2. Install required libraries
+3. Run the script
+4. Read the result
 
-### Exercise 7 - Create six fictive data sources
+### Exercise 9 - Create six fictive data sources
 
 Simulate multiple data streams from an identical sensor with a sample frequency of 1hz placed a six different locations. 
 
