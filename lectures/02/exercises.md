@@ -157,7 +157,7 @@ To create the interactive container and mount the config, use the provided [hdfs
 
 ### Exercise 4 - Attach vscode to pod
 
-If you install the Kubernetes extension for Visual Studio Code then you can connect to the container using vscode. This will allow you to run commands and create files using vscode, but inside the container. You can read about it [here](https://code.visualstudio.com/docs/devcontainers/attach-container#_attach-to-a-container-in-a-kubernetes-cluster).
+If you install the [Kubernetes extension](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools) for Visual Studio Code then you can connect to the container using vscode. This will allow you to run commands and create files using vscode, but inside the container. You can read about it [here](https://code.visualstudio.com/docs/devcontainers/attach-container#_attach-to-a-container-in-a-kubernetes-cluster).
 
 Simply install the extension and click on the Kubernetes icon in the primary side bar. Then select the cluster you want to use, click on workloads, pods, and then right.click the pod you want to attach to and then click "Attach Visual Studio Code". This will open a new vscode window that is connected to the pod.
 
