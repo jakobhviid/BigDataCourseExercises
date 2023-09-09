@@ -155,6 +155,12 @@ Before we mount it we want to take a look at the ConfigMap and try to understand
 
 To create the interactive container and mount the config, use the provided [hdfs-cli.yaml file](./hdfs-cli.yaml)
 
+### Exercise 5 - Attach vscode to pod
+
+If you install the Kubernetes extension for Visual Studio Code then you can connect to the container using vscode. This will allow you to run commands and create files using vscode, but inside the container. You can read about it [here](https://code.visualstudio.com/docs/devcontainers/attach-container#_attach-to-a-container-in-a-kubernetes-cluster).
+
+Simply install the extension and click on the Kubernetes icon in the primary side bar. Then select the cluster you want to use, click on workloads, pods, and then right.click the pod you want to attach to and then click "Attach Visual Studio Code". This will open a new vscode window that is connected to the pod.
+
 ### Exercise 3 - Access txt data on HDFS from a Python client (Read and write)
 
 Now we want to access HDFS from a client. To do this we will create a Python client that can read and write to HDFS.
