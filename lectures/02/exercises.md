@@ -1,16 +1,16 @@
 # Lecture 02 - HFDS and different file formats
 
-## GENERAL
-WIP: Create and issue on github if you encountering errors
+## Read before starting exercises
 
+### Attach Visual Studio Code to a container in a Kubernetes cluster
 
-## Use VS Code to attach to a container in a Kubernetes cluster
+If you install the [Kubernetes extension](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools) for Visual Studio Code then you can connect to the container using vscode. This will allow you to run commands and create files using vscode, but inside the container. You can read about it [here](https://code.visualstudio.com/docs/devcontainers/attach-container#_attach-to-a-container-in-a-kubernetes-cluster).
 
-
-
-## Subject and objective for these exercises
+Simply install the extension and click on the Kubernetes icon in the primary side bar. Then select the cluster you want to use, click on workloads, pods, and then right.click the pod you want to attach to and then click "Attach Visual Studio Code". This will open a new vscode window that is connected to the pod.
 
 ## Exercises
+
+The exercises for this week's lecture will be about HDFS and file formats. You will be creating a HDFS cluster and interacting with it in different ways.
 
 ### Exercise 1 - Set up HDFS cluster
 
