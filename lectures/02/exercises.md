@@ -1,8 +1,6 @@
 # Lecture 02 - HFDS and different file formats
 
-## Read before starting exercises
-
-### Attach Visual Studio Code to an interactive container in Kubernetes
+## Attach Visual Studio Code to an interactive container in Kubernetes
 
 For progressing in today's exercises we recommend you to look into attaching Visual Studio Code to an interactive container in Kubernetes. This will shorten the development time of services that depend on services inside Kubernetes. E.g. simpler access to HDFS.
 Please read about the concept [here](https://code.visualstudio.com/docs/devcontainers/containers) to get a complete overview.
@@ -41,7 +39,7 @@ Once all operator pods have the "Running" status, you can then proceed to create
 
 **Hint**: Follow the Stackable guide.
 
-**Note**: For a highly available HDFS setup you will need a ZooKeeper cluster with atleast 3 nodes to maintain quorum, and a HDFS cluster made up of atleast 2 JournalNodes, 2 NameNodes, 2 DataNodes and a replica factor of 2. This might be excessive for a laptop so the exercises will assume a minimal setup. **TODO: IT would be nice to provide a refrence to to book here!**
+**Note**: For a highly available HDFS setup you will need a ZooKeeper cluster with atleast 3 nodes to maintain quorum, and a HDFS cluster made up of atleast 2 JournalNodes, 2 NameNodes, 2 DataNodes and a replica factor of 2. This might be excessive for a laptop so the exercises will assume a minimal setup.
 
 **Note**: A minimal HDFS cluster should also work with only 1 name node but for some reason it does not with with the Stackable operator.
 
@@ -71,7 +69,7 @@ To use the HDFS cluster we need to tell the HDFS CLI to use the HDFS cluster we 
 **Note**: Make sure you connect to the active name node. Only one name node is active, the other ones are in "standby" mode and will only be promoted in case of a failover. You know if it is not the active one if the result of the command is `Operation category READ is not supported in state standby`.
 
 <details>
-  <summary><strong>Hint</strong>: hostname and port</summary>
+  <summary><strong>Hint</strong>: Hostname and port</summary>
 
   The port that the HDFS client uses is 8020.
 
@@ -271,14 +269,17 @@ You have the role of a data engineer and are required to store the samples from 
 
 <details>
   <summary><strong>Hint</strong>: One folder structure</summary>
+
 ```
-/data/raw/<Sensor ID>/<temporal aspect>/<year>/<month>/<day>/<hour>/<filename>.avro
+/data/raw/sensor_id=<Sensor ID>/temporal_aspect=<temporal aspect>/year=<year>/month=<month>/day=<day>/<filename -> correlation_id>.avro
 ```
+
 </details>
 
 
 <details>
   <summary><strong>Hint</strong>: One suggested schema</summary>
+
 ```json
 {
     "payload": {
@@ -294,6 +295,19 @@ You have the role of a data engineer and are required to store the samples from 
 ```
 </details>
 
+
+<details>
+  <summary><strong>Hint</strong>: Code example(s)</summary>
+
+You are able to find code snippets inside [`data-source.ipynb`](./data-source.ipynb) if you need suggestions and directions for building the components of the fictive data sources. 
+It is now up to you to take the components and gue them together in the [`data-source.py`](./data-source.py) file. 
+
+**Discord:** Ask questions on Discord if you are not in class.
+
+**NB:** Use a interactive container for the development.
+
+
+</details>
 
 <details>
   <summary><strong>Hint</strong>: Build your image and publish to Docker Hub</summary>
