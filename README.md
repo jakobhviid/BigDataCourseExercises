@@ -19,21 +19,34 @@ graph
 
 subgraph Kubernetes
     subgraph Storage 
+        pvolume(persistent volume)
     
         subgraph HDFS
-            namenode(NameNode)
+            namenode01(NameNode 01)
+            namenode02(NameNode 02)
             datanode01(DataNode 01)
-            datanode02(DataNode 02)
-            datanode03(DataNode 03)
-            namenode <--> datanode01 & datanode02 & datanode03
+            datanode02(JournalNode 02)
+            namenode01 & namenode02 <--> datanode01 & datanode02
         end
         registry(Kafka registry)
     end
+    subgraph ZooKeeper
+        znode01(Znode 01)
+        znode02(Znode 02)
+        znode03(Znode 03)
 
+        znode01 <--> znode02 
+        znode01 <--> znode03 
+        znode02 <--> znode03
+     end
     subgraph Transportation
         transkafka(Kafka)
         transconnect(Kafka connect)
         transspark(Spark structured streaming)
+    end
+    subgraph Interactive containers
+        ubuntupy(anderslaunerbaek/anbae-big-data-course:latest)
+        apachehadoop(apache/hadoop:3)
     end
     
     subgraph Querying
@@ -53,6 +66,12 @@ subgraph Kubernetes
         uiconcontrol(Confluent control)
         uidatahub(Datahub)
     end
+
+ubuntupy & apachehadoop <--> namenode01
+ubuntupy & apachehadoop <-.-> namenode02
+pvolume <--> ubuntupy
+
+HDFS <--> ZooKeeper
 
 end
 
@@ -82,8 +101,12 @@ The root of this repository will be related to the content of the current semest
     ├── datahub
     │   └── README.md
     ├── hdfs
+    │   ├── ... 
     │   └── README.md
     ├── hive
+    │   └── README.md
+    ├── interactive
+    │   ├── ...
     │   └── README.md
     ├── kafka
     │   └── README.md
