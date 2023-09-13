@@ -39,6 +39,8 @@ Once all operator pods have the "Running" status, you can then proceed to create
 2. Create a ZNode for the HDFS cluster
 3. Create a HDFS cluster with 2 name nodes, 1 journal node, and 1 data node
 
+**Note**: You may set up the HDFS cluster anywhere you like. You could create a namespace called "lecture2" for todays exercises, or you can simply use the "default" namespace.
+
 **Hint**: Follow the Stackable guide.
 
 **Note**: For a highly available HDFS setup you will need a ZooKeeper cluster with atleast 3 nodes to maintain quorum, and a HDFS cluster made up of atleast 2 JournalNodes, 2 NameNodes, 2 DataNodes and a replica factor of 2. This might be excessive for a laptop so the exercises will assume a minimal setup.
