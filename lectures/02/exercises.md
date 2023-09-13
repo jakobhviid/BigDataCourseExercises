@@ -31,7 +31,7 @@ You can verify that the operators are installed by checking if there are 4 pods 
 
 Once all operator pods have the "Running" status, you can then proceed to create the HDFS cluster. You can follow the [Stackable guide to create a HDFS cluster](https://docs.stackable.tech/home/stable/hdfs/getting_started/first_steps). But before you can create the HDFS cluster you will need to create a ZooKeeper cluster. ZooKeeper is a centralized application for storing and syncronizes state and is used by HDFS for [failure detection and automatic failover](https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/HDFSHighAvailabilityWithNFS.html#Automatic_Failover). ZooKeeper has a hierical data model where each node can have children nodes associated with it. Each node is called a ZNode. You can read more about how ZooKeeper stores data [here](https://zookeeper.apache.org/doc/r3.1.2/zookeeperProgrammers.html#ch_zkDataModel).
 
-**Note**: If you are using minikube and have multiple nodes you need to start the cluster using `minikube start --cni=flannel` for the next steps to work properly.
+**Note**: If you are using minikube and have multiple nodes then you need to remove the nodes. An init container for the zookeeper pods will crash and the pods will get the status `Init:CrashLoopBackOff` if they are scheduled to run on a worker node. You may track the issue [here](https://github.com/stackabletech/zookeeper-operator/issues/727).
 
 **Tasks**:
 
