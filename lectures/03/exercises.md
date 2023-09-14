@@ -7,8 +7,8 @@ The exercises for this week's lecture will be about HDFS and file formats. You w
 
 ### Exercise 01 - Composing a Kafka Cluster
 ### Exercise 02 - Interacting with Kafka using Kowl (or confluent control center)
-### Exercise 03 - Optional - Create topics on Kafka using the CLI
-### Exercise 04 - Optional - Consume and produce message on Kafka using the CLI
+### Exercise 03 (optional) - Create topics on Kafka using the CLI
+### Exercise 04 (optional) - Consume and produce message on Kafka using the CLI
 ### Exercise 06 - Produce messages to Kafka using Python
 ### Exercise 07 - Consume messages from Kafka using Python with single and multiple consumers
 - Produce some messages
@@ -22,4 +22,4 @@ The exercises for this week's lecture will be about HDFS and file formats. You w
 
 ### Exercise 09 - Kafka Connect and MongoDB
 
-### Exercise 10 - Optional - Produce messages from a file to Kafka using Flume
+### Exercise 10 (optional)  - Produce messages from a file to Kafka using Flume
