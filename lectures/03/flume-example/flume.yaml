@@ -1,0 +1,35 @@
+version: '3.9'
+
+services:
+  flume:
+    build: .
+    volumes:
+      - ./source:/logs
+    networks:
+      shared_network:
+
+networks:
+  shared_network:
+    external: true
+
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: anbae
+  labels:
+    app: anbae
+spec:
+  volumes:
+    - name: anbae-pv-storage
+      persistentVolumeClaim:
+        claimName: anbae-pv-claim
+  containers:
+    - name: anbae-big-data-course
+      image: anderslaunerbaek/anbae-big-data-course:latest
+      imagePullPolicy: Always
+      command: ["/bin/sleep", "3650d"]
+      volumeMounts:
+        - mountPath: "/root/code"
+          name: anbae-pv-storage
