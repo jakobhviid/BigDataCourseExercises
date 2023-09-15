@@ -141,6 +141,7 @@ spec:
       containers:
         - name: kafka-connect
           image: anderslaunerbaek/cp-server-connect-base:7.3.1
+          imagePullPolicy: "Always"
           volumeMounts:
             - mountPath: "/data/"
               name: kafka-connect-pv-storage
