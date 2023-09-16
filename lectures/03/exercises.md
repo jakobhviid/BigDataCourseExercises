@@ -1,9 +1,13 @@
-# Lecture 03 - 
+# Lecture 03 - Distributed Transport and Streaming
 
 
 ## Exercises
 
-The exercises for this week's lecture will be about HDFS and file formats. You will be creating a HDFS cluster and interacting with it in different ways.
+The exercises for this week's lecture will be about distributed transport and streaming. You will be creating a Kafka cluster and various publishing programs and subscribing programs for streams of records.
+The focus of today's lecture is to interact with Kafka, create Python producer and consumer programs, and configure Kafka connect modules. 
+
+Please open issues [here](https://github.com/jakobhviid/BigDataCourseExercises/issues) if ou encounter unclear information or experience bugs in our examples!
+
 
 ### Exercise 01 - Composing a Kafka Cluster
 
@@ -171,7 +175,9 @@ use ksqlDB to split the messages in `INGESTION` topic into six separate streams 
 
 configure Kafka Connect to write the messages from the `INGESTION` topic into HDFS
 
-### Exercise 10 (optional)  - Produce messages from a file to Kafka using Flume
+### Exercise 10 (optional)  - Produce messages using the registry and a serializer producer
+
+### Exercise 11 (optional)  - Produce messages from a file to Kafka using Flume
 
 1. Check Documentation
     1. Flume user guide: [FlumeUserGuide](https://flume.apache.org/FlumeUserGuide.html)
