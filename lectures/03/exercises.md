@@ -79,7 +79,7 @@ The list below summarises the extra services and briefly demonstrate how to inte
 - Registry (kafka-schema-registry) 
   - `kubectl port-forward svc/kafka-schema-registry  8081:8081 -n kafka`. Make a curl in a terminal [http://127.0.0.1:8081](http://127.0.0.1:8081) and get this output:
     ```
-    curl http://127.0.0.1:8083
+    curl http://127.0.0.1:8081
     {}%                                  
     ```
 - Connect (kafka-connect)
@@ -184,59 +184,228 @@ Open Kowl at [http://127.0.0.1:8080](http://127.0.0.1:8080) in your browser!
 </details>
 
 
-### Exercise 03 (optional) - Create topics on Kafka using the CLI
-### Exercise 04 (optional) - Consume and produce messages on Kafka using the CLI
-### Exercise 06 - Produce messages to Kafka using Python
+
+### Exercise 03 - Produce messages to Kafka using Python
+The objective of this exercise is to create a Python program which procduces records to Kafka. The context of this excerise is identical to [exercise 09](../02/exercises.md#exercise-9---create-six-fictive-data-sources) from the last lecture. However, we would like to rewrite python program to produce sensor samples to Kafka directly instead of writing sensor data directly to HDFS. 
+We will later use a Kafka Connector in [exercise 06](#exercise-06---kafka-connect-and-hdfs) to persist the samples into HDFS directly from the `INGESTION` topic.
 
 
-We will rewrite [exercise 09](../02/exercises.md#exercise-9---create-six-fictive-data-sources) from the last lecture.
-We would like to produce sensor samples to Kafka directly instead of writing sensor data directly to HDFS. Then we would like a Kafka Connector to persist the samples into HDFS directly from the `INGESTION` topic.
+**Task:** Questions prior to creating an `INGESTION` topic for this exercise:
+- How many partitions will you have for the `INGESTION` topic?
+- Which replication factor will you use for the `INGESTION` topic?
+- Which min in-sync replicas will you use for the `INGESTION` topic?
+- What would be an appropriate retention time for the `INGESTION` topic?
+- What would be an appropriate retention size for the `INGESTION` topic?
+
+**Task:** Use Kowl ([exercise 02](#exercise-02---using-kowl-to-interact-with-kafka)) to create the `INGESTION` topic with the chosen properties.
+
+**Task:** Question: 
+- Which property will be possible if you add a key, which defines the sensor id, to each records?
+
+**Task:** Update the program to produce sensor samples directly to Kafka.
+**Hint:** Develop the program using an interactive container running the Kubernetes.
+
+**Task:** Validate the number of records are increasing inside the Kowl UI. 
+
+<details>
+  <summary><strong>Hint</strong>: Three python files.</summary>
+
+  The below mentioned files provide one solution for exercise.
+
+  - [client.py](./hints/client.py)
+  - [data_model.py](./hints/data_model.py)
+  - [simple-producer.py](./hints/simple-producer.py)
+
+  ```
+  cd ./hints/
+  python simple-producer.py
+  ```
+
+  - Open [http://127.0.0.1:8080/topics/INGESTION](http://127.0.0.1:8080/topics/INGESTION#messages) in your browser and look for the number of messages.
+ 
+</details>
 
 
-Questions prior to creating an `INGESTION` topic for this exercise
-- How many partitions will du have?
-- Which replication factor will you use?
-- Which min in-sync replicas will you use?
-- What would be an appropriate retention time?
-- What would be an appropriate retention size?
+
+### Exercise 04 - Consume messages from Kafka using Python with single and multiple consumers
+
+The objective of this exercise is to write a Python consumer and to print the messages from the `INGESTION` topic.
+
+**Requriments:** 
+
+- The program must take accept a consumer group id at runtime, either by setting an environment variable or an input variable.
+
+<details>
+  <summary><strong>Hint</strong>: Simple consumer program.</summary>
+
+  The below mentioned file provide one solution for exercise.
+
+  - [simple-consumer.py](./hints/simple-consumer.py)
+
+  </details>
 
 
-**Task** Create the schema and publish it
-
-WIP -> schema registry
-**Task** Update the program to produce sensor samples to Kafka.
+**Task:** Start the default consumer in the terminal in your interactive container.
 
 
+<details>
+  <summary><strong>Hint</strong>: Default consumer.</summary>
+
+  ```
+  cd ./hints/
+  python simple-consumer.py
+  
+  group_id=DEFAULT_CONSUMER
+  PackageObj(payload=SensorObj(sensor_id=3, modality=421, unit='MW', temporal_aspect='real_time'), correlation_id='906f764e-0f3b-4517-aed7-3b646081f6fb', created_at=1694902173.122458, schema_version=1)
+  ...
+  ...
+  ...
+  ```
+
+  </details>
+  
+**Task:** Start a consumer with given name in another terminal in your interactive container.
+
+
+<details>
+  <summary><strong>Hint</strong>: Given consumer group.</summary>
+
+  ```
+  cd ./hints/
+  python simple-consumer.py <GROUP_ID>
+
+  group_id=<GROUP_ID>
+  PackageObj(payload=SensorObj(sensor_id=3, modality=421, unit='MW', temporal_aspect='real_time'), correlation_id='906f764e-0f3b-4517-aed7-3b646081f6fb', created_at=1694902173.122458, schema_version=1)
+  ...
+  ...
+  ...
+  ```
+ 
+</details>
+
+**Task:** Open [http://127.0.0.1:8080/topics/INGESTION](http://127.0.0.1:8080/topics/INGESTION#consumers). You should now see a table similar to the one below. What does the Lag column mean?
+```
+Group               Lag
+<GROUP_ID>          3182
+DEFAULT_CONSUMER    3186
+```
+
+**Task:** Questions:
+
+- How can we get two consumers to receive identical records?
+- How can we get two consumers to receive unique records?
+- What defines the maximum number of active parallel consumers within one consumer group?
+
+### Exercise 05 - Kafka Ksql
+
+The objective of this exercise is use ksqlDB to split the records in the `INGESTION` topic into six separate streams ` SENSOR_ID_{1, 2, ..., 6}` based on the sensor id in the payload.
+
+
+#### Useful ksqlDB commands
+
+- `SHOW TOPICS;`
+- `SHOW STREAMS;`
+- `PRINT <topic> FROM BEGINNING;`
+- `CREATE STREAM ...`
+
+**Task:** `kubectl exec` into the ksqlDB CLI.
+
+<details>
+  <summary><strong>Hint</strong>:kubectl exec</summary>
+
+  ```
+  kubectl exec --namespace=kafka --stdin --tty kafka-ksqldb-cli-<TODO> -- ksql http://kafka-ksqldb-server:8088
+  ```
+ 
+</details>
+
+
+**Task:** Create a stream over the exsiting `INGESTION` topic with the following name `STREAM_INGESTION`.
+
+
+<details>
+  <summary><strong>Hint</strong>:ksqlDB CREATE STREAM on topic</summary>
+
+  ```sql
+  CREATE STREAM STREAM_INGESTION (
+    payload STRING,
+    correlation_id STRING,
+    created_at DOUBLE,
+    schema_version INTEGER
+) WITH (KAFKA_TOPIC = 'INGESTION', VALUE_FORMAT = 'JSON');
+  ```
+ 
+</details>
+
+**Task:** Create a new stream based on previously created stream `STREAM_INGESTION`. Start by writing a SQL statement which filters the records with the sensor of interest. 
+
+<details>
+  <summary><strong>Hint</strong>: ksqlDB CREATE STREAM from SELECT</summary>
+
+  ```sql
+  CREATE STREAM SENSOR_ID_<sensor_id> AS
+  SELECT
+      *
+  FROM
+      STREAM_INGESTION
+  WHERE
+      EXTRACTJSONFIELD(PAYLOAD, '$.sensor_id') = '<sensor_id>';
+  ```
+ 
+</details>
 
 
 
-### Exercise 07 - Consume messages from Kafka using Python with single and multiple consumers
 
-**Task** Write a consumer and print the messages from the `INGESTION` topic.
+**Task:** Validate your newly created streams and belonging topic in [Kowl](http://127.0.0.1:8080/topics).
 
-Questions:
-- Produce some messages
-- Start another consumer
-- Do both consumers receive the same messages?
-  - why?
-  - why not?
-- How can we get the consumers to receive the same messages?
 
-### Exercise 08 - Kafka Ksql
 
-use ksqlDB to split the messages in `INGESTION` topic into six separate streams `SENSOR-{01, 02, ..., 06}`.
-
-`kubectl exec ` into ksqlDB: `kubectl exec --namespace=kafka --stdin --tty kafka-ksqldb-cli-<TODO>  -- ksql http://kafka-ksqldb-server:8088` make sure you will reach a console similar to this:
-
-### Exercise 09 - Kafka Connect and HDFS
+### Exercise 06 - Kafka Connect and HDFS
 
 [HDFS3 sink](https://docs.confluent.io/kafka-connectors/hdfs3-sink/current/overview.html)
 
 configure Kafka Connect to write the messages from the `INGESTION` topic into HDFS
 
-### Exercise 10 (optional)  - Produce messages using the registry and a serializer producer
 
-### Exercise 11 (optional)  - Produce messages from a file to Kafka using Flume
+```
+
+
+```
+
+kubectl run hdfs-cli -i --tty --image apache/hadoop:3 -- bash
+
+
+hdfs dfs -fs hdfs://simple-hdfs-namenode-default-0.simple-hdfs-namenode-default:8020 -ls /
+
+hdfs dfs -fs hdfs://simple-hdfs-namenode-default-0:8020 -ls /
+
+
+```json
+{
+    "name": "hdfs3-parquet-field",
+    "config": {
+        "connector.class": "io.confluent.connect.hdfs3.Hdfs3SinkConnector",
+        "tasks.max": "1",
+        "topics": "parquet_field_hdfs",
+        "hdfs.url": "hdfs://localhost:9000",
+        "flush.size": "3",
+        "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+        "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+        // "value.converter": "io.confluent.connect.avro.AvroConverter",
+        "value.converter.schema.registry.url":"http://localhost:8081",
+        "confluent.topic.bootstrap.servers": "localhost:9092",
+        "confluent.topic.replication.factor": "1",
+        "format.class":"io.confluent.connect.hdfs3.parquet.ParquetFormat",
+        "partitioner.class":"io.confluent.connect.storage.partitioner.FieldPartitioner",
+        "partition.field.name":"is_customer"
+    }
+}
+```
+
+
+
+### Exercise 07 (optional)  - Produce messages from a file to Kafka using Flume
 
 1. Check Documentation
     1. Flume user guide: [FlumeUserGuide](https://flume.apache.org/FlumeUserGuide.html)

@@ -7,11 +7,12 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: strimzi-cluster-operator
-    namespace: myproject
+    namespace: kafka
 roleRef:
   kind: ClusterRole
   name: strimzi-cluster-operator-leader-election
   apiGroup: rbac.authorization.k8s.io
+
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -22,11 +23,12 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: strimzi-cluster-operator
-    namespace: myproject
+    namespace: kafka
 roleRef:
   kind: ClusterRole
   name: strimzi-cluster-operator-namespaced
   apiGroup: rbac.authorization.k8s.io
+
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -39,11 +41,12 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: strimzi-cluster-operator
-    namespace: myproject
+    namespace: kafka
 roleRef:
   kind: ClusterRole
   name: strimzi-entity-operator
   apiGroup: rbac.authorization.k8s.io
+
 ---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
@@ -3679,7 +3682,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: strimzi-cluster-operator
-    namespace: myproject
+    namespace: kafka
 roleRef:
   kind: ClusterRole
   name: strimzi-cluster-operator-global
@@ -5758,7 +5761,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: strimzi-cluster-operator
-    namespace: myproject
+    namespace: kafka
 roleRef:
   kind: ClusterRole
   name: strimzi-cluster-operator-watched
@@ -14374,7 +14377,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: strimzi-cluster-operator
-    namespace: myproject
+    namespace: kafka
 roleRef:
   kind: ClusterRole
   name: strimzi-kafka-broker
@@ -15711,7 +15714,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: strimzi-cluster-operator
-    namespace: myproject
+    namespace: kafka
 roleRef:
   kind: ClusterRole
   name: strimzi-kafka-client
