@@ -45,3 +45,22 @@ spec:
       volumeMounts:
         - mountPath: "/root/code"
           name: anbae-pv-storage
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hdfs-cli
+  labels:
+    app: hdfs-cli
+spec:
+  containers:
+    - name: hdfs-cli
+      image: apache/hadoop:3
+      imagePullPolicy: Always
+      command: ["/bin/sleep", "3650d"]
+      volumeMounts:
+        - mountPath: "/opt/hadoop/code"
+          name: anbae-pv-storage
+      env:
+        - name: HADOOP_USER_NAME
+          value: "stackable"
