@@ -373,35 +373,34 @@ configure Kafka Connect to write the messages from the `INGESTION` topic into HD
 
 ```
 
+
+```bash
+curl -X POST \
+http://kafka-connect.kafka:8083/connectors \
+-H 'Content-Type: application/json' \
+-d '{
+"name": "hdfs-sink",
+"config": {
+"connector.class": "io.confluent.connect.hdfs.HdfsSinkConnector",
+    "tasks.max": "5",
+    "topics": "INGESTION",
+    "hdfs.url": "hdfs://simple-hdfs-namenode-default-0.default:8020",
+    "flush.size": "3",
+    "key.converter.schema.registry.url": "http://kafka-schema-registry.kafka:8081", 
+    "value.converter.schema.registry.url": "http://kafka-schema-registry.kafka:8081", 
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable":"false",
+    "format.class": "io.confluent.connect.hdfs.json.JsonFormat",
+    "value.converter.schemas.enable":"false"
+}
+}'
+```
+
+
 kubectl run hdfs-cli -i --tty --image apache/hadoop:3 -- bash
 
-
-hdfs dfs -fs hdfs://simple-hdfs-namenode-default-0.simple-hdfs-namenode-default:8020 -ls /
-
-hdfs dfs -fs hdfs://simple-hdfs-namenode-default-0:8020 -ls /
-
-
-```json
-{
-    "name": "hdfs3-parquet-field",
-    "config": {
-        "connector.class": "io.confluent.connect.hdfs3.Hdfs3SinkConnector",
-        "tasks.max": "1",
-        "topics": "parquet_field_hdfs",
-        "hdfs.url": "hdfs://localhost:9000",
-        "flush.size": "3",
-        "key.converter": "org.apache.kafka.connect.storage.StringConverter",
-        "value.converter": "org.apache.kafka.connect.json.JsonConverter",
-        // "value.converter": "io.confluent.connect.avro.AvroConverter",
-        "value.converter.schema.registry.url":"http://localhost:8081",
-        "confluent.topic.bootstrap.servers": "localhost:9092",
-        "confluent.topic.replication.factor": "1",
-        "format.class":"io.confluent.connect.hdfs3.parquet.ParquetFormat",
-        "partitioner.class":"io.confluent.connect.storage.partitioner.FieldPartitioner",
-        "partition.field.name":"is_customer"
-    }
-}
-```
+hdfs dfs -fs hdfs://simple-hdfs-namenode-default-0:8020 -ls /topics/INGESTION/*
 
 
 
