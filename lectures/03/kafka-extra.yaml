@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
         - name: kowl
-          image: quay.io/cloudhut/kowl:master
+          image: redpandadata/console:latest
           env:
             - name: KAFKA_BROKERS
               value: "strimzi-kafka-bootstrap:9092"
@@ -134,18 +134,26 @@ spec:
       labels:
         app: kafka-connect
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
       volumes:
         - name: kafka-connect-pv-storage
           persistentVolumeClaim:
             claimName: kafka-connect-pv-claim
       containers:
         - name: kafka-connect
-          image: anderslaunerbaek/cp-server-connect-base:7.3.1
+          image: anderslaunerbaek/cp-server-connect-base:lec03hdfs2
           imagePullPolicy: "Always"
+          securityContext:
+            allowPrivilegeEscalation: false
           volumeMounts:
             - mountPath: "/data/"
               name: kafka-connect-pv-storage
           env:
+            - name: HADOOP_USER_NAME
+              value: "stackable"
             - name: CONNECT_BOOTSTRAP_SERVERS
               value: "strimzi-kafka-bootstrap:9092"
             - name: CONNECT_REST_PORT
