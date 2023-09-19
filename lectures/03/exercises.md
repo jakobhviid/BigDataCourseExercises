@@ -187,45 +187,48 @@ Open Redpanda at [http://127.0.0.1:8080](http://127.0.0.1:8080) in your browser!
 
 
 ### Exercise 03 - Produce messages to Kafka using Python
-The objective of this exercise is to create a Python program which procduces records to Kafka. The context of this excerise is identical to [exercise 09](../02/exercises.md#exercise-9---create-six-fictive-data-sources) from the last lecture. However, we would like to rewrite python program to produce sensor samples to Kafka directly instead of writing sensor data directly to HDFS. 
-We will later use a Kafka Connector in [exercise 06](#exercise-06---kafka-connect-and-hdfs) to persist the samples into HDFS directly from the `INGESTION` topic.
 
+The objective of this exercise is to create a program which publishes messages to a Kafka topic. The exercise builds on top of [exercise 9 from lecture 2](../02/exercises.md#exercise-9---create-six-fictive-data-sources), but instead of saving the data to HDFS we will publish it to a Kafka topic and use a Kafka Connector to save the samples to HDFS. This exercise focuses on creating the topic and creating the producer. If you have not solved the exercise from last week then you can use the files provided [here](./hints/).
 
-**Task:** Questions prior to creating an `INGESTION` topic for this exercise:
+**Tasks:** Think about what settings you want for the `INGESTION` topic:
+
 - How many partitions will you have for the `INGESTION` topic?
 - Which replication factor will you use for the `INGESTION` topic?
 - Which min in-sync replicas will you use for the `INGESTION` topic?
 - What would be an appropriate retention time for the `INGESTION` topic?
 - What would be an appropriate retention size for the `INGESTION` topic?
 
-**Task:** Use Redpanda (ref. [exercise 02](#exercise-02---using-redpanda-to-interact-with-kafka)) to create the `INGESTION` topic with your chosen properties.
+**Task:** Create the `INGESTION` topic with your chosen properties.
+
+**Hint:** Use Redpanda (ref. [exercise 02](#exercise-02---using-redpanda-to-interact-with-kafka)).
 
 **Task:** Question: Which property will be possible if you add a key, which defines the sensor id, to each records?
 
-**Task:** Update the program to produce sensor samples directly to Kafka.
-**Hint:** Develop the program using an interactive container running the Kubernetes.
+**Task:** Update your program from [lecture 2 exercise 9](../02/exercises.md#exercise-9---create-six-fictive-data-sources) to produce sensor samples directly to Kafka.
 
-**Task:** Validate the number of records in the `INGESTION` topic are increasing inside the [Redpanda UI](http://127.0.0.1:8080/topics/INGESTION?p=-1&s=50&o=-1#messages). 
+**Hint:** If you did not create a program then use the scripts [here](./hints/).
+
+**Hint:** Create an Ubuntu container and attach to it using [vscode](../02/exercises.md#attach-visual-studio-code-to-an-interactive-container-in-kubernetes).
+
+Now that you have created the program it is time to run it.
+
+**Task:** Run the program
+
+To verify that the program is producing messages and publishing it to the `INGESTIOn` topic, then open [redpanda](http://127.0.0.1:8080/topics/INGESTION?p=-1&s=50&o=-1#messages).
 
 <details>
-  <summary><strong>Hint</strong>: Three python files.</summary>
+  <summary><strong>Hint</strong>: Python producer</summary>
 
-  The below mentioned files provide one solution for this exercise.
+  1. Install Python inside the interactive container using `sudo apt update && sudo apt install python -y`
+  2. Copy the provided solution to the interactive container
+     - [client.py](./hints/client.py)
+     - [data_model.py](./hints/data_model.py)
+     - [simple-producer.py](./hints/simple-producer.py)
+  3. Run the program using `python simple-producer.py`
 
-  - [client.py](./hints/client.py)
-  - [data_model.py](./hints/data_model.py)
-  - [simple-producer.py](./hints/simple-producer.py)
-
-  ```
-  cd ./hints/
-  python simple-producer.py
-  ```
-
-  - Open [http://127.0.0.1:8080/topics/INGESTION](http://127.0.0.1:8080/topics/INGESTION#messages) in your browser and look for the number of messages.
+  Open [http://127.0.0.1:8080/topics/INGESTION](http://127.0.0.1:8080/topics/INGESTION#messages) in your browser and look for the number of messages.
  
 </details>
-
-
 
 ### Exercise 04 - Consume messages from Kafka using Python with single and multiple consumers
 
