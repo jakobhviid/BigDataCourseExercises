@@ -311,13 +311,15 @@ The objective of this exercise is use ksqlDB to split the records in the `INGEST
 - `SHOW STREAMS;`
 - `CREATE STREAM ...`
 
-**Task:** `kubectl exec` into the ksqlDB CLI container.
+**Task:** Get interactive shell with ksqlDB.
 
 <details>
-  <summary><strong>Hint</strong>:kubectl exec</summary>
+  <summary><strong>Hint</strong>: kubectl exec</summary>
+
+  This was already explained [here](#extra-services), but see the command below:
 
   ```
-  kubectl exec --namespace=kafka --stdin --tty kafka-ksqldb-cli-<TODO> -- ksql http://kafka-ksqldb-server:8088
+  kubectl exec --namespace=kafka --stdin --tty deployment/kafka-ksqldb-cli -- ksql http://kafka-ksqldb-server:8088
   ```
  
 </details>
