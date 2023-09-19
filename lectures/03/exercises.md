@@ -74,7 +74,16 @@ Now that the Strimzi operator is installed and running you can now create the Ka
 
 #### Extra services
 
-You need extra services to interact with Kafka. All of these services are included in the [kafka-extra.yaml](kafka-extra.yaml) file. 
+You need extra services to interact with Kafka. All of these services are included in the [kafka-extra.yaml](kafka-extra.yaml) file.
+
+**Task:** Apply the [Kafka-extra manifest](kafka-extra.yaml.yaml) to the `kafka` namespace.
+<details>
+  <summary><strong>Hint</strong>: Apply Kafka extra services manifest</summary>
+
+  ```
+  kubectl apply -n kafka -f kafka-extra.yaml
+  ```
+</details>
 
 The list below summarises the extra services and briefly demonstrate how to interact with them:
 - Redpanda (redpanda)
@@ -117,19 +126,6 @@ The list below summarises the extra services and briefly demonstrate how to inte
 
     ksql> 
     ```
-
-
-
-**Task:** Apply the [Kafka-extra manifest](kafka-extra.yaml.yaml) to the `kafka` namespace.
-<details>
-  <summary><strong>Hint</strong>: Apply Kafka extra services manifest</summary>
-
-  ```
-  kubectl apply -n kafka -f kafka-extra.yaml
-  ```
-</details>
-
-
 
 #### Validate in deployment of Kafka using a simple producer and consumer
 
