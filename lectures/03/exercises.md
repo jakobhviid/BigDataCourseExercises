@@ -57,6 +57,7 @@ We have chosen to fetch the manifest files to remove an external dependencies. T
 
 #### Deploy the Kafka cluster using Strimzi
 
+Now that the Strimzi operator is installed and running you can now create the Kafka cluster.
 
 **Task:** Apply the [Kafka manifest](kafka.yaml) to the `kafka` namespace.
 <details>
