@@ -129,8 +129,16 @@ The list below summarises the extra services and briefly demonstrate how to inte
 
 #### Validate in deployment of Kafka using a simple producer and consumer
 
+
+**Tasks:** Producing and consuming topic messages
+
 1. Run this command in a terminal: `kubectl -n kafka run kafka-producer -it --rm --image=quay.io/strimzi/kafka:0.37.0-kafka-3.5.1 -- bin/kafka-console-producer.sh --bootstrap-server strimzi-kafka-bootstrap:9092 --topic test`
 2. Run this command in another terminal: `kubectl -n kafka run kafka-consumer-1 -it --rm --image=quay.io/strimzi/kafka:0.37.0-kafka-3.5.1 -- bin/kafka-console-consumer.sh --bootstrap-server strimzi-kafka-bootstrap:9092 --topic test`
+3. Try typing text in the first terminal and hit enter
+4. Look at the second terminal. What happened?
+
+**Task:** Delete the two pods you just created (`kafka-producer` and `kafka-consumer`).
+
 <details>
   <summary><strong>Hint</strong>: Delete the pods</summary>
 
