@@ -414,12 +414,3 @@ The module of interest is the [HDFS 2 Sink Connector](https://docs.confluent.io/
 
 - Use Redpanda UI to find the total lag (difference between log ned offset and group offset) of the consumer group `connect-hdfs-sink` [here](http://127.0.0.1:8080/groups/connect-hdfs-sink).
   - How does HDFS 2 Sink Connector keep up with the six fictive data sources?
-
-
-### Exercise 07 (optional)  - Produce messages from a file to Kafka using Flume
-
-1. Check Documentation
-    1. Flume user guide: [FlumeUserGuide](https://flume.apache.org/FlumeUserGuide.html)
-    1. Examples of a flume configuration including a docker image can be found in [flume](./flume/)
-    1. In the Dockerfile, there might be some changes required based on the chip architecture of your computer
-    1. Try to publish Alice-in-wonderland.txt to kafka using flume.
