@@ -2,31 +2,31 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: kowl
+  name: redpanda
 spec:
   type: NodePort
   ports:
     - port: 8080
       targetPort: 8080
   selector:
-    app: kowl
+    app: redpanda
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kowl
+  name: redpanda
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: kowl
+      app: redpanda
   template:
     metadata:
       labels:
-        app: kowl
+        app: redpanda
     spec:
       containers:
-        - name: kowl
+        - name: redpanda
           image: redpandadata/console:latest
           env:
             - name: KAFKA_BROKERS
