@@ -129,21 +129,16 @@ The list below summarises the extra services and briefly demonstrate how to inte
 
 #### Validate in deployment of Kafka using a simple producer and consumer
 
-**Task:** Open two different terminal windows.
-
-**Task:** Run this cmd in the first terminal: `kubectl -n kafka run kafka-producer -ti --image=quay.io/strimzi/kafka:0.37.0-kafka-3.5.1 --rm=true --restart=Never -- bin/kafka-console-producer.sh --bootstrap-server strimzi-kafka-bootstrap:9092 --topic test`
-
-**Task:** Run this cmd in the second terminal: `kubectl -n kafka run kafka-consumer -ti --image=quay.io/strimzi/kafka:0.37.0-kafka-3.5.1 --rm=true --restart=Never -- bin/kafka-console-consumer.sh --bootstrap-server strimzi-kafka-bootstrap:9092 --topic test --from-beginning`
-
-**Task:** Explain what you see.
-
-**Task:** Clean up. Exit each of the terminal windows and delete the two pods; `kafka-producer` and `kafka-consumer`.
+1. Run this command in a terminal: `kubectl -n kafka run kafka-producer -it --rm --image=quay.io/strimzi/kafka:0.37.0-kafka-3.5.1 -- bin/kafka-console-producer.sh --bootstrap-server strimzi-kafka-bootstrap:9092 --topic test`
+2. Run this command in another terminal: `kubectl -n kafka run kafka-consumer-1 -it --rm --image=quay.io/strimzi/kafka:0.37.0-kafka-3.5.1 -- bin/kafka-console-consumer.sh --bootstrap-server strimzi-kafka-bootstrap:9092 --topic test`
 <details>
-  <summary><strong>Hint</strong>: Delete the two pods used for validating the deployment.</summary>
+  <summary><strong>Hint</strong>: Delete the pods</summary>
+
+  CTRL + C should exit the terminal and delete the pods. If not then just use the commands below.
 
   ```
-  kubectl delete pod/kafka-producer -n kafka
-  kubectl delete pod/kafka-consumer -n kafka 
+  kubectl delete -n kafka pod/kafka-producer
+  kubectl delete -n kafka pod/kafka-consumer
   ```
 </details>
 
