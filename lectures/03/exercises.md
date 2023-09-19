@@ -403,12 +403,12 @@ The module of interest is the [HDFS 2 Sink Connector](https://docs.confluent.io/
 
 
 **Task:** Validate the HDFS 2 Sink Connector is working as expected.
-- Make sure the following folders in HDFS have been created: `topics` and `logs`.
+- Make sure the following folders in HDFS have been created: `/topics` and `/logs`.
   <details>
     <summary><strong>Hint</strong>:Post the configuration using curl</summary>
 
     - Open and interactive terminal like `kubectl run hdfs-cli -i --tty --image apache/hadoop:3 -- bash` and remember to set username `export HADOOP_USER_NAME=stackable`
-    - `hdfs dfs -fs hdfs://simple-hdfs-namenode-default-0:8020 -ls /` -> /topics and /logs
+    - `hdfs dfs -fs hdfs://simple-hdfs-namenode-default-0:8020 -ls /` -> `/topics` and `/logs`
     - `hdfs dfs -fs hdfs://simple-hdfs-namenode-default-0:8020 -ls /topics/` -> /topics/INGESTION
   </details>
 
