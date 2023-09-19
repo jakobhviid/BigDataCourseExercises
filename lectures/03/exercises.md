@@ -234,19 +234,18 @@ To verify that the program is producing messages and publishing it to the `INGES
 
 The objective of this exercise is to write a Python consumer and to print the messages from the `INGESTION` topic.
 
-**Requriments:** 
-
-- The program must take accept a consumer group id at runtime, either by setting an environment variable or an input variable.
+A requirement for the program is that it must take a consumer group id as an argument. It can either be an environment variable, a config file, or an argument to the program when you run it.
 
 <details>
   <summary><strong>Hint</strong>: Simple consumer program.</summary>
 
-  The below mentioned file provide one solution for exercise.
+  The below mentioned files provide one solution for exercise.
 
+  - [client.py](./hints/client.py)
+  - [data_model.py](./hints/data_model.py) (not used but is still required because it is imported by `client.py`)
   - [simple-consumer.py](./hints/simple-consumer.py)
 
   </details>
-
 
 **Task:** Start the default consumer in the terminal in your interactive container.
 
@@ -254,10 +253,11 @@ The objective of this exercise is to write a Python consumer and to print the me
 <details>
   <summary><strong>Hint</strong>: Default consumer.</summary>
 
-  ```
-  cd ./hints/
-  python simple-consumer.py
+  Run the program using `python simple-consumer.py`
+
+  The following should be printed to the console:
   
+  ```
   group_id=DEFAULT_CONSUMER
   PackageObj(payload=SensorObj(sensor_id=3, modality=421, unit='MW', temporal_aspect='real_time'), correlation_id='906f764e-0f3b-4517-aed7-3b646081f6fb', created_at=1694902173.122458, schema_version=1)
   ...
@@ -267,16 +267,16 @@ The objective of this exercise is to write a Python consumer and to print the me
 
   </details>
   
-**Task:** Start a consumer with given name in another terminal in your interactive container.
-
+**Task:** Start another consumer but with a different group id in your interactive container.
 
 <details>
-  <summary><strong>Hint</strong>: Given consumer group.</summary>
+  <summary><strong>Hint</strong>: Another consumer</summary>
+
+  Run the program using `python simple-consumer.py <GROUP_ID>`
+
+  The following should be printed to the console:
 
   ```
-  cd ./hints/
-  python simple-consumer.py <GROUP_ID>
-
   group_id=<GROUP_ID>
   PackageObj(payload=SensorObj(sensor_id=3, modality=421, unit='MW', temporal_aspect='real_time'), correlation_id='906f764e-0f3b-4517-aed7-3b646081f6fb', created_at=1694902173.122458, schema_version=1)
   ...
