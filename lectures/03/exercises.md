@@ -137,6 +137,15 @@ The list below summarises the extra services and briefly demonstrate how to inte
 3. Try typing text in the first terminal and hit enter
 4. Look at the second terminal. What happened?
 
+**Tasks:** Producing messages with Redpanda
+
+1. Open Redpanda
+2. Go to "Topics", then click on the "test" topic
+3. Click on "Messages" to see a list of all messages
+4. Click on "Actions" and then "Publish message"
+5. Select "value" and then write a message in the text field (make sure the type is "text")
+6. Publish the message. What happened?
+
 **Task:** Delete the two pods you just created (`kafka-producer` and `kafka-consumer`).
 
 <details>
