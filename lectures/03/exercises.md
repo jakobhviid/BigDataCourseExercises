@@ -24,7 +24,6 @@ For the remaining steps of this exercise copy and paste into the terminal and fo
 
 We have chosen to fetch the manifest files to remove an external dependencies. Therefore we recommend you familiarize yourself with the three mentioned files: 
 
-- [strimzi-cluster-operator.yaml](./strimzi-cluster-operator.yaml)
 - [kafka.yaml](./kafka.yaml)
 - [kafka-extra.yaml](kafka-extra.yaml)
 
@@ -41,12 +40,15 @@ We have chosen to fetch the manifest files to remove an external dependencies. T
   ```
 </details>
 
-**Task:** Apply the [Strimzi operator](strimzi-cluster-operator.yaml) the the `kafka` namespace.
+**Task:** Install the [Strimzi operator](https://artifacthub.io/packages/helm/strimzi/strimzi-kafka-operator) in the `kafka` namespace.
+
+**Note:** The Strimzi operator should be installed with the value `watchAnyNamespace=true`. If not, then you can only create Kafka clusters inside the same namespace that you install the operator inside.
+
 <details>
-  <summary><strong>Hint</strong>: Apply Strimzi operator</summary>
+  <summary><strong>Hint</strong>: Install Strimzi operator</summary>
 
   ```
-  kubectl apply -n kafka -f strimzi-cluster-operator.yaml
+  helm install -n kafka strimzi-cluster-operator oci://quay.io/strimzi-helm/strimzi-kafka-operator --set watchAnyNamespace=true
   ```
 </details>
 
