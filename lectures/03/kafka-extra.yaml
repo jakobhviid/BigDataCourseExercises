@@ -94,26 +94,10 @@ spec:
     app: kafka-connect
 ---
 apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: kafka-connect-pv-volume
-  labels:
-    type: local
-spec:
-  storageClassName: manual
-  capacity:
-    storage: 5Gi
-  accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: "/mnt/data"
----
-apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: kafka-connect-pv-claim
 spec:
-  storageClassName: manual
   accessModes:
     - ReadWriteOnce
   resources:
