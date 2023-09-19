@@ -92,8 +92,7 @@ The list below summarises the extra services and briefly demonstrate how to inte
     ```
 - KsqlDB (kafka-ksqldb-server)
 - KsqlDB CLI (kafka-ksqldb-cli)
-  - `kubectl exec --namespace=kafka --stdin --tty kafka-ksqldb-cli-<TODO>  -- ksql http://kafka-ksqldb-server:8088` make sure you will reach a console similar to this:
-  **NB:** update the name `(kafka-ksqldb-cli-<TODO>)` of the container!
+  - `kubectl exec --namespace=kafka --stdin --tty deployment/kafka-ksqldb-cli -- ksql http://kafka-ksqldb-server:8088` make sure you will reach a console similar to this:
 
     ```
                       
