@@ -3,7 +3,7 @@
 
 ## Exercises
 
-The exercises for this week's lecture will be about distributed transport and streaming. You will be creating a Kafka cluster and various publishing programs and subscribing programs for streams of records.
+The exercises for this week's lecture will be about distributed transport and streaming. You will be creating a Kafka cluster and various publishing programs and subscribing programs to stream records.
 The focus of today's lecture is to interact with Kafka, create Python producer and consumer programs, and configure Kafka connect modules. 
 
 Please open issues [here](https://github.com/jakobhviid/BigDataCourseExercises/issues) if you encounter unclear information or experience bugs in our examples!
@@ -15,14 +15,14 @@ The objective of this exercise is to deploy a Kafka cluster. We will be using op
 
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/1qO2qGuJNQI/0.jpg)](https://www.youtube.com/watch?v=1qO2qGuJNQI)
 
-For the remaining steps of this exercise copy and paste into the terminal and for those of you who need further descriptions continue reading here: [strimzi.io/quickstarts](https://strimzi.io/quickstarts/).
+For the remaining steps of this exercise is to copy and paste commands into the terminal and for those of you who need further descriptions continue to read here: [strimzi.io/quickstarts](https://strimzi.io/quickstarts/).
 
 **NB:** Make sure you have the Kubernetes cluster running locally and start reading from the section "Deploy Strimzi using installation files" in the above-mentioned [link](https://strimzi.io/quickstarts/).
 
 
 #### Essential files
 
-We have chosen to fetch the manifest files to remove an external dependencies. Therefore we recommend you familiarize yourself with the three mentioned files: 
+We have chosen to fetch the manifest files to remove an external dependencies. Therefore we recommend you familiarize yourself with the two mentioned files: 
 
 - [kafka.yaml](./kafka.yaml)
 - [kafka-extra.yaml](kafka-extra.yaml)
@@ -188,7 +188,8 @@ Open Redpanda at [http://127.0.0.1:8080](http://127.0.0.1:8080) in your browser!
 
 ### Exercise 03 - Produce messages to Kafka using Python
 
-The objective of this exercise is to create a program which publishes messages to a Kafka topic. The exercise builds on top of [exercise 9 from lecture 2](../02/exercises.md#exercise-9---create-six-fictive-data-sources), but instead of saving the data to HDFS we will publish it to a Kafka topic and use a Kafka Connector to save the samples to HDFS. This exercise focuses on creating the topic and creating the producer. If you have not solved the exercise from last week then you can use the files provided [here](./hints/).
+The objective of this exercise is to create a program which publishes messages to a Kafka topic. The exercise builds on top of [exercise 9 from lecture 2](../02/exercises.md#exercise-9---create-six-fictive-data-sources), but instead of saving the data to HDFS we will publish it to a Kafka topic and use a Kafka Connector to save the samples to HDFS. 
+This exercise focuses on creating the topic and creating the producer. If you have not solved the exercise from last week then you can use the files provided [here](./hints/simple-producer.py).
 
 **Tasks:** Think about what settings you want for the `INGESTION` topic:
 
@@ -214,7 +215,7 @@ Now that you have created the program it is time to run it.
 
 **Task:** Run the program
 
-To verify that the program is producing messages and publishing it to the `INGESTIOn` topic, then open [redpanda](http://127.0.0.1:8080/topics/INGESTION?p=-1&s=50&o=-1#messages).
+To verify that the program is producing messages to the `INGESTION` topic. Open [redpanda](http://127.0.0.1:8080/topics/INGESTION?p=-1&s=50&o=-1#messages).
 
 <details>
   <summary><strong>Hint</strong>: Python producer</summary>
@@ -234,7 +235,7 @@ To verify that the program is producing messages and publishing it to the `INGES
 
 The objective of this exercise is to write a Python consumer and to print the messages from the `INGESTION` topic.
 
-A requirement for the program is that it must take a consumer group id as an argument. It can either be an environment variable, a config file, or an argument to the program when you run it.
+A requirement for the program is that it must take a consumer `group_id` as an argument. It can either be an environment variable, a config file, or an argument to the program when you run it.
 
 <details>
   <summary><strong>Hint</strong>: Simple consumer program.</summary>
@@ -362,54 +363,55 @@ The objective of this exercise is use ksqlDB to split the records in the `INGEST
 
 
 
-**Task:** Validate your newly created streams using ksql in the CLI and see their belonging topic in [Redpanda](http://127.0.0.1:8080/topics).
+**Task:** Validate your newly created streams using ksql commands in the CLI and see their belonging topic in [Redpanda UI](http://127.0.0.1:8080/topics).
 
 
 
 ### Exercise 06 - Kafka Connect and HDFS
 The objective of this exercise is apply and configure a Kafka Connect module to write the records from the `INGESTION` topic into HDFS as mentioned in [exercise 03](#exercise-03---produce-messages-to-kafka-using-python).
 
-The module of interest is the [HDFS 2 Sink Connector](https://docs.confluent.io/kafka-connectors/hdfs/current/overview.html) created by a company called Confluent. The module will be accessible through the ready-running kafka-connect service. The creation of the underlying image of our kafka-connect service can be further explored here: [kafka-connect - README.md](../../services/kafka-connect/README.md). 
+The module of interest is the [HDFS 2 Sink Connector](https://docs.confluent.io/kafka-connectors/hdfs/current/overview.html) created by a company called Confluent. The module will be accessible through the ready-running `kafka-connect` service. The creation of the underlying image of our `kafka-connect` service can be further explored here: [kafka-connect - README.md](../../services/kafka-connect/README.md). 
 ***NB:*** This connector module will work with our installation of HDFS despite the various version numbers. This module is under the [Confluent Community License v1.0](https://www.confluent.io/confluent-community-license/) which enables free use.
 
 
 **Task:** Setup HDFS 2 Sink Connector in our kafka-connect service.
-***NB:*** Redpanda UI does not include all the necessary properties for the configuration of the HDFS 2 Sink Connector. Therefore you need to investigate how to interact with the [Connect REST Interface](https://docs.confluent.io/platform/current/connect/references/restapi.html) post the configuration using `curl` inside an interactive container in Kubernetes or enable port-forwarding.
+***NB:*** Redpanda UI does not include all the necessary properties for the configuration of the HDFS 2 Sink Connector. Therefore you need to investigate how to interact with the [Connect REST Interface](https://docs.confluent.io/platform/current/connect/references/restapi.html). Then you need to post the configuration using `curl` in a terminal with port-forwarding enabled or using an interactive container in Kubernetes.
 
-<details>
-  <summary><strong>Hint</strong>:Post the configuration using curl</summary>
+  <details>
+    <summary><strong>Hint</strong>:Post the configuration using curl</summary>
 
-  This example will be using port-forwarding. Therefore ensure `kubectl port-forward svc/kafka-connect 8083:8083 -n kafka` has been enabled.
+    This example will be using port-forwarding. Therefore ensure `kubectl port-forward svc/kafka-connect 8083:8083 -n kafka` has been enabled.
 
-  Look into the configuration in the chunk below and the command in your terminal:
+    Look into the configuration in the chunk below and the command in your terminal:
 
-  ```sh
-  curl -X POST \
-  http://127.0.0.1:8083/connectors \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "name": "hdfs-sink",
-  "config": {
-  "connector.class": "io.confluent.connect.hdfs.HdfsSinkConnector",
-      "tasks.max": "5",
-      "topics": "INGESTION",
-      "hdfs.url": "hdfs://simple-hdfs-namenode-default-0.default:8020",
-      "flush.size": "3",
-      "format.class": "io.confluent.connect.hdfs.json.JsonFormat",
-      "key.converter.schemas.enable":"false",
-      "key.converter": "org.apache.kafka.connect.storage.StringConverter",
-      "key.converter.schema.registry.url": "http://kafka-schema-registry.kafka:8081", 
-      "value.converter.schemas.enable":"false"
-      "value.converter.schema.registry.url": "http://kafka-schema-registry.kafka:8081", 
-      "value.converter": "org.apache.kafka.connect.json.JsonConverter",
-  }
-  }'
-  ```
-</details>
+    ```sh
+    curl -X POST \
+    http://127.0.0.1:8083/connectors \
+    -H 'Content-Type: application/json' \
+    -d '{
+    "name": "hdfs-sink",
+    "config": {
+    "connector.class": "io.confluent.connect.hdfs.HdfsSinkConnector",
+        "tasks.max": "5",
+        "topics": "INGESTION",
+        "hdfs.url": "hdfs://simple-hdfs-namenode-default-0.default:8020",
+        "flush.size": "3",
+        "format.class": "io.confluent.connect.hdfs.json.JsonFormat",
+        "key.converter.schemas.enable":"false",
+        "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+        "key.converter.schema.registry.url": "http://kafka-schema-registry.kafka:8081", 
+        "value.converter.schemas.enable":"false"
+        "value.converter.schema.registry.url": "http://kafka-schema-registry.kafka:8081", 
+        "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    }
+    }'
+    ```
+  </details>
 
 
 **Task:** Validate the HDFS 2 Sink Connector is working as expected.
 - Make sure the following folders in HDFS have been created: `/topics` and `/logs`.
+
   <details>
     <summary><strong>Hint</strong>:Post the configuration using curl</summary>
 
