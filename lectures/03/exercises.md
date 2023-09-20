@@ -15,7 +15,7 @@ The objective of this exercise is to deploy a Kafka cluster. We will be using op
 
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/1qO2qGuJNQI/0.jpg)](https://www.youtube.com/watch?v=1qO2qGuJNQI)
 
-For the remaining steps of this exercise is to copy and paste commands into the terminal and for those of you who need further descriptions continue to read here: [strimzi.io/quickstarts](https://strimzi.io/quickstarts/).
+For the remaining steps of this exercise is to copy and paste commands into the terminal.
 
 
 #### Essential files
