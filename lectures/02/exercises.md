@@ -184,7 +184,7 @@ We now want to try to interact with the HDFS cluster using Python. To do this, t
 
 **Task**: Open the files and understand what they do.
 
-Create an [interactive container](../01/exercises.md#exercise-7---interactive-container) with the `python:3.11` image and [attach Visual Studio Code to it](attach-visual-studio-code-to-an-interactive-container-in-kubernetes).
+Create an [interactive container](../01/exercises.md#exercise-7---interactive-container) with the `python:3.11` image and [attach Visual Studio Code to it](#attach-visual-studio-code-to-an-interactive-container-in-kubernetes).
 
 **Tasks**:
 
