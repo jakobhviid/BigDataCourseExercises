@@ -17,8 +17,6 @@ The objective of this exercise is to deploy a Kafka cluster. We will be using op
 
 For the remaining steps of this exercise is to copy and paste commands into the terminal and for those of you who need further descriptions continue to read here: [strimzi.io/quickstarts](https://strimzi.io/quickstarts/).
 
-**NB:** Make sure you have the Kubernetes cluster running locally and start reading from the section "Deploy Strimzi using installation files" in the above-mentioned [link](https://strimzi.io/quickstarts/).
-
 
 #### Essential files
 
