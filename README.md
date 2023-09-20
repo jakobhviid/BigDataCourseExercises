@@ -41,8 +41,9 @@ subgraph Kubernetes
      end
     subgraph Transportation
         transkafka(Kafka)
-        transconnect(Kafka connect)
+        transconnect(Kafka Connect)
         transspark(Spark structured streaming)
+        transkafka <--> transconnect
     end
     subgraph Interactive containers
         ubuntupy(anderslaunerbaek/anbae-big-data-course:latest)
@@ -63,15 +64,27 @@ subgraph Kubernetes
 
 
     subgraph UI
-        uiconcontrol(Confluent control)
+        uiconcontrol(Redpanda Console)
         uidatahub(Datahub)
+    end
+    subgraph CLI
+        cliksqlDB(ksqlDB CLI)
     end
 
 ubuntupy & apachehadoop <--> namenode01
 ubuntupy & apachehadoop <-.-> namenode02
 pvolume <--> ubuntupy
 
-HDFS <--> ZooKeeper
+HDFS <--> ZooKeeper & transconnect
+transkafka <--> ZooKeeper & registry & processksqldb & queryksqldb
+
+registry <--> processksqldb & transconnect & queryksqldb
+
+uiconcontrol <--> registry & transkafka & transconnect
+
+cliksqlDB <--> processksqldb & queryksqldb
+
+ubuntupy <--> transkafka
 
 end
 
@@ -94,8 +107,8 @@ The root of this repository will be related to the content of the current semest
 │   └── E22
 ├── lectures
 │   └── {01,02,03,...}
-│       ├── exercises.md
-│       └── ...
+│       ├── ...
+│       └── exercises.md
 └── services
     ├── README.md
     ├── datahub
@@ -108,7 +121,8 @@ The root of this repository will be related to the content of the current semest
     ├── interactive
     │   ├── ...
     │   └── README.md
-    ├── kafka
+    ├── kafka-connect
+    │   ├── ...
     │   └── README.md
     └── spark
         └── README.md

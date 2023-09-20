@@ -1,0 +1,239 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redpanda
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: redpanda
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redpanda
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redpanda
+  template:
+    metadata:
+      labels:
+        app: redpanda
+    spec:
+      containers:
+        - name: redpanda
+          image: redpandadata/console:latest
+          env:
+            - name: KAFKA_BROKERS
+              value: "strimzi-kafka-bootstrap:9092"
+            - name: KAFKA_SCHEMAREGISTRY_ENABLED
+              value: "true"
+            - name: KAFKA_SCHEMAREGISTRY_URLS
+              value: "http://kafka-schema-registry:8081"
+            - name: CONNECT_ENABLED
+              value: "true"
+            - name: CONNECT_CLUSTERS_NAME
+              value: "Connectors"
+            - name: CONNECT_CLUSTERS_URL
+              value: "http://kafka-connect:8083"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-schema-registry
+spec:
+  type: NodePort
+  ports:
+    - port: 8081
+      targetPort: 8081
+  selector:
+    app: kafka-schema-registry
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-schema-registry
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-schema-registry
+  template:
+    metadata:
+      labels:
+        app: kafka-schema-registry
+    spec:
+      containers:
+        - name: kafka-schema-registry
+          image: confluentinc/cp-schema-registry:7.3.1
+          env:
+            - name: SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS
+              value: "strimzi-kafka-bootstrap:9092"
+            - name: SCHEMA_REGISTRY_HOST_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: SCHEMA_REGISTRY_LISTENERS
+              value: "http://0.0.0.0:8081"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-connect
+spec:
+  type: NodePort
+  ports:
+    - port: 8083
+      targetPort: 8083
+  selector:
+    app: kafka-connect
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kafka-connect-pv-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-connect
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-connect
+  template:
+    metadata:
+      labels:
+        app: kafka-connect
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+      volumes:
+        - name: kafka-connect-pv-storage
+          persistentVolumeClaim:
+            claimName: kafka-connect-pv-claim
+      containers:
+        - name: kafka-connect
+          image: anderslaunerbaek/cp-server-connect-base:lec03hdfs2
+          imagePullPolicy: "Always"
+          securityContext:
+            allowPrivilegeEscalation: false
+          volumeMounts:
+            - mountPath: "/data/"
+              name: kafka-connect-pv-storage
+          env:
+            - name: HADOOP_USER_NAME
+              value: "stackable"
+            - name: CONNECT_BOOTSTRAP_SERVERS
+              value: "strimzi-kafka-bootstrap:9092"
+            - name: CONNECT_REST_PORT
+              value: "8083"
+            - name: CONNECT_REST_ADVERTISED_HOST_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: CONNECT_GROUP_ID
+              value: "kafka-connect-group-id-01"
+            - name: CONNECT_CONFIG_STORAGE_TOPIC
+              value: "_connect-configs"
+            - name: CONNECT_OFFSET_STORAGE_TOPIC
+              value: "_connect-offsets"
+            - name: CONNECT_STATUS_STORAGE_TOPIC
+              value: "_connect-status"
+            - name: CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR
+              value: "1"
+            - name: CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR
+              value: "1"
+            - name: CONNECT_STATUS_STORAGE_REPLICATION_FACTOR
+              value: "1"
+            - name: CONNECT_PLUGIN_PATH
+              value: "/usr/share/java,/usr/share/confluent-hub-components,/data/connect-jars"
+            - name: CONNECT_KEY_CONVERTER
+              value: "io.confluent.connect.avro.AvroConverter"
+            - name: CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL
+              value: "http://kafka-schema-registry:8081"
+            - name: CONNECT_VALUE_CONVERTER
+              value: "io.confluent.connect.avro.AvroConverter"
+            - name: CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL
+              value: "http://kafka-schema-registry:8081"
+            - name: CONNECT_INTERNAL_KEY_CONVERTER
+              value: "org.apache.kafka.connect.json.JsonConverter"
+            - name: CONNECT_INTERNAL_VALUE_CONVERTER
+              value: "org.apache.kafka.connect.json.JsonConverter"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-ksqldb-server
+spec:
+  type: NodePort
+  ports:
+    - port: 8088
+      targetPort: 8088
+  selector:
+    app: kafka-ksqldb-server
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-ksqldb-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-ksqldb-server
+  template:
+    metadata:
+      labels:
+        app: kafka-ksqldb-server
+    spec:
+      containers:
+        - name: kafka-ksqldb-server
+          image: confluentinc/cp-ksqldb-server:7.3.1
+          env:
+            - name: KSQL_BOOTSTRAP_SERVERS
+              value: "strimzi-kafka-bootstrap:9092"
+            - name: KSQL_KSQL_SCHEMA_REGISTRY_URL
+              value: "http://kafka-schema-registry:8081"
+            - name: KSQL_LISTENERS
+              value: "http://0.0.0.0:8088"
+            - name: KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE
+              value: "true"
+            - name: KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE
+              value: "true"
+            - name: KSQL_KSQL_SERVICE_ID
+              value: "kafka-ksqldb-group-id-01"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-ksqldb-cli
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-ksqldb-cli
+  template:
+    metadata:
+      labels:
+        app: kafka-ksqldb-cli
+    spec:
+      containers:
+        - name: kafka-ksqldb-cli
+          image: confluentinc/cp-ksqldb-cli:7.3.1
+          tty: true
+          stdin: true
