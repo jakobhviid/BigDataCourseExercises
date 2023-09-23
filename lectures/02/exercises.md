@@ -23,6 +23,8 @@ To install the operators needed to set up the HDFS cluster you can follow their 
 
 **Task**: Install the nessesary Stackable operators to set up a HDFS cluster inside the `stackable` namespace. **Hint**: `helm install -n stackable ...`.
 
+**Note**: If you are using MicroK8s then you need to install the secrets-operator using the following option: `--set kubeletDir=/var/snap/microk8s/common/var/lib/kubelet`.
+
 **Note**: You should not modify the resources inside the stackable namespace or create new resources inside of it. The namespace is only used to contain the stackable operators.
 
 You can verify that the operators are installed by checking if there are 4 pods inside the stackable namespace, one for each operator you installed.
