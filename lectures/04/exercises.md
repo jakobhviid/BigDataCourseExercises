@@ -6,6 +6,8 @@ The exercises for this lecture is about Apache Spark. Apache Spark is a distribu
 
 Before you start the exercises there are a few things you need to know to make it easier to work with the virtual machines and the Kubernetes cluster running on them.
 
+Please note that you will be working on the same Kubernetes cluster as the rest of your group. We suggest that you use different namespaces while you work on the tasks, or just solve the exercises together. You should not be installing the Stackable operators multiple times, just install them once in the `stackable` namespace.
+
 ### Connect to virtual machines
 
 Follow this [guide](https://www.youtube.com/watch?v=iKM6P7nRzqI) and verify that you can connect to your virtual machines using ssh. For example, to connect to `bds-g01-n0` (group 1 node 0) you would use the following command: `ssh bds-g01-n0`.
