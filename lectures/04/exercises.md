@@ -59,11 +59,22 @@ The `current-context` property is used to tell kubectl what context to use. It c
 
 A MicroK8s cluster has been set up on the virtual machines. The kubeconfig for MicroK8s is located at `/var/snap/microk8s/current/credentials/client.config`. Connect to any of the virtual machines and copy the file to your computer.
 
-### Connecting to remote Kubernetes cluster
+### Interacting with remote Kubernetes cluster
 
 Retrieve the kubeconfig that is on the virtual machines. Then you can either merge it with your existing kubeconfig, which is recommended, or you can specify it using the `--kubeconfig` option.
 
 If you merge the config, then simply copy the entries from the `clusters`, `users` and `contexts` lists to your kubeconfig file inside the `.kube` folder in your home directory.
+
+Remember to tunnel port 16443. Use the following command: `ssh -NL 16443:127.0.0.1:16443 <name of node>`. Please note that you need to use `127.0.0.1` and not `localhost`.
+
+## Port-forward service on remote Kubernetes cluster
+
+The port-forward command might not work when you run it on your local machine (don't know why but it might have something to do with sdu firewall rules). To go around this we will have to tunnel a port on a virtual machine and run port-forward on the same virtual machine.
+
+For example, if you want to connect to port 9001 on a service called `minio`, you want to do the following:
+
+1. First SSH into the server and forward the desired port: `ssh -L 9001:127.0.0.1:9001 bds-g01-n01`. This will forward port `9001` on your machine to port `9001` on the remote machine named `bds-g01-n01`
+2. Then use the port-forward command on the service: `microk8s kubectl port-forward svc/minio 9001:9001`. This will forward port `9001` on the virtual machine to port `9001` of the service called `minio`.
 
 ## Exercises
 
