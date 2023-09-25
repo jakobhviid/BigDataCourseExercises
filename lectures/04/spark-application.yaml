@@ -1,0 +1,36 @@
+apiVersion: spark.stackable.tech/v1alpha1
+kind: SparkApplication
+metadata:
+  name: pyspark-pi
+spec:
+  version: "1.0"
+  # An image which will be deployed to the driver and executor pods which builds on top of the base Stackable Spark image
+  sparkImage: docker.stackable.tech/stackable/pyspark-k8s:3.3.0-stackable23.7.0
+  # The mode in which the Spark application will be executed
+  mode: cluster
+  # The location of the program to execute, in this case a Python file which is part of the image specified above
+  mainApplicationFile: local:///stackable/spark/examples/src/main/python/pi.py
+  # The location for the Spark event logs, we will later take a look at this using the Spark History Server
+  logFileDirectory:
+    s3:
+      prefix: eventlogs/
+      bucket:
+        reference: spark-history
+  driver:
+    # The resources which will be allocated to the driver pod
+    resources:
+      cpu:
+        min: "1"
+        max: "1"
+      memory:
+        limit: "1Gi"
+  executor:
+    # The amount of executor instances which will be deployed
+    instances: 3
+    # The resources which will be allocated to each executor pod
+    resources:
+      cpu:
+        min: "1"
+        max: "1"
+      memory:
+        limit: "1Gi"

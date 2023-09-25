@@ -134,11 +134,35 @@ We will be using many different configurations. For the exercises it is not impo
 
 **Task**: Apply the [spark-configurations.yaml](./spark-configurations.yaml) file.
 
-### Exercise 02 - Interacting with Spark
-- Master: http://localhost:8080
-- Quick demonstration of using Spark’s web UI.
-    - Worker 1: http://localhost:8081 Worker 2: http://localhost:8082
-    - Visualizes running Spark Jobs, resource usage, and the state of jobs
+### Exercise 02 - Running Spark jobs
+
+Spark allows you to run programs on a cluster of machines. The "master" node is responsible for coordinating jobs on the "worker" nodes.
+
+Stackable Apache Spark is slightly different. Instead of having a cluster of Spark worker nodes ready at all times, a cluster is created for each job, and it will be teared down when the job is done. This allows you to get the best of both worlds of Apache Spark and Kubernetes - you get the data processing and reliability of Spark, and combine it with the abstractions, scalability, and tools that comes with Kubernetes. For example, you can automatically scale the amount of nodes in a Kubernetes cluster in the cloud using [cluster autoscalers](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler).
+
+**Task:** Read about the [Stackable Operator for Apache Spark](https://docs.stackable.tech/home/stable/spark-k8s/index.html) and read the ["First steps" guide](https://docs.stackable.tech/home/stable/spark-k8s/getting_started/first_steps)
+
+**Note:** You will get a better understanding of what you will be working with if you read it. So please read it.
+
+Now that you have an idea of how the Stackable Operator works we will now take a look at the program for estimating pi that you just saw some examples with from the "First steps" guide.
+
+**Task:** Inspect the [pi estimation program](https://github.com/apache/spark/blob/c1b12bd56429b98177e5405900a08dedc497e12d/examples/src/main/python/pi.py)
+
+Try to visualize the [DAG](https://en.wikipedia.org/wiki/Directed_acyclic_graph) that this program will create. Take a look at [this](https://stackoverflow.com/a/30685279/9698208) to get a better idea of how Spark and DAGs.
+
+You should now have some idea of what Spark programs looks like and how the pi estimation program works. You can also read a short explanation about it [here](https://spark.apache.org/examples.html).
+
+A file containing a SparkApplication that will run the pi estimation program has been created for this exercise. It contains comments to better explain the different parts of it.
+
+**Task:** Inspect the [spark-application.yaml](./spark-application.yaml) file
+
+Before you apply the file you need to sign in to MinIO Console and upload any file to a folder called "eventlogs" or else the Spark job will fail. The reason you need to upload a file to the folder is because you can't have empty folders in MinIO.
+
+**Task:** Apply the [spark-application.yaml](./spark-application.yaml) file and then watch the pods being created using `kubectl get pods -w`
+
+You should see a pod called `pyspark-pi-...` being created, shortly after that a pod called `pyspark-pi-...-driver` will be created. Shortly after that 3 pods called `pythonpi-...-exec-{1,2,3}` will be created. The exec pods will then finish, which is then followed by the driver becoming "Completed", and the `pyspark-pi` pod will also become "Completed".
+
+Try to look at the logs of the the driver pod. There are a lot of things to look at, but look for the text `Pi is roughly...`. The result is only printed to the console, but you could modify the program to save it somewhere, such as HDFS, Kafka, or something else.
 
 ### Exercise 03 - Running a Local Spark Job
 ### Exercise 04 - Running a Spark Job in Kubernetes
