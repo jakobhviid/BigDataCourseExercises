@@ -82,15 +82,55 @@ WIP
 
 Please open issues [here](https://github.com/jakobhviid/BigDataCourseExercises/issues) if you encounter unclear information or experience bugs in our examples!
 
+### Exercise 01 - Setup
 
-### Exercise 01 - Composing a Spark Cluster
+Before you get to play around with Apache Spark you need to do some setup.
 
+#### Stackable operators
 
-```sh
-//  helm install -n stackable --wait commons-operator stackable-stable/commons-operator --version 23.7.0
-// helm install -n stackable --wait secret-operator stackable-stable/secret-operator --version 23.7.0
-helm install -n stackable --wait spark-k8s-operator stackable-stable/spark-k8s-operator --version 23.7.0
+You will need the commons, secret and spark-k8s Stackable operators. We will create them inside the `stackable` namespace.
+
+**Task:** Install the Stackable operators
+
+**Note:** MicroK8s uses a different kubelet directory than most other Kubernetes distributions. Specify the correct directory using `--set kubeletDir=/var/snap/microk8s/common/var/lib/kubelet`.
+
+<details>
+  <summary><strong>Hint</strong>: Install operators</summary>
+
+  Create the `stackable` namespace using `kubectl create namespace stackable`
+
+  Then install the operators:
+
+  ```text
+  helm install -n stackable commons-operator stackable-stable/commons-operator --version 23.7.0
+  helm install -n stackable secret-operator stackable-stable/secret-operator --version 23.7.0
+  helm install -n stackable spark-k8s-operator stackable-stable/spark-k8s-operator --version 23.7.0
+  ```
+</details>
+
+#### MinIO
+
+Many of the tools on the Stackable platform integrates with S3 storage. We will primarily be using S3 to store historical data of Spark jobs that can then be viewed using a history server.
+
+MinIO is an S3 compatible object store. It can be deployed using the [bitnami helm chart](https://github.com/bitnami/charts/tree/main/bitnami/minio/).
+
+```text
+helm install minio oci://registry-1.docker.io/bitnamicharts/minio --set service.type=NodePort --set defaultBuckets=spark-logs --set auth.rootUser=admin --set auth.rootPassword=password
 ```
+
+**Note:** We set the user to `root` and password to `password` to ensure the username and password are the same. You could use other usernames and passwords but then you need to update the provided files.
+
+MinIO Console is a web interface for MinIO. The port for the console is port `9001`.
+
+**Tasks:** Log in to MinIO Console
+
+**Hint:** [Port-forward service on remote Kubernetes cluster](#port-forward-service-on-remote-kubernetes-cluster)
+
+#### Configurations
+
+We will be using many different configurations. For the exercises it is not important to understand how it works but you can look at the comments in the file.
+
+**Task**: Apply the [spark-configurations.yaml](./spark-configurations.yaml) file.
 
 ### Exercise 02 - Interacting with Spark
 - Master: http://localhost:8080
