@@ -80,8 +80,6 @@ For example, if you want to connect to port 9001 on a service called `minio`, yo
 
 ## Exercises
 
-WIP 
-
 Please open issues [here](https://github.com/jakobhviid/BigDataCourseExercises/issues) if you encounter unclear information or experience bugs in our examples!
 
 ### Exercise 01 - Setup
@@ -164,36 +162,34 @@ You should see a pod called `pyspark-pi-...` being created, shortly after that a
 
 Try to look at the logs of the the driver pod. There are a lot of things to look at, but look for the text `Pi is roughly...`. The result is only printed to the console, but you could modify the program to save it somewhere, such as HDFS, Kafka, or something else.
 
-### Exercise 03 - Running a Local Spark Job
-### Exercise 04 - Running a Spark Job in Kubernetes
+You should also notice that a file is uploaded to MinIO. This is a file that contains a lot of information about the job you just ran. The information can be viewed using a history server.
 
-### Exercise 04 - Spark Structured Streaming
+### Exercise 03 - History server
 
+The Apache Spark History server is used to get information about [completed jobs](https://spark.apache.org/docs/latest/monitoring.html#viewing-after-the-fact). The logs of jobs will be stored in an S3 bucket, in our case the bucket called "spark-jobs" that was made with MinIO. The logs can be viewed using the history server.
 
+We have not yet deployed the server. This can be done using the provided [history-server.yaml](./history-server.yaml) file.
 
-#### Exercise 04.1 - HDFS as Source and Kafka as Sink
+**Task:** Apply the [spark-history-server.yaml](./spark-history-server.yaml) file
 
- Running a Spark Job in Kubernetes
-Creating a HDFS directory
-Let’s create a folder that can be used as a data ingestion source!
-1. With the CLI:
-1. docker exec -ti namenode bash
-2. hdfs dfs -mkdir /stream-in - Creates a directory in HDFS called stream-in
-2. With the Hadoop UI
-1. Go to http://localhost:9870
-2. Go to Utilities > Browse the file system > Create a directory
+Now that the history server is created then we want to access it.
 
-#### Exercise 04.2 - HDFS as Sink and Kafka as Source
+**Task:** Access the history server
 
- Running a Spark Job in Kubernetes
-Creating a HDFS directory
-Let’s create a folder that can be used as a data ingestion source!
-1. With the CLI:
-1. docker exec -ti namenode bash
-2. hdfs dfs -mkdir /stream-in - Creates a directory in HDFS called stream-in
-2. With the Hadoop UI
-1. Go to http://localhost:9870
-2. Go to Utilities > Browse the file system > Create a directory
+**Hint:** [Port-forward service on remote Kubernetes cluster](#port-forward-service-on-remote-kubernetes-cluster)
 
+You should see a list of applications. You can click on the App ID to see more information about the applications.
 
-### Exercise 05 - Clean Up
+You can see a visualization of the DAG by clicking on a completed job, or by going to "Stages", and then click on "DAG Visualization".
+
+**Task:** How does the DAG visualization compare to what you thought it looked like?
+
+### Exercise 03 - Analyzing files using Spark jobs
+
+### Exercise 04 - Running Spark Streaming jobs
+
+#### HDFS as source and Kafka as sink
+
+#### Kafka as source and HDFS as sink
+
+### Exercise 05 - Cleanup
