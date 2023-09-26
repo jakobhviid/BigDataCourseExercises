@@ -15,9 +15,7 @@ Follow this [guide](https://www.youtube.com/watch?v=iKM6P7nRzqI) and verify that
 
 ### Tunnelling ports
 
-To access ports on the virtual machines you need to use [SSH tunnelling](https://unix.stackexchange.com/a/115906).
-
-When connecting you can also tunnel ports. For example, if you want to tunnel port 16443 on your local machine to port 16443 on the virtual machine you could use the following command: `ssh -L 16443:127.0.0.1:16443 bds-g01-n0`. If you want multiple ports you can add multiple `-L` options, for example: `ssh -L 16443:127.0.0.1:16443 -L 1234:127.0.0.1:1234 bds-g01-n0`. If you don't need a shell but simply needs to forward the ports then you can use `-NL` instead: `ssh -NL 16443:127.0.0.1:16443 bds-g01-n0`.
+To access ports on the virtual machines you need to use [SSH tunnelling](https://unix.stackexchange.com/a/115906). For example, if you want to tunnel port 16443 on your local machine to port 16443 on the virtual machine you could use the following command: `ssh -L 16443:127.0.0.1:16443 bds-g01-n0`. If you want to tunnel multiple ports at once you can add multiple `-L` options, for example: `ssh -L 16443:127.0.0.1:16443 -L 1234:127.0.0.1:1234 bds-g01-n0`. If you don't need a shell but simply needs to forward the ports then you can use `-NL` instead: `ssh -NL 16443:127.0.0.1:16443 bds-g01-n0`.
 
 ### Kubeconfig
 
