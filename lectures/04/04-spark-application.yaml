@@ -9,14 +9,22 @@ spec:
   # The mode in which the Spark application will be executed
   mode: cluster
   # The location of the program to execute, in this case a Python file which is part of the image specified above
-  mainApplicationFile: local:///stackable/spark/examples/src/main/python/pi.py
+  mainApplicationFile: s3a://spark-logs/programs/04-application.py
   # The location for the Spark event logs, we will later take a look at this using the Spark History Server
+  deps:
+    packages:
+      - org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.0
   logFileDirectory:
     s3:
       prefix: eventlogs/
       bucket:
         reference: spark-history
   driver:
+    # envVars:
+    #   SPARK_SUBMIT_ARGS: "--packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.0"
+    # env:
+    #   - name: SPARK_SUBMIT_ARGS
+    #     value: --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.0
     # The resources which will be allocated to the driver pod
     resources:
       cpu:
@@ -25,6 +33,8 @@ spec:
       memory:
         limit: "1Gi"
   executor:
+    # envVars:
+    #   SPARK_SUBMIT_ARGS: "--packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.0"
     # The amount of executor instances which will be deployed
     instances: 3
     # The resources which will be allocated to each executor pod
