@@ -9,7 +9,7 @@ spec:
   # The mode in which the Spark application will be executed
   mode: cluster
   # The location of the program to execute, in this case a Python file which is part of the image specified above
-  mainApplicationFile: local:///stackable/spark/examples/src/main/python/pi.py
+  mainApplicationFile: s3a://spark-logs/programs/02-application.py
   # The location for the Spark event logs, we will later take a look at this using the Spark History Server
   logFileDirectory:
     s3:

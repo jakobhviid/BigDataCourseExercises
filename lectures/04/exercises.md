@@ -1,6 +1,7 @@
 # Lecture 04 - Spark
 
-The exercises for this lecture is about Apache Spark. Apache Spark is a distributed computing framework for processing large datasets accross clusters of computers. You will be using Apache Spark using Stackable. You are expected to complete these exercises using the virtual machines made available to your semester project groups.
+The exercises for this lecture is about Apache Spark. Apache Spark is a distributed computing framework for processing large datasets across clusters of computers. You will be deploying Apache Spark using the Stackable operators. 
+You are expected to complete these exercises using the virtual machines made available to your semester project groups.
 
 ## Before you start
 
@@ -20,7 +21,8 @@ When connecting you can also tunnel ports. For example, if you want to tunnel po
 
 ### Kubeconfig
 
-Information to connect to a Kubernetes cluster is stored in kubeconfig files. When you use minikube or Kubernetes with Docker Desktop then the kubeconfig file is automatically generated for you. The file is called `config` and is located in the `.kube` folder in your home directory.
+The credentials used to connect to a Kubernetes cluster is stored in a kubeconfig file.
+When you use minikube or Kubernetes with Docker Desktop then the kubeconfig file is automatically generated for you. The file is called `config` and is located in the `.kube` folder in your home directory.
 
 By default, `kubectl` looks for a file called `config` inside the the `.kube` folder in your home directory. To use a different kubeconfig file you can use `kubectl --kubeconfig <path to config>`.
 
@@ -49,13 +51,13 @@ users:
 
 The config contains three lists: `clusters`, `users` and `contexts`:
 
-- `clusters` is a list of Kubernetes clusters. It has the uri to connect to the Kubernetes API and a certificate for the Kubernetes certificate authority.
+- `clusters` is a list of Kubernetes clusters. It has the URI to the Kubernetes API and a certificate for the Kubernetes certificate authority.
 - `users` is a list of users. It contains information used to authenticate the user.
 - `contexts` is a list of contexts. A context associates a cluster and a user.
 
 The name property for clusters, users and contexts can be anything. It is just a key to identify the cluster, context or user in the config file.
 
-The `current-context` property is used to tell kubectl what context to use. It can be changed manually by modifying the file, or using kubectl: `kubectl config use-context <context name>`.
+The `current-context` property is used to tell `kubectl` what context to use. It can be changed manually by modifying the file, or using kubectl: `kubectl config use-context <context name>`.
 
 ### Retrieving kubeconfig from virtual machines
 
@@ -103,7 +105,7 @@ You will need the commons, secret and spark-k8s Stackable operators. We will cre
 
   ```text
   helm install -n stackable commons-operator stackable-stable/commons-operator --version 23.7.0
-  helm install -n stackable secret-operator stackable-stable/secret-operator --version 23.7.0
+  helm install -n stackable --set kubeletDir=/var/snap/microk8s/common/var/lib/kubelet secret-operator stackable-stable/secret-operator --version 23.7.0
   helm install -n stackable spark-k8s-operator stackable-stable/spark-k8s-operator --version 23.7.0
   ```
 </details>
@@ -152,11 +154,12 @@ You should now have some idea of what Spark programs looks like and how the pi e
 
 A file containing a SparkApplication that will run the pi estimation program has been created for this exercise. It contains comments to better explain the different parts of it.
 
-**Task:** Inspect the [spark-application.yaml](./spark-application.yaml) file
+**Task:** Inspect the [02-spark-application.yaml](./02-spark-application.yaml) file
 
-Before you apply the file you need to sign in to MinIO Console and upload any file to a folder called "eventlogs" or else the Spark job will fail. The reason you need to upload a file to the folder is because you can't have empty folders in MinIO.
+Before you apply the file you need to sign in to MinIO Console and upload any file to a folder called "eventlogs" in the "spark-logs" bucket or the Spark job will fail. 
+The reason you need to upload a file to the folder is because you can't have empty folders in MinIO.
 
-**Task:** Apply the [spark-application.yaml](./spark-application.yaml) file and then watch the pods being created using `kubectl get pods -w`
+**Task:** Apply the [02-spark-application.yaml](./02-spark-application.yaml) file and then watch the pods being created using `kubectl get pods -w`
 
 You should see a pod called `pyspark-pi-...` being created, shortly after that a pod called `pyspark-pi-...-driver` will be created. Shortly after that 3 pods called `pythonpi-...-exec-{1,2,3}` will be created. The exec pods will then finish, which is then followed by the driver becoming "Completed", and the `pyspark-pi` pod will also become "Completed".
 
@@ -168,7 +171,7 @@ You should also notice that a file is uploaded to MinIO. This is a file that con
 
 The Apache Spark History server is used to get information about [completed jobs](https://spark.apache.org/docs/latest/monitoring.html#viewing-after-the-fact). The logs of jobs will be stored in an S3 bucket, in our case the bucket called "spark-jobs" that was made with MinIO. The logs can be viewed using the history server.
 
-We have not yet deployed the server. This can be done using the provided [history-server.yaml](./history-server.yaml) file.
+We have not yet deployed the server. This can be done using the provided [spark-history-server.yaml](./spark-history-server.yaml) file.
 
 **Task:** Apply the [spark-history-server.yaml](./spark-history-server.yaml) file
 
