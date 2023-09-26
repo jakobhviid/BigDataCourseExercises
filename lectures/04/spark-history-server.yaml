@@ -1,0 +1,22 @@
+apiVersion: spark.stackable.tech/v1alpha1
+kind: SparkHistoryServer
+metadata:
+  name: spark-history
+spec:
+  image:
+    productVersion: 3.3.0
+    stackableVersion: 23.7.0
+  logFileDirectory:
+    s3:
+      prefix: eventlogs/
+      bucket:
+        inline:
+          bucketName: spark-logs
+          connection:
+            reference: history-connection
+  nodes:
+    roleGroups:
+      default:
+        replicas: 1
+        config:
+          cleaner: true

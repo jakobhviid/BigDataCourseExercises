@@ -1,0 +1,83 @@
+---
+# This will indirectly be used by the history server to access the logs
+apiVersion: s3.stackable.tech/v1alpha1
+kind: S3Connection
+metadata:
+  name: history-connection
+spec:
+  host: minio
+  port: 9000
+  accessStyle: Path
+  credentials:
+    # References the S3 credentials defined below
+    secretClass: history-credentials-class
+---
+# This will be used by Spark applications to access files stored in the S3 bucket
+apiVersion: s3.stackable.tech/v1alpha1
+kind: S3Connection
+metadata:
+  name: data-connection
+spec:
+  host: minio
+  port: 9000
+  accessStyle: Path
+  credentials:
+    # References the S3 credentials defined below
+    secretClass: s3-credentials-class
+---
+# This will will be used by the history server to a access the logs
+apiVersion: s3.stackable.tech/v1alpha1
+kind: S3Bucket
+metadata:
+  name: spark-history
+spec:
+  bucketName: spark-logs
+  connection:
+    # References the S3 connection defined above
+    reference: history-connection
+---
+# A secret that contains the credentials needed to access S3 buckets
+apiVersion: v1
+kind: Secret
+metadata:
+  name: minio-credentials
+  labels:
+    # References the secret class defined below (don't ask how this works :D)
+    secrets.stackable.tech/class: s3-credentials-class
+data:
+  # Base64 encoded MinIO username and password ("admin", "password")
+  accessKey: YWRtaW4=
+  secretKey: cGFzc3dvcmQ=
+---
+# Same as secret above, but for the history server
+apiVersion: v1
+kind: Secret
+metadata:
+  name: history-credentials
+  labels:
+    # References the secret class defined below (don't ask how this works :D)
+    secrets.stackable.tech/class: history-credentials-class
+data:
+  # Base64 encoded MinIO username and password ("admin", "password")
+  accessKey: YWRtaW4=
+  secretKey: cGFzc3dvcmQ=
+---
+apiVersion: secrets.stackable.tech/v1alpha1
+kind: SecretClass
+metadata:
+  name: s3-credentials-class
+spec:
+  backend:
+    k8sSearch:
+      searchNamespace:
+        pod: {}
+---
+apiVersion: secrets.stackable.tech/v1alpha1
+kind: SecretClass
+metadata:
+  name: history-credentials-class
+spec:
+  backend:
+    k8sSearch:
+      searchNamespace:
+        pod: {}
