@@ -184,6 +184,52 @@ You can see a visualization of the DAG by clicking on a completed job, or by goi
 
 ### Exercise 03 - Analyzing files using Spark jobs
 
+The previous program you ran was estimating pi. This program only used compute resources. But where Spark shines is with its data analysis capability.
+
+In this exercise you will deploy a Spark job that will read a file and count the occurrences of different words in the file. You will be analyzing the alice in wonderland text from [lecture 2 exercise 4](../02/exercises.md#exercise-4---uploading-alice-in-wonderland-to-hdfs).
+
+The file could be located in HDFS, but to simplify the exercise, we will just upload it to a new S3 bucket using MinIO.
+
+**Task:** Create a new bucket called `spark-data`
+
+Now that you have created the bucket, then upload the file to the bucket using the "Object Browser".
+
+**Task:** Upload alice in wonderland to the `spark-data` bucket
+
+Now that alice in wonderland is uploaded, you now want to take a look at the program you are about to run.
+
+**Task:** Inspect the [word count program](https://github.com/apache/spark/blob/c1b12bd56429b98177e5405900a08dedc497e12d/examples/src/main/python/wordcount.py)
+
+You can also read about the word count program from Apache Spark [here](https://spark.apache.org/examples.html).
+
+The program counts the occurrences of all unique "words" in the input file. We will modify it to sort the result by the number of occurrences and to save the result back to S3 in different file formats. The file contains comments that help explain the code.
+
+**Task:** Inspect the [customized word count program](./word-count.py)
+
+Try to understand the different steps of the program.
+
+A file containing a SparkApplication that will run the word count program has been created for this exercise. It contains comments to better explain the different parts of it.
+
+**Tasks:** Inspect the [word-count-spark-application.yaml](./word-count-spark-application.yaml) file
+
+- Where is the main application file located?
+- Where is the input file (alice in wonderland) located?
+- How does Spark know how to connect to MinIO?
+
+You should see that the SparkApplication has the main application file inside an S3 bucket called `spark-data`. Using S3 to store the program makes it easy to upload new programs. You don't need to build a new image every time you want to update your program!
+
+**Task:** Upload the word count program to the `spark-data` bucket
+
+**Task:** Apply the [word-count-spark-application.yaml](./word-count-spark-application.yaml) file and then watch the pods being created using `kubectl get pods -w`
+
+When the job is done then take a look at the logs of the driver pod and look for the word counts being printed. Also look inside the `spark-data` bucket to see the results. The results are stored in folders where there is a file that contains the data. Try downloading the files and see the results.
+
+**Tasks:** Compare the size of the different results
+
+- Which is the smallest?
+- Which is the biggest?
+- Why?
+
 ### Exercise 04 - Running Spark Streaming jobs
 
 #### HDFS as source and Kafka as sink
