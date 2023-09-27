@@ -13,6 +13,7 @@ Please note that you will be working on the same Kubernetes cluster as the rest 
 
 Follow this [guide](https://www.youtube.com/watch?v=iKM6P7nRzqI) and verify that you can connect to your virtual machines using SSH. For example, to connect to `bds-g01-n0` (group 1 node 0) you would use the following command: `ssh bds-g01-n0`.
 
+**Note:** [virtualresources.sdu.dk](https://virtualresources.sdu.dk)
 **Note:** We recommend leaving the SSH session open during the exercise hours and running the `kubectl` commands from another terminal on your localhost to keep the same Kubernetes experience as in the previous lectures.
 
 ### Kubeconfig
