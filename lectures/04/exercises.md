@@ -223,7 +223,7 @@ You should see that the SparkApplication has the main application file inside an
 
 **Task:** Upload the word count program to the `spark-data` bucket
 
-**Task:** Apply the [03-word-count-spark-application.yaml](./03-word-count-spark-application.yaml) file and then watch the pods being created using `kubectl get pods -w`
+**Task:** Apply the [03-word-count-spark-application.yaml](./03-word-count-spark-application.yaml) file and then watch the pods being created using `kubectl get pods -w`.
 
 When the job is done then take a look at the logs of the driver pod and look for the word counts being printed. Also look inside the `spark-data` bucket to see the results. The results are stored in folders where there is a file that contains the data. Try downloading the files and see the results.
 
@@ -233,10 +233,23 @@ When the job is done then take a look at the logs of the driver pod and look for
 - Which is the biggest?
 - Why?
 
-### Exercise 04 - Running Spark Streaming jobs
+### Exercise 04 - Running Spark Streaming Jobs - Kafka
+The objective of the exercise is to investigate the possibilities of using Spark streaming queries with a Kafka topic as a source. 
 
-#### HDFS as source and Kafka as sink
+This exercise requires to have a Kafka producer which produces records for a topic. For convenience, we recommend revisiting [Exercise 03](./../03/exercises.md#exercise-03---produce-messages-to-kafka-using-python) from the last lecture. 
 
-#### Kafka as source and HDFS as sink
+**Task:** Create a streaming query that calculates the running mean of the six different stations. 
 
-### Exercise 05 - Cleanup
+- You need to complete the query inside the [04-application.py](./04-application.py) file.
+- Then opload the [04-application.py](./04-application.py) file to a bucket in Minio. Similar to the previous exercise.
+- Finally, apply the [04-application.yaml](./04-application.yaml) file using `kubectl apply -f ...`.
+
+
+**NB**: There is no correct solution nor wrong solution for this exercise. You may find inspiration in the following links to complete the streaming query:
+- [Structured Streaming Programming Guide](https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html#structured-streaming-programming-guide)
+- [Operations on streaming DataFrames/Datasets](https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html#operations-on-streaming-dataframesdatasets)
+- [Structured Streaming + Kafka Integration Guide ](https://spark.apache.org/docs/latest/structured-streaming-kafka-integration.html#structured-streaming-kafka-integration-guide-kafka-broker-versio)
+
+
+
+### Exercise 05 - Running Spark Streaming Jobs - Kafka
