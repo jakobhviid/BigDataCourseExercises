@@ -1,6 +1,6 @@
 # Lecture 04 - Spark
 
-The exercises for this lecture is about Apache Spark. Apache Spark is a distributed computing framework for processing large datasets across clusters of computers. You will be deploying Apache Spark using the Stackable operators. 
+The exercises for this lecture are about Apache Spark. Apache Spark is a distributed computing framework for processing large datasets across clusters of computers. You will be deploying Apache Spark using the Stackable operators. 
 You are expected to complete these exercises using the virtual machines made available to your semester project groups.
 
 ## Before you start
@@ -13,13 +13,11 @@ Please note that you will be working on the same Kubernetes cluster as the rest 
 
 Follow this [guide](https://www.youtube.com/watch?v=iKM6P7nRzqI) and verify that you can connect to your virtual machines using ssh. For example, to connect to `bds-g01-n0` (group 1 node 0) you would use the following command: `ssh bds-g01-n0`.
 
-### Tunnelling ports
-
-To access ports on the virtual machines you need to use [SSH tunnelling](https://unix.stackexchange.com/a/115906). For example, if you want to tunnel port 16443 on your local machine to port 16443 on the virtual machine you could use the following command: `ssh -L 16443:127.0.0.1:16443 bds-g01-n0`. If you want to tunnel multiple ports at once you can add multiple `-L` options, for example: `ssh -L 16443:127.0.0.1:16443 -L 1234:127.0.0.1:1234 bds-g01-n0`. If you don't need a shell but simply needs to forward the ports then you can use `-NL` instead: `ssh -NL 16443:127.0.0.1:16443 bds-g01-n0`.
+**NB:** We recommend leaving the SSH session open during the exercise hours and running the `kubectl` commands from another terminal on your localhost to keep the same Kubernetes experience as in the previous lectures.
 
 ### Kubeconfig
 
-The credentials used to connect to a Kubernetes cluster is stored in a kubeconfig file.
+The credentials used to connect to a Kubernetes cluster is stored in the kubeconfig file.
 When you use minikube or Kubernetes with Docker Desktop then the kubeconfig file is automatically generated for you. The file is called `config` and is located in the `.kube` folder in your home directory.
 
 By default, `kubectl` looks for a file called `config` inside the the `.kube` folder in your home directory. To use a different kubeconfig file you can use `kubectl --kubeconfig <path to config>`.
@@ -67,16 +65,7 @@ Retrieve the kubeconfig that is on the virtual machines. Then you can either mer
 
 If you merge the config, then simply copy the entries from the `clusters`, `users` and `contexts` lists to your kubeconfig file inside the `.kube` folder in your home directory.
 
-Remember to tunnel port 16443. Use the following command: `ssh -NL 16443:127.0.0.1:16443 <name of node>`. Please note that you need to use `127.0.0.1` and not `localhost`.
-
-## Port-forward service on remote Kubernetes cluster
-
-The port-forward command might not work when you run it on your local machine (don't know why but it might have something to do with sdu firewall rules). To go around this we will have to tunnel a port on a virtual machine and run port-forward on the same virtual machine.
-
-For example, if you want to connect to port 9001 on a service called `minio`, you want to do the following:
-
-1. First SSH into the server and forward the desired port: `ssh -L 9001:127.0.0.1:9001 bds-g01-n01`. This will forward port `9001` on your machine to port `9001` on the remote machine named `bds-g01-n01`
-2. Then use the port-forward command on the service: `microk8s kubectl port-forward svc/minio 9001:9001`. This will forward port `9001` on the virtual machine to port `9001` of the service called `minio`.
+**NB:** Please note that you need to use `127.0.0.1` and not `localhost`.
 
 ## Exercises
 
