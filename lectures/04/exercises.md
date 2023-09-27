@@ -113,7 +113,7 @@ MinIO is an S3 compatible object store. It can be deployed using the [bitnami he
 helm install minio oci://registry-1.docker.io/bitnamicharts/minio --set service.type=NodePort --set defaultBuckets=spark-logs --set auth.rootUser=admin --set auth.rootPassword=password
 ```
 
-**Note:** We set the user to `root` and password to `password` to ensure the username and password are the same. You could use other usernames and passwords but then you need to update the provided files.
+**Note:** We set the user to `admin` and password to `password` to ensure the username and password are the same. You could use other usernames and passwords but then you need to update the provided files.
 
 MinIO Console is a web interface for MinIO. The port for the console is port `9001`.
 
