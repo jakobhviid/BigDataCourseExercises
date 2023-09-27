@@ -7,7 +7,7 @@ spec:
   sparkImage: docker.stackable.tech/stackable/pyspark-k8s:3.3.0-stackable23.7.0
   mode: cluster
   # The wordcount application
-  mainApplicationFile: "s3a://spark-data/word-count.py"
+  mainApplicationFile: "s3a://spark-data/03-word-count.py"
   # The argument is the path to the file to be processed
   args:
     - "s3a://spark-data/gutenberg.org_files_11_11-0.txt"
