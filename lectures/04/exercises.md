@@ -207,13 +207,13 @@ You can also read about the word count program from Apache Spark [here](https://
 
 The program counts the occurrences of all unique "words" in the input file. We will modify it to sort the result by the number of occurrences and to save the result back to S3 in different file formats. The file contains comments that help explain the code.
 
-**Task:** Inspect the [customized word count program](./word-count.py)
+**Task:** Inspect the [customized word count program](./03-word-count.py)
 
 Try to understand the different steps of the program.
 
 A file containing a SparkApplication that will run the word count program has been created for this exercise. It contains comments to better explain the different parts of it.
 
-**Tasks:** Inspect the [word-count-spark-application.yaml](./word-count-spark-application.yaml) file
+**Tasks:** Inspect the [03-word-count-spark-application.yaml](./03-word-count-spark-application.yaml) file
 
 - Where is the main application file located?
 - Where is the input file (alice in wonderland) located?
@@ -223,7 +223,7 @@ You should see that the SparkApplication has the main application file inside an
 
 **Task:** Upload the word count program to the `spark-data` bucket
 
-**Task:** Apply the [word-count-spark-application.yaml](./word-count-spark-application.yaml) file and then watch the pods being created using `kubectl get pods -w`
+**Task:** Apply the [03-word-count-spark-application.yaml](./03-word-count-spark-application.yaml) file and then watch the pods being created using `kubectl get pods -w`
 
 When the job is done then take a look at the logs of the driver pod and look for the word counts being printed. Also look inside the `spark-data` bucket to see the results. The results are stored in folders where there is a file that contains the data. Try downloading the files and see the results.
 
