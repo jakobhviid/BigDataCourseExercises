@@ -121,9 +121,7 @@ The root of this repository will be related to the content of the current semest
     ├── interactive
     │   ├── ...
     │   └── README.md
-    ├── kafka-connect
-    │   ├── ...
-    │   └── README.md
-    └── spark
+    └── kafka-connect
+        ├── ...
         └── README.md
 ```
