@@ -11,9 +11,9 @@ Please note that you will be working on the same Kubernetes cluster as the rest 
 
 ### Connect to virtual machines
 
-Follow this [guide](https://www.youtube.com/watch?v=iKM6P7nRzqI) and verify that you can connect to your virtual machines using ssh. For example, to connect to `bds-g01-n0` (group 1 node 0) you would use the following command: `ssh bds-g01-n0`.
+Follow this [guide](https://www.youtube.com/watch?v=iKM6P7nRzqI) and verify that you can connect to your virtual machines using SSH. For example, to connect to `bds-g01-n0` (group 1 node 0) you would use the following command: `ssh bds-g01-n0`.
 
-**NB:** We recommend leaving the SSH session open during the exercise hours and running the `kubectl` commands from another terminal on your localhost to keep the same Kubernetes experience as in the previous lectures.
+**Note:** We recommend leaving the SSH session open during the exercise hours and running the `kubectl` commands from another terminal on your localhost to keep the same Kubernetes experience as in the previous lectures.
 
 ### Kubeconfig
 
@@ -55,23 +55,25 @@ The name property for clusters, users and contexts can be anything. It is just a
 
 The `current-context` property is used to tell `kubectl` what context to use. It can be changed manually by modifying the file, or using kubectl: `kubectl config use-context <context name>`.
 
+For further information, please look into [Organizing Cluster Access Using kubeconfig Files](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/) if you need to manage multiple Kubernetes environments.
+
 ### Retrieving kubeconfig from virtual machines
 
-A MicroK8s cluster has been set up on the virtual machines. The kubeconfig for MicroK8s is located at `/var/snap/microk8s/current/credentials/client.config`. Connect to any of the virtual machines and copy the file to your computer.
+A MicroK8s cluster has been set up on the virtual machines. The kubeconfig for MicroK8s is located at `/var/snap/microk8s/current/credentials/client.config`. Connect to any of the virtual machines and copy the file to your localhost.
 
 ### Interacting with remote Kubernetes cluster
 
-Retrieve the kubeconfig that is on the virtual machines. Then you can either merge it with your existing kubeconfig, which is recommended, or you can specify it using the `--kubeconfig` option.
+You can either merge the `config` file into your existing kubeconfig file, which is recommended, or you can specify a non-default `config` using the `--kubeconfig` argument in `kubectl`.
 
-If you merge the config, then simply copy the entries from the `clusters`, `users` and `contexts` lists to your kubeconfig file inside the `.kube` folder in your home directory.
+If you merge the `config` file, then simply copy the entries from the `clusters`, `users` and `contexts` lists to your kubeconfig file inside the `.kube` folder in your home directory.
 
-**NB:** Please note that you need to use `127.0.0.1` and not `localhost`.
+**Note:** Please note that you need to use `127.0.0.1`.
 
 ## Exercises
 
 Please open issues [here](https://github.com/jakobhviid/BigDataCourseExercises/issues) if you encounter unclear information or experience bugs in our examples!
 
-### Exercise 01 - Setup
+### Exercise 1 - Setup
 
 Before you get to play around with Apache Spark you need to do some setup.
 
@@ -113,17 +115,17 @@ MinIO Console is a web interface for MinIO. The port for the console is port `90
 
 **Tasks:** Log in to MinIO Console
 
-**Hint:** [Port-forward service on remote Kubernetes cluster](#port-forward-service-on-remote-kubernetes-cluster)
+**Hint:** `kubectl port-forward svc/minio 9001:9001`
 
 #### Configurations
 
-We will be using many different configurations. For the exercises it is not important to understand how it works but you can look at the comments in the file.
+We will be using many different Kubernetes configurations to manage the required resources. For these exercises, it is not important to understand how these resources work but you can look at the comments in the file.
 
 **Task**: Apply the [spark-configurations.yaml](./spark-configurations.yaml) file.
 
-### Exercise 02 - Running Spark jobs
+### Exercise 2 - Running Spark jobs
 
-Spark allows you to run programs on a cluster of machines. The "master" node is responsible for coordinating jobs on the "worker" nodes.
+Spark allows you to run programs on a cluster of machines. The "master" node is responsible for coordinating jobs running on the "worker" nodes.
 
 Stackable Apache Spark is slightly different. Instead of having a cluster of Spark worker nodes ready at all times, a cluster is created for each job, and it will be teared down when the job is done. This allows you to get the best of both worlds of Apache Spark and Kubernetes - you get the data processing and reliability of Spark, and combine it with the abstractions, scalability, and tools that comes with Kubernetes. For example, you can automatically scale the amount of nodes in a Kubernetes cluster in the cloud using [cluster autoscalers](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler).
 
@@ -154,19 +156,19 @@ Try to look at the logs of the the driver pod. There are a lot of things to look
 
 You should also notice that a file is uploaded to MinIO. This is a file that contains a lot of information about the job you just ran. The information can be viewed using a history server.
 
-### Exercise 03 - History server
+### Exercise 3 - History server
 
 The Apache Spark History server is used to get information about [completed jobs](https://spark.apache.org/docs/latest/monitoring.html#viewing-after-the-fact). The logs of jobs will be stored in an S3 bucket, in our case the bucket called "spark-jobs" that was made with MinIO. The logs can be viewed using the history server.
 
 We have not yet deployed the server. This can be done using the provided [spark-history-server.yaml](./spark-history-server.yaml) file.
 
-**Task:** Apply the [spark-history-server.yaml](./spark-history-server.yaml) file
+**Task:** Apply the [spark-history-server.yaml](./spark-history-server.yaml) file.
 
 Now that the history server is created then we want to access it.
 
-**Task:** Access the history server
+**Task:** Access the history server.
 
-**Hint:** [Port-forward service on remote Kubernetes cluster](#port-forward-service-on-remote-kubernetes-cluster)
+**Hint:** `kubectl port-forward svc/spark-history-node 18080:18080`.
 
 You should see a list of applications. You can click on the App ID to see more information about the applications.
 
@@ -174,7 +176,7 @@ You can see a visualization of the DAG by clicking on a completed job, or by goi
 
 **Task:** How does the DAG visualization compare to what you thought it looked like?
 
-### Exercise 03 - Analyzing files using Spark jobs
+### Exercise 3 - Analyzing files using Spark jobs
 
 The previous program you ran was estimating pi. This program only used compute resources. But where Spark shines is with its data analysis capability.
 
@@ -182,27 +184,27 @@ In this exercise you will deploy a Spark job that will read a file and count the
 
 The file could be located in HDFS, but to simplify the exercise, we will just upload it to a new S3 bucket using MinIO.
 
-**Task:** Create a new bucket called `spark-data`
+**Task:** Create a new bucket called `spark-data`.
 
 Now that you have created the bucket, then upload the file to the bucket using the "Object Browser".
 
-**Task:** Upload alice in wonderland to the `spark-data` bucket
+**Task:** Upload alice in wonderland to the `spark-data` bucket.
 
 Now that alice in wonderland is uploaded, you now want to take a look at the program you are about to run.
 
-**Task:** Inspect the [word count program](https://github.com/apache/spark/blob/c1b12bd56429b98177e5405900a08dedc497e12d/examples/src/main/python/wordcount.py)
+**Task:** Inspect the [word count program](https://github.com/apache/spark/blob/c1b12bd56429b98177e5405900a08dedc497e12d/examples/src/main/python/wordcount.py).
 
 You can also read about the word count program from Apache Spark [here](https://spark.apache.org/examples.html).
 
 The program counts the occurrences of all unique "words" in the input file. We will modify it to sort the result by the number of occurrences and to save the result back to S3 in different file formats. The file contains comments that help explain the code.
 
-**Task:** Inspect the [customized word count program](./03-word-count.py)
+**Task:** Inspect the [customized word count program](./03-word-count.py).
 
 Try to understand the different steps of the program.
 
 A file containing a SparkApplication that will run the word count program has been created for this exercise. It contains comments to better explain the different parts of it.
 
-**Tasks:** Inspect the [03-word-count-spark-application.yaml](./03-word-count-spark-application.yaml) file
+**Tasks:** Inspect the [03-word-count-spark-application.yaml](./03-word-count-spark-application.yaml) file.
 
 - Where is the main application file located?
 - Where is the input file (alice in wonderland) located?
@@ -222,19 +224,19 @@ When the job is done then take a look at the logs of the driver pod and look for
 - Which is the biggest?
 - Why?
 
-### Exercise 04 - Running Spark Streaming Jobs - Kafka
+### Exercise 4 - Running Spark Streaming Jobs - Kafka
 The objective of the exercise is to investigate the possibilities of using Spark streaming queries with a Kafka topic as a source. 
 
-This exercise requires to have a Kafka producer which produces records for a topic. For convenience, we recommend revisiting [Exercise 03](./../03/exercises.md#exercise-03---produce-messages-to-kafka-using-python) from the last lecture. 
+This exercise requires to have a Kafka producer which produces records for a topic. For convenience, we recommend revisiting [exercise 3](./../03/exercises.md#exercise-03---produce-messages-to-kafka-using-python) from the last lecture. 
 
 **Task:** Create a streaming query that calculates the running mean of the six different stations. 
 
 - You need to complete the query inside the [04-application.py](./04-application.py) file.
-- Then opload the [04-application.py](./04-application.py) file to a bucket in Minio. Similar to the previous exercise.
+- Then opload the [04-application.py](./04-application.py) file to a bucket in MinIO. Similar to the previous exercise.
 - Finally, apply the [04-application.yaml](./04-application.yaml) file using `kubectl apply -f ...`.
 
 
-**NB**: There is no correct solution nor wrong solution for this exercise. You may find inspiration in the following links to complete the streaming query:
+**Note**: There is no correct solution nor wrong solution for this exercise. You may find inspiration in the following links to complete the streaming query:
 - [Structured Streaming Programming Guide](https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html#structured-streaming-programming-guide)
 - [Operations on streaming DataFrames/Datasets](https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html#operations-on-streaming-dataframesdatasets)
 - [Structured Streaming + Kafka Integration Guide ](https://spark.apache.org/docs/latest/structured-streaming-kafka-integration.html#structured-streaming-kafka-integration-guide-kafka-broker-versio)
