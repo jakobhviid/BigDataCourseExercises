@@ -149,8 +149,7 @@ A file containing a SparkApplication that will run the pi estimation program has
 
 **Task:** Inspect the [02-spark-application.yaml](./02-spark-application.yaml) file
 
-Before you apply the file you need to sign in to MinIO Console and upload any file to a folder called "eventlogs" in the "spark-logs" bucket or the Spark job will fail. 
-The reason you need to upload a file to the folder is because you can't have empty folders in MinIO.
+Before you apply the file you need to sign in to MinIO Console and upload any file to a folder called "eventlogs" in the "spark-logs" bucket or the Spark job will fail. The reason you need to upload a file to the folder is because you can't have empty folders in MinIO.
 
 **Task:** Apply the [02-spark-application.yaml](./02-spark-application.yaml) file and then watch the pods being created using `kubectl get pods -w`
 
