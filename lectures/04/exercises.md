@@ -13,11 +13,15 @@ Please note that you will be working on the same Kubernetes cluster as the rest 
 
 Follow this [guide](https://www.youtube.com/watch?v=iKM6P7nRzqI) and verify that you can connect to your virtual machines using SSH. For example, to connect to `bds-g01-n0` (group 1 node 0) you would use the following command: `ssh bds-g01-n0`.
 
-
 **Note:** [virtualresources.sdu.dk](https://virtualresources.sdu.dk).
 
-
 **Note:** We recommend leaving the SSH session open during the exercise hours and running the `kubectl` commands from another terminal on your localhost to keep the same Kubernetes experience as in the previous lectures.
+
+### Tunnelling ports
+
+You should be able to use the `kubectl port-forward` command on your local machine to access services and pods on the remote cluster. But if you want to access a specific port on a virtual machine then you need to use SSH tunnelling. For example, if you have a NodePort service and you want to access the port instead of using the port-forward command.
+
+For example, if you want to tunnel port 16443 on your local machine to port 16443 on the virtual machine you could use the following command: `ssh -L 16443:127.0.0.1:16443 bds-g01-n0`. If you want to tunnel multiple ports at once you can add multiple `-L` options, for example: `ssh -L 16443:127.0.0.1:16443 -L 1234:127.0.0.1:1234 bds-g01-n0`. If you don't need a shell but simply needs to forward the ports then you can use `-NL` instead: `ssh -NL 16443:127.0.0.1:16443 bds-g01-n0`.
 
 ### Kubeconfig
 
