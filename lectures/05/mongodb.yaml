@@ -1,0 +1,106 @@
+---
+apiVersion: "v1"
+kind: "PersistentVolumeClaim"
+metadata:
+  name: "mongodb-pvc"
+  namespace: "mongodb"
+  labels:
+    app: "mongodb"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+---
+apiVersion: "v1"
+kind: "Service"
+metadata:
+  name: "mongodb"
+  namespace: "mongodb"
+spec:
+  type: "NodePort"
+  ports:
+    - port: 27017
+      targetPort: 27017
+  selector:
+    app: "mongodb"
+---
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  name: "mongodb"
+  namespace: "mongodb"
+spec:
+  selector:
+    matchLabels:
+      app: "mongodb"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: "mongodb"
+    spec:
+      containers:
+        - name: "mongodb"
+          image: "mongo"
+          imagePullPolicy: "Always"
+          env:
+            - name: "MONGO_INITDB_ROOT_USERNAME"
+              value: "admin"
+            - name: "MONGO_INITDB_ROOT_PASSWORD"
+              value: "password"
+            - name: "MONGO_ROOT_USERNAME"
+              value: "admin"
+            - name: "MONGO_ROOT_PASSWORD"
+              value: "password"
+          ports:
+            - containerPort: 27017
+---
+apiVersion: "v1"
+kind: "Service"
+metadata:
+  name: "mongo-express"
+  namespace: "mongodb"
+spec:
+  type: "NodePort"
+  ports:
+    - port: 8084
+      targetPort: 8084
+  selector:
+    app: "mongo-express"
+---
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  name: "mongo-express"
+  namespace: "mongodb"
+spec:
+  selector:
+    matchLabels:
+      app: "mongo-express"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: "mongo-express"
+    spec:
+      containers:
+        - name: "mongo-express"
+          image: "mongo-express"
+          imagePullPolicy: "Always"
+          env:
+            - name: "MONGO_ROOT_USERNAME"
+              value: "admin"
+            - name: "MONGO_ROOT_PASSWORD"
+              value: "password"
+            - name: "ME_CONFIG_MONGODB_ADMINUSERNAME"
+              value: "admin"
+            - name: "ME_CONFIG_MONGODB_ADMINPASSWORD"
+              value: "password"
+            - name: "ME_CONFIG_MONGODB_URL"
+              value: "mongodb://admin:password@mongodb:27017"
+            - name: "VCAP_APP_PORT"
+              value: "8084"
+          ports:
+            - containerPort: 8084

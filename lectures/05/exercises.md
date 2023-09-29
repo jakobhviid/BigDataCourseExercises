@@ -54,10 +54,55 @@ Compute the mean based on the avro files using an exeternal table.
 
 ### Exercise 4 - Compose a MongoDB cluster
 
+```
+kubectl create namespace mongodb  
+```
+
+```
+k8s apply -f mongodb.yaml -n mongodb       
+```
+
+```
+kubectl port-forward svc/mongodb  27017:27017 -n mongodb 
+```
+
+```
+mongodb://admin:password@127.0.0.1:27017
+```
+
+```
+kubectl port-forward svc/mongo-express  8084:8084 -n mongodb
+```
+
+
+[MongoDB for VS Code](https://marketplace.visualstudio.com/items?itemName=mongodb.mongodb-vscode)
+
 VS CODE extension for MongoDB as a client/editor for the data base?
 
 #### Exercise 4.1 - MongoDB and Kafka connect
 create a connector whihc uses Kafka `INGESTION` topic as source and MongoDB as sik
+
+```json
+{
+    "connection.password": "password",
+    "connection.uri": "mongodb://admin:password@mongodb.mongodb:27017",
+    "connection.url": "mongodb://mongodb.mongodb:27017",
+    "connection.username": "admin",
+    "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
+    "database": "kafka",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "key.converter.schemas.enable": "true",
+    "name": "mongodb-sink-connector-cdfs",
+    "output.format.key": "json",
+    "output.format.value": "json",
+    "post.processor.chain": "com.mongodb.kafka.connect.sink.processor.DocumentIdAdder",
+    "tasks.max": "4",
+    "timeseries.timefield.auto.convert": "false",
+    "topics": "INGESTION",
+    "value.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter.schemas.enable": "true"
+}
+```
 
 #### Exercise 4.2 - Query MongoBD
 
