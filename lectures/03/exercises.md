@@ -11,7 +11,7 @@ Please open issues [here](https://github.com/jakobhviid/BigDataCourseExercises/i
 
 ### Exercise 01 - Composing a Kafka cluster
 
-The objective of this exercise is to deploy a Kafka cluster. We will be using operators from a company called [strimzi.io](strimzi.io). The image below links to a short introductory video on how to set up Kafka inside Kubernetes. 
+The objective of this exercise is to deploy a Kafka cluster. We will be using operators from a company called [strimzi.io](http://strimzi.io). The image below links to a short introductory video on how to set up Kafka inside Kubernetes. 
 
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/1qO2qGuJNQI/0.jpg)](https://www.youtube.com/watch?v=1qO2qGuJNQI)
 
