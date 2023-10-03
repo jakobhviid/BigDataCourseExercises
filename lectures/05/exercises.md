@@ -1,11 +1,68 @@
 # Lecture 05 - Distributed Data Processing and Distributed Databases
 
-
 ## Exercises
 
 Please open issues [here](https://github.com/jakobhviid/BigDataCourseExercises/issues) if you encounter unclear information or experience bugs in our examples!
 
-### Exercise 1 - Compose Apache Hive cluster
+Before you start working on the exercises you are strongly encouraged to clean up your Kubernetes cluster. The exercises will assume you use the MicroK8s cluster on the provided virtual machines and that the cluster is in a "clean" state.
+
+### Exercise 1 - Set up Trino, Hive and Minio
+
+[Trino](https://trino.io/) (formerly known as Presto) is a distributed SQL query engine for big data analytics. Trino is comparable to Apache Hive, but Trino can connect to many different data sources with [connectors](https://trino.io/docs/current/connector.html). Hive is also meant to run using YARN and it does not make sense to run YARN inside of Kubernetes. For that reason, the exercises will be about Trino.
+
+You will be setting up a [Trino cluster](https://trino.io/docs/current/overview/concepts.html#cluster) and use the [Hive connector](https://trino.io/docs/current/connector/hive.html) to read files from an S3 bucket. An [Apache Hive metastore](https://cwiki.apache.org/confluence/display/hive/design#Design-Metastore) cluster is required in order to use the Hive connector. Hive metastore requires an SQL database to store data, so for this you will also set up a [PostgreSQL database](https://www.postgresql.org/).
+
+You are also strongly encouraged to read [this](https://trino.io/Presto_SQL_on_Everything.pdf) paper about Trino, but it is not a requirement for the exercises.
+
+#### Stackable operators
+
+You will need the commons, secret, hive, and trino operators. We will create them inside the stackable namespace.
+
+```text
+kubectl create namespace stackable
+helm repo add stackable-stable https://repo.stackable.tech/repository/helm-stable/
+helm install -n stackable commons-operator stackable-stable/commons-operator --version 23.7.0
+helm install -n stackable secret-operator stackable-stable/secret-operator --version 23.7.0 --set kubeletDir=/var/snap/microk8s/common/var/lib/kubelet
+helm install -n stackable hive-operator stackable-stable/hive-operator --version 23.7.0
+helm install -n stackable trino-operator stackable-stable/trino-operator --version 23.7.0
+```
+
+#### MinIO
+
+Install MinIO
+
+```text
+helm install minio oci://registry-1.docker.io/bitnamicharts/minio --set service.type=NodePort --set auth.rootUser=admin --set auth.rootPassword=password
+```
+
+Create S3Connection that will be used by Hive metastore service to connect to MinIO.
+
+Apply [s3connection.yaml](./s3connection.yaml).
+
+#### Hive metastore service
+
+The Hive metastore service will be deployed with PostgreSQL.
+
+Deploy postgres database.
+
+```text
+helm install postgresql \
+--version=12.1.5 \
+--namespace default \
+--set auth.username=hive \
+--set auth.password=hive \
+--set auth.database=hive \
+--set primary.extendedConfiguration="password_encryption=md5" \
+--repo https://charts.bitnami.com/bitnami postgresql
+```
+
+**Note:** You may have to delete the `\` and newlines so that it is one command.
+
+Everything required to create the Hive cluster is now ready. Apply the [hive.yaml](./hive.yaml) file.
+
+#### Trino cluster
+
+Apply the [trino.yaml](./trino.yaml) file. This file contains the TrinoCluster resource and TrinoCatalog resource. The [TrinoCatalog resource](https://docs.stackable.tech/home/stable/trino/concepts#_catalogs) is used to create an instance of a connector, in this case it is a Hive connector. Not a lot of connectors are supported by Stackable, but it will suffice for these exercises.
 
 ### Exercise 2 - Count words in Alice in Wonderland with Hive
 #### Exercise 2.1 - Internal table
