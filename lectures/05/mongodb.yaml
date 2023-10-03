@@ -66,7 +66,7 @@ spec:
   type: "NodePort"
   ports:
     - port: 8084
-      targetPort: 8084
+      targetPort: 8081
   selector:
     app: "mongo-express"
 ---
@@ -100,7 +100,5 @@ spec:
               value: "password"
             - name: "ME_CONFIG_MONGODB_URL"
               value: "mongodb://admin:password@mongodb:27017"
-            - name: "VCAP_APP_PORT"
-              value: "8084"
           ports:
-            - containerPort: 8084
+            - containerPort: 8081

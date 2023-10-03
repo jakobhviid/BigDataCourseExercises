@@ -53,31 +53,143 @@ Compute the mean based on the avro files using an exeternal table.
 
 
 ### Exercise 4 - Compose a MongoDB cluster
+The objective of this exercise is to interact with a NoSQL document-oriented database. 
+We will be working with MongoDB which is great for storing JSON like records with or without schemas and the database is horizontal scalable.
 
-```
-kubectl create namespace mongodb  
-```
+**Note:** We will deploying the minimum configuration for this database in order to reduce the recoruse footprint. 
 
-```
-k8s apply -f mongodb.yaml -n mongodb       
-```
-
-```
-kubectl port-forward svc/mongodb  27017:27017 -n mongodb 
-```
-
-```
-mongodb://admin:password@127.0.0.1:27017
-```
-
-```
-kubectl port-forward svc/mongo-express  8084:8084 -n mongodb
-```
+This exercise is composed of three parts starting wiht a deployment of the MongoDB cluster. Then we would like to revist Kafka Connect similar to [Exercise 06](./../03/exercises.md#exercise-06---kafka-connect-and-hdfs) from lecture 3. And finally we will look into querying JSON records in the database.
 
 
-[MongoDB for VS Code](https://marketplace.visualstudio.com/items?itemName=mongodb.mongodb-vscode)
+We recommand to create a isolated namespace for the following MongoDB services.
 
-VS CODE extension for MongoDB as a client/editor for the data base?
+**Task:** Create a namepsace in Kubernetes called `mongodb`.
+<details>
+  <summary><strong>Hint</strong>: Create namespace</summary>
+
+  ```
+  kubectl create namespace mongodb 
+  ```
+  
+</details>
+
+
+
+The [mongodb.yaml](mongodb.yaml) contains a complete manifest to compose a MongoDB cluster. The manifest includes the following recources:
+- PersistentVolumeClaim: `mongodb-pvc`
+- Services
+  - `mongodb`
+    - type: NodePort
+    - port: 27017 <-> 27017
+  - `mongo-express`
+    - type: NodePort
+    - port: 8084 <-> 8084
+- Deployments
+  - `mongodb`
+  - `mongo-express`
+
+**Task:** Familize yourself with the [mongodb.yaml](mongodb.yaml) manifest.
+**Note:** Our example includes a simple authentication mecanishm. The username and password have been hardcoded into the [mongodb.yaml](mongodb.yaml) file. We do encurge you to apply a more sufisticated approach when you transfering into a production environment. 
+
+
+**Task:** Apply the [mongodb.yaml](mongodb.yaml) manifest to compose the MongoDB cluster.
+<details>
+  <summary><strong>Hint</strong>: Apply the deployment manifest</summary>
+
+  ```
+  kubectl apply -f mongodb.yaml
+  ```
+
+</details>
+
+
+
+**Task:** Validate your deployment of MongoDB.
+
+<details>
+  <summary><strong>Hint</strong>: Get all the resources inside the `mongodb` namespace</summary>
+
+  One approach for getting the current state of the deployed resources is by using the command below:
+
+
+  ```
+  kubectl get all -n mongodb  
+  ```
+  You should execept a similar output like the chunk below:
+
+  ```
+  NAME                               READY   STATUS    RESTARTS   AGE
+  pod/mongodb-f585b897b-f7bn6        1/1     Running   0          7m31s
+  pod/mongo-express-f896d549-5gbz7   1/1     Running   0          2m51s
+
+  NAME                               TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)           AGE
+  service/mongodb                    NodePort   10.152.183.106   <none>        27017:32346/TCP   7m32s
+  service/mongo-express              NodePort   10.152.183.163   <none>        8084:31280/TCP    7m32s
+
+  NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
+  deployment.apps/mongodb            1/1     1            1           7m32s
+  deployment.apps/mongo-express      1/1     1            1           7m31s
+
+  NAME                                     DESIRED   CURRENT   READY   AGE
+  replicaset.apps/mongodb-f585b897b        1         1         1       7m31s
+  replicaset.apps/mongo-express-f896d549   1         1         1       2m51s
+  ```
+
+</details>
+
+
+#### Exercise 4.1 - Interact with MongoDB
+
+We will briefly introduce two approaches for interacting with MongoDB. One approach being the web-based interface called `mongo-express` which is already included in previously mentioned [mongodb.yaml](mongodb.yaml) manifest file. 
+The other approach is to install an extension for Visual Studio Code. Get further information on the extension here: [MongoDB for VS Code](https://marketplace.visualstudio.com/items?itemName=mongodb.mongodb-vscode).
+
+
+##### Web-based interface
+The web-based `mongo-express` interface requries a port-forwarding in order to access the site from your localhost.
+
+**Task:** Forward port `8084` from the `mongo-express` service to your localhost.
+<details>
+  <summary><strong>Hint</strong>: Get all the resources inside the `mongodb` namespace</summary>
+
+  ```
+  kubectl port-forward svc/mongo-express  8084:8084 -n mongodb
+  ```
+</details>
+
+
+**Task:** Open [127.0.0.1:8084](http://127.0.0.1:8084) and validate the hostname of the mongodb server. Does the server name match the name of the `mongodb` Kubernetes pod?
+
+**Note:** You will be prompted for a username and password. Please use `admin` and `pass` respectively.
+
+
+**Task:** Explore the `mongodb` documentation [here](https://www.mongodb.com/docs/manual/core/databases-and-collections/) and be confidence in the MongoDB termonolygi, e.g. document, collection, and databases.
+
+**Task:** Explore the `mongo-express` documentation [here](https://github.com/mongo-express/mongo-express) and be curious inside the web-based interface [127.0.0.1:8084](http://127.0.0.1:8084).
+
+
+##### MongoDB extension for Visual Studio Code
+
+Another convienct approach for interacting with MongoDB is by uing an Visual Studio Code as a NoSQL editor. You can enable this feature by installing the [MongoDB for VS Code](https://marketplace.visualstudio.com/items?itemName=mongodb.mongodb-vscode) extension. 
+
+Similar to the web-based approach you need to setup port-farwarding in order to reach the `mongodb` pod from your localhost.
+
+**Task:** Forward port `27017` from the `mongodb` service to your localhost.
+<details>
+  <summary><strong>Hint</strong>: Get all the resources inside the `mongodb` namespace</summary>
+
+  ```
+  kubectl port-forward svc/mongodb  27017:27017 -n mongodb 
+  ```
+</details>
+
+After the completion of the port-forwarding you are able to insert the following conenction string in the MongoDB for VS Code extension: `mongodb://admin:password@127.0.0.1:27017`
+
+**Task:** Establish the connection to MongoDB using the extension.
+
+**Task:** Explore the playgrounds tab inside the extension. Click "Create New Playground" and execute the new playground.
+
+**Task:** Explore the newly created database called `mongodbVSCodePlaygroundDB` and the inserted documents inside the `sales` collections. You should find the identical documents inside web interface [here](http://127.0.0.1:8084/db/mongodbVSCodePlaygroundDB/sales).
+
 
 #### Exercise 4.1 - MongoDB and Kafka connect
 create a connector whihc uses Kafka `INGESTION` topic as source and MongoDB as sik
@@ -107,3 +219,6 @@ create a connector whihc uses Kafka `INGESTION` topic as source and MongoDB as s
 #### Exercise 4.2 - Query MongoBD
 
 Create an query which filters the records of interest
+
+
+[From Query API to your favorite language](https://marketplace.visualstudio.com/items?itemName=mongodb.mongodb-vscode)
