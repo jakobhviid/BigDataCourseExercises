@@ -12,7 +12,7 @@ Before you start working on the exercises you are strongly encouraged to clean u
 
 [Trino](https://trino.io/) (formerly known as Presto) is a distributed SQL query engine for big data analytics. Trino is comparable to Apache Hive, but Trino can connect to many different data sources with [connectors](https://trino.io/docs/current/connector.html). Hive is also meant to run using YARN and it does not make sense to run YARN inside of Kubernetes. For that reason, the exercises will be about Trino.
 
-You will be setting up a [Trino cluster](https://trino.io/docs/current/overview/concepts.html#cluster) and use the [Hive connector](https://trino.io/docs/current/connector/hive.html) to read files from an S3 bucket. An [Apache Hive metastore](https://cwiki.apache.org/confluence/display/hive/design#Design-Metastore) cluster is required in order to use the Hive connector. Hive metastore requires an SQL database to store data, so for this you will also set up a [PostgreSQL database](https://www.postgresql.org/).
+You will be setting up a [Trino cluster](https://trino.io/docs/current/overview/concepts.html#cluster) and use the [Hive connector](https://trino.io/docs/current/connector/hive.html) to read files from an S3 bucket. An [Apache Hive metastore](https://cwiki.apache.org/confluence/display/hive/design#Design-Metastore) service is required in order to use the Hive connector. Hive metastore requires an SQL database to store data, so for this you will also set up a [PostgreSQL database](https://www.postgresql.org/).
 
 You are also strongly encouraged to read [this](https://trino.io/Presto_SQL_on_Everything.pdf) paper about Trino, but it is not a requirement for the exercises.
 
@@ -60,7 +60,7 @@ helm install postgresql \
 
 **Note:** You may have to delete the `\` and newlines so that it is one command.
 
-Everything required to create the Hive cluster is now ready. Apply the [hive.yaml](./hive.yaml) file.
+Everything required to create the Hive metastore service is now ready. Apply the [hive.yaml](./hive.yaml) file.
 
 #### Trino cluster
 
@@ -76,7 +76,7 @@ Create a bucket inside the MinIO cluster and call it whatever you want.
 
 **Task:** Create a bucket inside MinIO
 
-Now upload the Alice in Wonderland file to the bucket.
+Now upload the Alice in Wonderland file to a folder inside the bucket.
 
 **Task:** Upload the Alice in Wonderland text to the bucket
 
@@ -123,9 +123,9 @@ We can now begin to write SQL statements. First, we will make sure that the Hive
 
 **Hint:** Enter the text `SHOW CATALOGS;`, then select it using your mouse and then press the keys `CTRL+ENTER` to execute the SQL statement.
 
-You should see two catalogs, one called `hive` and another called `system`. You now know how to create and execute SQL statements using Trino.
+You should see two catalogs, one called `hive` and another called `system`. You now know how to create and execute SQL statements using Trino. The name of the hive catalog comes from the name of the `TrinoCatalog` resource you applied to Kubernetes.
 
-We will now create a schema inside the hive catalog. The schema is used to define where data is located, which will then be used by tables that are created with the schema.
+We will now [create a schema](https://trino.io/docs/current/sql/create-schema.html) inside the hive catalog. The schema is used to define where data is located, which will then be used by tables that are created with the schema.
 
 **Task:** Create a schema
 
@@ -140,7 +140,7 @@ WITH (location = 's3a://<name of bucket>/');
 Remember to enter the name of your bucket.
 </details>
 
-Now that a schema has been created, we will create a table using the schema. The table needs to use the format `TextFile` and the location of the files that will be associated with the table.
+Now that a schema has been created, we will [create a table](https://trino.io/docs/current/sql/create-table.html) using the schema. The table needs to use the format `TextFile` and the location of the files that will be associated with the table. You can find more information about the formats supported by the Hive connector [here](https://trino.io/docs/current/connector/hive.html).
 
 **Task:** Create a table using the schema you just made
 
@@ -166,7 +166,7 @@ You should see a list of the first 100 lines of the Alice in Wonderland text. Tr
 
 Similarly to the other exercises, we will now count the amount of words in the file, and after that we will figure out the 10 most used words.
 
-To count words, you can split each line by spaces, then count and sum the counts.
+To count words, you can split each line by spaces, then count the words for each line and then sum the counts.
 
 **Task**: Count the total amount of "words" in the Alice in Wonderland text
 
@@ -189,7 +189,7 @@ Below is an explanation of the different functions:
 
 Depending on how you count the words, you should see around 31000 words.
 
-We will now find the 10 most used words.
+We will now find the 10 most used words. This is somewhat complex because if you use the `SPLIT` function then it returns an array, and you need to then use the [`UNNEST` function](https://trino.io/docs/current/sql/select.html#unnest).
 
 **Task:** Find the 10 most used words in the Alice in Wonderland text
 
@@ -197,23 +197,31 @@ We will now find the 10 most used words.
 <summary><strong>Hint</strong>: Top 10 most used words</summary>
 
 ```SQL
-SELECT DISTINCT word, COUNT(*) as count
+SELECT DISTINCT word, COUNT(*) as count -- 4
 FROM (
-SELECT SPLIT(RTRIM(line), ' ') AS words
+SELECT SPLIT(RTRIM(line), ' ') AS words -- 1
   FROM hive.bucket.text
 )
-CROSS JOIN UNNEST(words) AS T(word)
-GROUP BY word
-ORDER BY count DESC LIMIT 10;
+CROSS JOIN UNNEST(words) AS T(word) -- 2
+GROUP BY word -- 3
+ORDER BY count DESC -- 5
+LIMIT 10; -- 6
 ```
 
-We first split the lines into words, then we unnest the words and cross joins it, this results in all the elements inside the arrays to have their own row. We then group by the word to find unique words. We select the unique words, and the count of the words, order the result by the count descending to have the most used words first, and then limit to 10 to have get the 10 most used words.
+Each part of the SQL statement is explained below:
+
+1. We first split the lines into words.
+2. Then we unnest the words and cross join it, this results in all the elements inside the arrays to have their own row.
+3. We then group by the word to find unique words.
+4. We select the unique words, and the count of the words
+5. Order the result by the count descending to have the most used words first
+6. Limit to 10 to have get the 10 most used words.
 
 </details>
 
 The most used word is "the". This is not very surprising, both because it is a common word, but mostly because you should already know this from exercises from previous lectures.
 
-Just as an added bonus, you can actually get the name of files using `"$path"`. For example:
+Just as an added bonus, you can actually get the name of files using `"$path"`. For example, try executing the following SQL statement:
 
 ```SQL
 SELECT "$path" AS path, SUM(CARDINALITY(SPLIT(RTRIM(line), ' ')))
@@ -235,15 +243,13 @@ The SQL statement above will only count the amount of words for files that match
 
 ### Exercise 3 - Backblaze Hard Drive Data
 
-[Backblaze](https://www.backblaze.com/) is a cloud backup and storage service. They have a lot of hard drives and collect a lot of information about these drives and makes the data public. We will be analyzingt the data using Trino.
+[Backblaze](https://www.backblaze.com/) is a cloud backup and storage service. They have a lot of hard drives and collect a lot of information about these drives in order to monitor health and figure out what drives are the most reliable. We will be analyzing the Backblaze Hard Drive Data using Trino.
 
-The data can be found [here](https://www.backblaze.com/cloud-storage/resources/hard-drive-test-data).
-
-Download the drive data for 2023 Q2. You can find this at the bottom of the page.
+The data can be found [here](https://www.backblaze.com/cloud-storage/resources/hard-drive-test-data). Download the drive data for 2023 Q2. You can find this at the bottom of the page.
 
 **Task:** Download drive data for 2023 Q2
 
-The file is 860MB. This should hopefully not take too long...
+**Note:** The file is 860MB. This should hopefully not take too long...
 
 Once the file is downloaded, then unzip it and find the file called `2023-06-30.csv` and open it using a text editor. The first line of the file contains information the names of each of the different columns in the CSV file. Look at the first few rows, these are the ones we will be using for this exercise.
 
@@ -251,13 +257,13 @@ Create a new folder inside the MinIO bucket you previously made and upload the `
 
 **Task:** Upload drive data for 30/6/2023 into an empty folder inside a MinIO bucket
 
-**Note:** It is important that the folder is empty. If it is not, then we may read the other files which would give errors because they might not be CSV files or have the same columns.
+**Note:** It is important that the folder is empty. If it is not, then we will read the other files, which might result in errors because the files are not of the same format.
 
 In Trino, all columns of a CSV file are treated as text. We can cast the text to other types, you can see all types [here](https://trino.io/docs/current/language/types.html).
 
 We will now create a table for the Backblaze drive data.
 
-**Task:** Create at a table for the Backblaze drive data
+**Task:** Create a table for the Backblaze drive data
 
 <details>
 <summary><strong>Hint</strong>: Create CSV table</summary>
@@ -276,7 +282,7 @@ WITH (
 )
 ```
 
-The format is CSV. We skip 1 header line because we don't want to include the header as part of the dataset.
+The format is CSV. We skip 1 header line because we don't want to include the header with column names as part of the dataset.
 
 </details>
 
@@ -286,9 +292,9 @@ Now that a table has been created, we will now query it.
 
 **Hint:** See [exercise 2](./exercises.md#exercise-2---count-words-in-alice-in-wonderland-with-hive)
 
-You should see 100 different disks and some information about them, such as the serial number, model and the capacity of them.
+You should see 100 different disks and some information about them, such as the serial number, model and the capacity of them. The dataset contains a lot of columns, such as [S.M.A.R.T data](https://en.wikipedia.org/wiki/Self-Monitoring,_Analysis_and_Reporting_Technology) that contains information about the disks.
 
-We can now try to summarize the data. For example, what is the total count of each model of harddrive, and what is the capacity of the hard drives in GB?
+We can now try to summarize the data. For example, what is the total count of each model of hard drive, and what is the capacity of the hard drives in GB? Below is a task and a couple of questions that you could try to answer using Trino.
 
 **Tasks:** Answer the following questions using Trino
 
@@ -312,6 +318,8 @@ WHERE "$path" = 's3a://<name of bucket>/<name of folder>/2023-06-30.csv'
 GROUP BY model,capacity_bytes
 ORDER BY count DESC;
 ```
+
+</details>
 
 Compare the results to the [blog post about the drive stats](https://www.backblaze.com/blog/backblaze-drive-stats-for-q2-2023/). For example, the drive model `TOSHIBA MG07ACA14TA` is the most used with 38101 total drives. This is the same amount as what Backblaze shows in their blog post.
 
