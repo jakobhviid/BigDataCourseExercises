@@ -386,7 +386,7 @@ The [mongodb.yaml](mongodb.yaml) contains a complete manifest to compose a Mongo
   ```
   kubectl get all -n mongodb  
   ```
-  You should execept a similar output like the chunk below:
+  You should expect a similar output like the chunk below:
 
   ```
   NAME                               READY   STATUS    RESTARTS   AGE
