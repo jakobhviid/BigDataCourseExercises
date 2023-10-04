@@ -597,3 +597,5 @@ Try to compare the IP address to the IPs of the pods inside the Kubernetes clust
 Because the redis cluster has replicas, then if a primary node fails, then a replica will be promoted. Try to delete the pod that you just wrote the value to and then try to get the key again using the command: `GET foo`.
 
 You should see that you are still able to get the key even though the primary node was killed. This is very cool 😎.
+
+**Task:** What tactics does Redis Cluster + Redis Sentinel use?
