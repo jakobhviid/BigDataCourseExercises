@@ -590,7 +590,7 @@ redis-cli -c -h redis-redis-cluster -a $REDIS_PASSWORD
 
 You are now connected to the redis cluster! Try to create a key using the [`SET` command](https://redis.io/commands/set/). For example, `SET foo "bar"`. This will create / overwrite a key with the name "foo" and give it the value "bar".
 
-When you run commands that writes to Redis you should see that it tells you what host it wrote the key on.
+When you write commands to Redis you should see that it tells you what host it ran the command on. This is because the keys are sharded accross the redis nodes based on the key used. So if you write using the key `foo` and then get the key again, it should redirect you to the same node.
 
 Try to compare the IP address to the IPs of the pods inside the Kubernetes cluster. Use the command `kubectl get pods -l app.kubernetes.io/instance=redis -o wide`. You should then be able to see what pod the value was written to by comparing the IPs.
 
