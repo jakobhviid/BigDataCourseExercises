@@ -312,8 +312,9 @@ WHERE "$path" = 's3a://<name of bucket>/<name of folder>/2023-06-30.csv'
 GROUP BY model,capacity_bytes
 ORDER BY count DESC;
 ```
+</details>
 
-Compare the results to the [blog post about the drive stats](https://www.backblaze.com/blog/backblaze-drive-stats-for-q2-2023/). For example, the drive model `TOSHIBA MG07ACA14TA` is the most used with 38101 total drives. This is the same amount as what Backblaze shows in their blog post.
+**Tasks:** Compare the results to the [blog post about the drive stats](https://www.backblaze.com/blog/backblaze-drive-stats-for-q2-2023/). For example, the drive model `TOSHIBA MG07ACA14TA` is the most used with 38101 total drives. This is the same amount as what Backblaze shows in their blog post.
 
 ### Exercise 4 - Compose a MongoDB cluster
 The objective of this exercise is to interact with a NoSQL document-oriented database. 
