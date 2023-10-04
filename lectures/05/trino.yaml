@@ -1,0 +1,52 @@
+---
+apiVersion: trino.stackable.tech/v1alpha1
+kind: TrinoCluster
+metadata:
+  name: trino
+spec:
+  image:
+    productVersion: "414"
+    stackableVersion: "23.7.0"
+  clusterConfig:
+    catalogLabelSelector:
+      matchLabels:
+        trino: trino
+  coordinators:
+    config:
+      resources:
+        cpu:
+          min: 200m
+          max: 1000m
+        memory:
+          limit: 1Gi
+    roleGroups:
+      default:
+        replicas: 1
+  workers:
+    config:
+      resources:
+        cpu:
+          min: 200m
+          max: 1000m
+        memory:
+          limit: 1Gi
+    roleGroups:
+      default:
+        replicas: 1
+---
+apiVersion: trino.stackable.tech/v1alpha1
+kind: TrinoCatalog
+metadata:
+  name: hive
+  labels:
+    trino: trino
+spec:
+  connector:
+    hive:
+      metastore:
+        configMap: hive
+      s3:
+        reference: minio
+  configOverrides:
+    # If we don't set the endpoint then Trino will try to connect to AWS S3
+    hive.s3.endpoint: http://minio:9000

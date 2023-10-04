@@ -1,25 +1,11 @@
 ---
-apiVersion: v1
-kind: PersistentVolume
+apiVersion: "v1"
+kind: "PersistentVolumeClaim"
 metadata:
-  name: anbae-pv-volume
+  name: "anbae-pv-claim"
   labels:
-    type: local
+    app: "anbae"
 spec:
-  storageClassName: manual
-  capacity:
-    storage: 5Gi
-  accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: "/mnt/data"
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: anbae-pv-claim
-spec:
-  storageClassName: manual
   accessModes:
     - ReadWriteOnce
   resources:
@@ -45,22 +31,22 @@ spec:
       volumeMounts:
         - mountPath: "/root/code"
           name: anbae-pv-storage
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: hdfs-cli
-  labels:
-    app: hdfs-cli
-spec:
-  containers:
-    - name: hdfs-cli
-      image: apache/hadoop:3
-      imagePullPolicy: Always
-      command: ["/bin/sleep", "3650d"]
-      volumeMounts:
-        - mountPath: "/opt/hadoop/code"
-          name: anbae-pv-storage
-      env:
-        - name: HADOOP_USER_NAME
-          value: "stackable"
+# ---
+# apiVersion: v1
+# kind: Pod
+# metadata:
+#   name: hdfs-cli
+#   labels:
+#     app: hdfs-cli
+# spec:
+#   containers:
+#     - name: hdfs-cli
+#       image: apache/hadoop:3
+#       imagePullPolicy: Always
+#       command: ["/bin/sleep", "3650d"]
+#       volumeMounts:
+#         - mountPath: "/opt/hadoop/code"
+#           name: anbae-pv-storage
+#       env:
+#         - name: HADOOP_USER_NAME
+#           value: "stackable"
