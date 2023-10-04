@@ -558,7 +558,7 @@ We will now set up a highly available and scalable [Redis](https://redis.io/) cl
 
 The cluster will consist of 6 nodes, 3 are the primary nodes, and the 3 other ones are replica nodes. The replicas will use [replication](https://redis.io/docs/management/replication/) and failover strategies in order to ensure data is available with minimal downtime.
 
-We will use the [Bitnami Redis Cluster helm chart](helm install my-release oci://registry-1.docker.io/bitnamicharts/redis-cluster). To install the cluster, use the following command:
+We will use the [Bitnami Redis Cluster helm chart](https://artifacthub.io/packages/helm/bitnami/redis-cluster). To install the cluster, use the following command:
 
 ```text
 helm install redis oci://registry-1.docker.io/bitnamicharts/redis-cluster
