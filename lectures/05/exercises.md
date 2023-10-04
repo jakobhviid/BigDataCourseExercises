@@ -556,7 +556,7 @@ You may find this documentation helpful to complete this exercise.
 
 We will now set up a highly available and scalable [Redis](https://redis.io/) cluster using [Redis Cluster](https://redis.io/docs/management/scaling/) and [Redis Sentinel](https://redis.io/docs/management/sentinel/). Redis is an open source, in-memory data structure store (key values), used as a database, cache, and message broker. Redis cluster is horizontally scalable and uses horizontal partitioning / sharding to store the different keys and values on different nodes.
 
-The cluster will consist of 6 nodes, 3 are the primary nodes, and the 3 other ones are replica nodes. The replicas will use [replication](https://redis.io/docs/management/replication/) and failover strategies in order to ensure data is available with minimal downtime.
+The cluster will consist of 6 nodes, 3 are the primary nodes, and the 3 other ones are replica nodes. The replicas will use [replication](https://redis.io/docs/management/replication/) and failover strategies in order to ensure data is available with minimal downtime. You can only write to primary nodes, no the replicas, but you can read from primary and replicas. This can also be used make the primary nodes focus on only writing data, and then move all reads to the replicas for maximum performance.
 
 We will use the [Bitnami Redis Cluster helm chart](https://artifacthub.io/packages/helm/bitnami/redis-cluster). To install the cluster, use the following command:
 
