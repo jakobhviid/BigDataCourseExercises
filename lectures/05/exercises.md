@@ -551,3 +551,49 @@ You may find this documentation helpful to complete this exercise.
 </details>
 
 **Task:** Formulize a question to answer about the documents in MongoDB and create a proper query to answer this question. Post the question and your solution in our Discord channel called "exercises".
+
+### Exercise 5 - Highly available and scalable Redis cluster
+
+We will now set up a highly available and scalable [Redis](https://redis.io/) cluster using [Redis Cluster](https://redis.io/docs/management/scaling/) and [Redis Sentinel](https://redis.io/docs/management/sentinel/). Redis is an open source, in-memory data structure store (key values), used as a database, cache, and message broker. Redis cluster is horizontally scalable and uses horizontal partitioning / sharding to store the different keys and values on different nodes.
+
+The cluster will consist of 6 nodes, 3 are the primary nodes, and the 3 other ones are replica nodes. The replicas will use [replication](https://redis.io/docs/management/replication/) and failover strategies in order to ensure data is available with minimal downtime.
+
+We will use the [Bitnami Redis Cluster helm chart](helm install my-release oci://registry-1.docker.io/bitnamicharts/redis-cluster). To install the cluster, use the following command:
+
+```text
+helm install redis oci://registry-1.docker.io/bitnamicharts/redis-cluster
+```
+
+The Bitnami chart will create a random password stored in a Kubernetes secret. To get the password, use the following command:
+
+```text
+kubectl get secret redis-redis-cluster -o jsonpath="{.data.redis-password}"
+```
+
+This will return the password in base64 format. You can decode it using the `base64 --decode` command on Unix (use WSL if you are on Windows):
+
+```text
+echo "<base64 password>" | base64 --decode
+```
+
+We will now create an interactive container that will be used to connect to the redis cluster. Run the following command:
+
+```text
+kubectl run redis-cluster-client --rm --tty -i --env REDIS_PASSWORD=<password> --image docker.io/bitnami/redis-cluster:7.2.1-debian-11-r0 -- bash
+```
+
+You can then use the following command inside of the interactive container to connect to the redis cluster using redis-cli:
+
+```text
+redis-cli -c -h redis-redis-cluster -a $REDIS_PASSWORD
+```
+
+You are now connected to the redis cluster! Try to create a key using the [`SET` command](https://redis.io/commands/set/). For example, `SET foo "bar"`. This will create / overwrite a key with the name "foo" and give it the value "bar".
+
+When you run commands that writes to Redis you should see that it tells you what host it wrote the key on.
+
+Try to compare the IP address to the IPs of the pods inside the Kubernetes cluster. Use the command `kubectl get pods -l app.kubernetes.io/instance=redis -o wide`. You should then be able to see what pod the value was written to by comparing the IPs.
+
+Because the redis cluster has replicas, then if a primary node fails, then a replica will be promoted. Try to delete the pod that you just wrote the value to and then try to get the key again using the command: `GET foo`.
+
+You should see that you are still able to get the key even though the primary node was killed. This is very cool 😎.
