@@ -130,7 +130,7 @@ We will now [create a schema](https://trino.io/docs/current/sql/create-schema.ht
 **Task:** Create a schema
 
 <details>
-<summary><strong>Hint</strong>: Create schema</summary>
+<summary><strong>Hint:</strong> Create schema</summary>
 
 ```SQL
 CREATE SCHEMA IF NOT EXISTS hive.bucket
@@ -145,7 +145,7 @@ Now that a schema has been created, we will [create a table](https://trino.io/do
 **Task:** Create a table using the schema you just made
 
 <details>
-<summary><strong>Hint</strong>: Create table</summary>
+<summary><strong>Hint:</strong> Create table</summary>
 
 ```SQL
 CREATE TABLE hive.bucket.text (line VARCHAR)
@@ -171,7 +171,7 @@ To count words, you can split each line by spaces, then count the words for each
 **Task**: Count the total amount of "words" in the Alice in Wonderland text
 
 <details>
-<summary><strong>Hint</strong>: Count total words</summary>
+<summary><strong>Hint:</strong> Count total words</summary>
 
 ```SQL
 SELECT SUM(CARDINALITY(SPLIT(RTRIM(line), ' ')))
@@ -194,7 +194,7 @@ We will now find the 10 most used words. This is somewhat complex because if you
 **Task:** Find the 10 most used words in the Alice in Wonderland text
 
 <details>
-<summary><strong>Hint</strong>: Top 10 most used words</summary>
+<summary><strong>Hint:</strong> Top 10 most used words</summary>
 
 ```SQL
 SELECT DISTINCT word, COUNT(*) as count -- 4
@@ -266,7 +266,7 @@ We will now create a table for the Backblaze drive data.
 **Task:** Create a table for the Backblaze drive data
 
 <details>
-<summary><strong>Hint</strong>: Create CSV table</summary>
+<summary><strong>Hint:</strong> Create CSV table</summary>
 
 ```SQL
 CREATE TABLE hive.bucket.backblaze (
@@ -305,7 +305,7 @@ We can now try to summarize the data. For example, what is the total count of ea
 - What hard drive model has the largest total capacity?
 
 <details>
-<summary><strong>Hint</strong>: Create SQL query</summary>
+<summary><strong>Hint:</strong> Create SQL query</summary>
 
 ```SQL
 SELECT

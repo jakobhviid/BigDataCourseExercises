@@ -94,7 +94,7 @@ You will need the commons, secret and spark-k8s Stackable operators. We will cre
 **Note:** MicroK8s uses a different kubelet directory than most other Kubernetes distributions. Specify the correct directory using `--set kubeletDir=/var/snap/microk8s/common/var/lib/kubelet`.
 
 <details>
-  <summary><strong>Hint</strong>: Install operators</summary>
+  <summary><strong>Hint:</strong> Install operators</summary>
 
   Create the `stackable` namespace using `kubectl create namespace stackable`
 
