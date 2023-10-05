@@ -9,7 +9,7 @@ The focus of today's lecture is to interact with Kafka, create Python producer a
 Please open issues [here](https://github.com/jakobhviid/BigDataCourseExercises/issues) if you encounter unclear information or experience bugs in our examples!
 
 
-### Exercise 01 - Composing a Kafka cluster
+### Exercise 1 - Composing a Kafka cluster
 
 The objective of this exercise is to deploy a Kafka cluster. We will be using operators from a company called [strimzi.io](http://strimzi.io). The image below links to a short introductory video on how to set up Kafka inside Kubernetes. 
 
@@ -148,7 +148,7 @@ The list below summarises the extra services and briefly demonstrate how to inte
   ```
 </details>
 
-### Exercise 02 - Using Redpanda to interact with Kafka
+### Exercise 2 - Using Redpanda to interact with Kafka
 The objective of this exercise is to use [Redpanda Console](https://redpanda.com/redpanda-console-kafka-ui) for interacting with Kafka.
 Open Redpanda at [http://127.0.0.1:8080](http://127.0.0.1:8080) in your browser!
 
@@ -184,7 +184,7 @@ Open Redpanda at [http://127.0.0.1:8080](http://127.0.0.1:8080) in your browser!
 
 
 
-### Exercise 03 - Produce messages to Kafka using Python
+### Exercise 3 - Produce messages to Kafka using Python
 
 The objective of this exercise is to create a program which publishes messages to a Kafka topic. The exercise builds on top of [exercise 9 from lecture 2](../02/exercises.md#exercise-9---create-six-fictive-data-sources), but instead of saving the data to HDFS we will publish it to a Kafka topic and use a Kafka Connector to save the samples to HDFS. 
 This exercise focuses on creating the topic and creating the producer. If you have not solved the exercise from last week then you can use the files provided [here](./hints/simple-producer.py).
@@ -229,7 +229,7 @@ To verify that the program is producing messages to the `INGESTION` topic. Open 
  
 </details>
 
-### Exercise 04 - Consume messages from Kafka using Python with single and multiple consumers
+### Exercise 4 - Consume messages from Kafka using Python with single and multiple consumers
 
 The objective of this exercise is to write a Python consumer and to print the messages from the `INGESTION` topic.
 
@@ -298,7 +298,7 @@ DEFAULT_CONSUMER    3186
 - How can we get two consumers to receive unique records?
 - What defines the maximum number of active parallel consumers within one consumer group?
 
-### Exercise 05 - Kafka Ksql
+### Exercise 5 - Kafka Ksql
 
 The objective of this exercise is use ksqlDB to split the records in the `INGESTION` topic into six separate streams ` SENSOR_ID_{1, 2, ..., 6}` based on the sensor id in the `payload` field of the JSON file.
 
@@ -365,7 +365,7 @@ The objective of this exercise is use ksqlDB to split the records in the `INGEST
 
 
 
-### Exercise 06 - Kafka Connect and HDFS
+### Exercise 6 - Kafka Connect and HDFS
 The objective of this exercise is apply and configure a Kafka Connect module to write the records from the `INGESTION` topic into HDFS as mentioned in [exercise 03](#exercise-03---produce-messages-to-kafka-using-python).
 
 The module of interest is the [HDFS 2 Sink Connector](https://docs.confluent.io/kafka-connectors/hdfs/current/overview.html) created by a company called Confluent. The module will be accessible through the ready-running `kafka-connect` service. The creation of the underlying image of our `kafka-connect` service can be further explored here: [kafka-connect - README.md](../../services/kafka-connect/README.md). 

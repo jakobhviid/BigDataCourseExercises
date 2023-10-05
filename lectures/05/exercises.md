@@ -329,7 +329,7 @@ We will be working with MongoDB which is great for storing JSON like records wit
 
 **Note:** We will deploying the minimum configuration for this database in order to reduce the recoruse footprint. 
 
-This exercise is composed of three parts starting wiht a deployment of the MongoDB cluster. Then we would like to revist Kafka Connect similar to [Exercise 06](./../03/exercises.md#exercise-06---kafka-connect-and-hdfs) from lecture 3. And finally we will look into querying JSON records in the database.
+This exercise is composed of three parts starting wiht a deployment of the MongoDB cluster. Then we would like to revist Kafka Connect similar to [Exercise 06](./../03/exercises.md#exercise-6---kafka-connect-and-hdfs) from lecture 3. And finally we will look into querying JSON records in the database.
 
 
 We recommand to create a isolated namespace for the following MongoDB services.
@@ -466,13 +466,13 @@ Multiple approaches for interfacing with MongoDB have been covered in the previo
 
 The objective of this exercise is to configure a Kafka Connect connector that uses the `INGESTION` topic as a source and MongoDB as a sink. Therefore the exercise assumes you have records inside the `INGESTION` topic. 
 
-**Task:** If the `INGESTION` topic is empty we recommend revisiting [Exercise 03](./../03/exercises.md#exercise-03---produce-messages-to-kafka-using-python) from lecture 3 and re-establish the Kafka produce to create new records.
+**Task:** If the `INGESTION` topic is empty we recommend revisiting [Exercise 03](./../03/exercises.md#exercise-3---produce-messages-to-kafka-using-python) from lecture 3 and re-establish the Kafka produce to create new records.
 
 **Task:** Configure a Kafka Connect connector to move records from Kafka to MongoDB.
 
-**Hint:** This task can be solved with multiple approaches. Please start by revisiting the concept in [Exercise 06](./../03/exercises.md#exercise-06---kafka-connect-and-hdfs) from lecture 3.
+**Hint:** This task can be solved with multiple approaches. Please start by revisiting the concept in [Exercise 06](./../03/exercises.md#exercise-6---kafka-connect-and-hdfs) from lecture 3.
 
-**Hint:** Then read the documentation here: [Configure the Sink Connector](https://www.mongodb.com/docs/kafka-connector/current/tutorials/sink-connector/#configure-the-sink-connector). The documentation suggests to post the configuration to the Kafka Connect REST API, which is similar to the approach in [Exercise 06](./../03/exercises.md#exercise-06---kafka-connect-and-hdfs).
+**Hint:** Then read the documentation here: [Configure the Sink Connector](https://www.mongodb.com/docs/kafka-connector/current/tutorials/sink-connector/#configure-the-sink-connector). The documentation suggests to post the configuration to the Kafka Connect REST API, which is similar to the approach in [Exercise 06](./../03/exercises.md#exercise-6---kafka-connect-and-hdfs).
 
 **NB:** Remember to setup port-forwarding for the Kafka Connect REST API.
 
