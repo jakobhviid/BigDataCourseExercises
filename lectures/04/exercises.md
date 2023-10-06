@@ -94,7 +94,7 @@ You will need the commons, secret and spark-k8s Stackable operators. We will cre
 **Note:** MicroK8s uses a different kubelet directory than most other Kubernetes distributions. Specify the correct directory using `--set kubeletDir=/var/snap/microk8s/common/var/lib/kubelet`.
 
 <details>
-  <summary><strong>Hint</strong>: Install operators</summary>
+  <summary><strong>Hint:</strong> Install operators</summary>
 
   Create the `stackable` namespace using `kubectl create namespace stackable`
 
@@ -234,7 +234,7 @@ When the job is done then take a look at the logs of the driver pod and look for
 ### Exercise 4 - Running Spark Streaming Jobs - Kafka
 The objective of the exercise is to investigate the possibilities of using Spark streaming queries with a Kafka topic as a source. 
 
-This exercise requires to have a Kafka producer which produces records for a topic. For convenience, we recommend revisiting [exercise 3](./../03/exercises.md#exercise-03---produce-messages-to-kafka-using-python) from the last lecture. 
+This exercise requires to have a Kafka producer which produces records for a topic. For convenience, we recommend revisiting [exercise 3](./../03/exercises.md#exercise-3---produce-messages-to-kafka-using-python) from the last lecture. 
 
 **Task:** Create a streaming query that calculates the running mean of the six different stations. 
 

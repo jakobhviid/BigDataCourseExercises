@@ -92,9 +92,7 @@ end
 ```
 
 ## Virtual machines at SDU
-Virtual machines will be available soon for this cource. 
-Access to the portal can be found at [https://virtualresources.sdu.dk](https://virtualresources.sdu.dk) from the SDU local. Use VPN when home! 
-Watch the video here to learn how virtual machines work: [SDU - Virtualresources](https://www.youtube.com/watch?v=iKM6P7nRzqI&feature=youtu.be).
+Virtual machines is available for this cource. Please get further material about the virtual machines at SDU [here](./services/virtual%20machines/README.md).
 
 ## Content of the repository
 The root of this repository will be related to the content of the current semester and the folder `archive` will contain material for the previous semester. The `lectures` folder and `services` folder contain the exercise material for the current semester. 

@@ -75,7 +75,7 @@ To use the HDFS cluster we need to tell the HDFS CLI to use the HDFS cluster we 
 **Note**: Make sure you connect to the active name node. Only one name node is active, the other ones are in "standby" mode and will only be promoted in case of a failover. You know if it is not the active one if the result of the command is `Operation category READ is not supported in state standby`.
 
 <details>
-  <summary><strong>Hint</strong>: Hostname and port</summary>
+  <summary><strong>Hint:</strong> Hostname and port</summary>
 
   The port that the HDFS client uses is 8020.
 
@@ -83,7 +83,7 @@ To use the HDFS cluster we need to tell the HDFS CLI to use the HDFS cluster we 
 </details>
 
 <details>
-  <summary><strong>Hint</strong>: Full example</summary>
+  <summary><strong>Hint:</strong> Full example</summary>
 
   The service called "simple-hdfs-namenode-default" is a ["headless service"](https://kubernetes.io/docs/concepts/services-networking/service/#headless-services). 
 
@@ -99,7 +99,7 @@ You should see that there are no files in the directory. We will fix this now.
 **Task**: Create a file inside the interactive container called "test.txt" and add some text to it.
 
 <details>
-  <summary><strong>Hint</strong>: Creating a file</summary>
+  <summary><strong>Hint:</strong> Creating a file</summary>
 
   The container does not have nano or vim installed. You can simply create a file by echoing some text and piping it into a file: `echo "hello" > test.txt`. Verify that the file exists by using `ls` and verify its contents using `cat test.txt`.
 </details>
@@ -109,7 +109,7 @@ To add a file to the HDFS cluster using the HDFS CLI you can use the put command
 **Task**: Upload the file to the HDFS cluster
 
 <details>
-  <summary><strong>Hint</strong>: Uploading the file</summary>
+  <summary><strong>Hint:</strong> Uploading the file</summary>
 
   `hdfs dfs -put ./test.txt /test.txt`
 </details>
@@ -119,7 +119,7 @@ Now that you have uploaded a file to HDFS you can try to list the files to verif
 **Task**: Read the contents of the file you just uploaded to HDFS
 
 <details>
-  <summary><strong>Hint</strong>: Reading the file</summary>
+  <summary><strong>Hint:</strong> Reading the file</summary>
 
   `hdfs dfs -cat /test.txt`
 </details>
@@ -129,7 +129,7 @@ Now that you have uploaded a file to HDFS you can try to list the files to verif
 **Hint**: Run the command `hdfs dfs` to get a list of all commands and options.
 
 <details>
-  <summary><strong>Hint</strong>: Deleting the file</summary>
+  <summary><strong>Hint:</strong> Deleting the file</summary>
 
   `hdfs dfs -rm /test.txt`
 </details>
@@ -149,7 +149,7 @@ Before we mount it we want to take a look at the ConfigMap and try to understand
 **Hint**: The ConfigMap resource should be called "simple-hdfs".
 
 <details>
-  <summary><strong>Hint</strong>: Full example</summary>
+  <summary><strong>Hint:</strong> Full example</summary>
 
   List all ConfigMaps using `kubectl get configmap`.
 
@@ -169,7 +169,7 @@ For the next exercises you will be working with the Alice in Wonderland book. It
 **Hint**: Download using `wget -O alice-in-wonderland.txt https://www.gutenberg.org/files/11/11-0.txt`
 
 <details>
-  <summary><strong>Hint</strong>: Full example</summary>
+  <summary><strong>Hint:</strong> Full example</summary>
 
   1. Gain interactive shell inside a pod running apache/hadoop:3. You can use the pod from [exercise 3](#exercise-3-optional---mount-hdfs-config-to-interactive-container).
   2. Download Alice in Wonderland using `wget -O alice-in-wonderland.txt https://www.gutenberg.org/files/11/11-0.txt`.
@@ -264,7 +264,7 @@ You have the role of a data engineer and are required to store the samples from 
 1. Write a short description of how you will deploy these data sources in Kubernetes together with your thoughts and conclusion to the two first questions in our Discord channel!
 
 <details>
-  <summary><strong>Hint</strong>: File formats</summary>
+  <summary><strong>Hint:</strong> File formats</summary>
 
 - JSON
 - **Avro**
@@ -274,7 +274,7 @@ You have the role of a data engineer and are required to store the samples from 
 
 
 <details>
-  <summary><strong>Hint</strong>: One folder structure</summary>
+  <summary><strong>Hint:</strong> One folder structure</summary>
 
 ```
 /data/raw/sensor_id=<Sensor ID>/temporal_aspect=<temporal aspect>/year=<year>/month=<month>/day=<day>/<filename -> correlation_id>.avro
@@ -284,7 +284,7 @@ You have the role of a data engineer and are required to store the samples from 
 
 
 <details>
-  <summary><strong>Hint</strong>: One suggested schema</summary>
+  <summary><strong>Hint:</strong> One suggested schema</summary>
 
 ```json
 {
@@ -303,7 +303,7 @@ You have the role of a data engineer and are required to store the samples from 
 
 
 <details>
-  <summary><strong>Hint</strong>: Code example(s)</summary>
+  <summary><strong>Hint:</strong> Code example(s)</summary>
 
 You are able to find code snippets inside [`data-source.ipynb`](./data-source.ipynb) if you need suggestions and directions for building the components of the fictive data sources. 
 It is now up to you to take the components and gue them together in the [`data-source.py`](./data-source.py) file. 
@@ -316,7 +316,7 @@ It is now up to you to take the components and gue them together in the [`data-s
 </details>
 
 <details>
-  <summary><strong>Hint</strong>: Build your image and publish to Docker Hub</summary>
+  <summary><strong>Hint:</strong> Build your image and publish to Docker Hub</summary>
 
 Look into [`make-and-publish-image.sh`](../../services/interactive/make-and-publish-image.sh) in the `services/interactive/...` folder of the repository.
 </details>
