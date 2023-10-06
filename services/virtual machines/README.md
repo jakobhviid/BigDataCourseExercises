@@ -8,15 +8,12 @@ The assigned VMs can be found at the [virtualresources](https://virtualresources
 The VMs assosiated to your SDU profile will appear on the portal. 
 Watch the video [here](https://www.youtube.com/watch?v=iKM6P7nRzqI&feature=youtu.be) to learn how to navigate the portal and to learn how to get your SSH keys for your VMs.
 
-
-
 ## Links
 - [SDU VPN](https://any.sdu.dk)
 - [virtualresources.sdu.dk](https://virtualresources.sdu.dk)
 - [Kubernetes command-line tool - kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
 - [microk8s.io](https://microk8s.io)
 - [kubernetes.io](https://kubernetes.io)
-
 
 ## VM Sepcifications
 - Ubuntu 20.04.6 LTS
@@ -43,16 +40,15 @@ The VM ships with [microk8s.io](https://microk8s.io) and the VMs have been initi
 
 The following installition process have been performed on each individual VM.
 
-
 ### Installation and setting up the Kubernetes on each VM
-- Install MicroK8s on Ubuntu
+1. Install MicroK8s on Ubuntu
     ```zsh
     sudo apt update
     sudo apt install -y snapd
     sudo snap install microk8s --classic
     ```
 
-- Add `$USER` to `microk8s` group
+1. Add `$USER` to `microk8s` group
     ```zsh
     sudo usermod -a -G microk8s $USER
     mkdir ~/.kube
@@ -60,13 +56,12 @@ The following installition process have been performed on each individual VM.
     newgrp microk8s
     ```
 
-- Check the status while Kubernetes initializing
+1. Check the status while Kubernetes initializing
     ```zsh
     microk8s status --wait-ready
     ```
 
-
-- Enable the services you need
+1. Enable the services you need
     ```zsh
     microk8s enable hostpath-storage
     ```
@@ -78,7 +73,6 @@ The following steps demostrates how to bind the three VMs into one cluster.
     ```zsh
     ssh bds-g<group_id>-n<{0,1,2}>
     ```
-
 
 1. Use the `microk8s add-node` command on node `bds-g<group_id>-n0` twice. Each command is producing a command you need to copy and paste into your other terminal windows (your active SSH session with `bds-g<group_id>-n1` and `bds-g<group_id>-n2`).
     ```zsh
