@@ -75,19 +75,35 @@ DataHub comes with a nice analytics overview. Here we can gain an overview of ho
 
 ### Exercise 4 - Add a Kafka Ingestion Source
 
-The Kafka Ingestion Source is not able to extract metadata on a topics key and values without setting up Kafka schemas. As this is not something we have touched upon, we will only set up a Kafka Ingestion source to extract topic names.
+We will now create an Ingestion source for a Kafka cluster. An ingestion source tells Datahub how to connect to a service and allows Datahub to collect metadata from it. In the case of Kafka, it collects topic names, and if you are using for example Avro, then it can collect information about the schema from the schema registry.
 
-**Task:** Compose the stack in ./exercise07/docker-compose.yml to set up a simple Kafka cluster + Kowl. 
+If you don't have a Kafka cluster already then create one.
 
-**Task:** Use the ingestion UI in Linkedin DataHub to create a Kafka Ingestion source that uses the Kafka
-broker in the stack you just set up.
+**Task:** Create a Kafka cluster and also deploy Redpanda
 
-**Task:** Check that the ingestion worked, and you can see newly added topics in Linkedin DataHub.
+**Hint:** Go back to [lecture 3 exercise 1](../03/exercises.md#exercise-1---composing-a-kafka-cluster)
 
->You can remove SSL authentication by going to the YAML view and deleting the lines related to SSL authentication.
+Now that you have a Kafka cluster deployed, you can then add it as an ingestion source.
 
-> If you want to keep the stateful ingestion turned on (under advanced) you need to platform_instance = “somename” to your config. This can also be done in the YAML view.
+**Task:** Create an ingestion source for the Kafka cluster
 
+Once you have created the ingestion source it will then run. Make sure that the run is succeeded. If not then you can check the logs to figure out the problem.
+
+**Task:** Check that the ingestion worked
+
+If the ingestion worked then you should see Kafka as a platform on the start page of Datahub.
+
+**Task:** Look at the Kafka platform
+
+You may or may not see any topcs for Kafka on Datahub. If there are no topics, then it is because your Kafka cluster has no topics. Try to create a topic.
+
+**Task:** Create a Kafka topic
+
+Now that you have created a topic you can then try to check if it is available on Datahub. But you should see that nothing has changed. This is because Datahub pulls metadata on configured intervals. But you can manually trigger the ingestion source.
+
+**Task:** Manually trigger the ingestion source
+
+When it is done running, you can then look for the topic you created and you should see it inside Datahub. You can now document the topic, add tags and terms etc.
 
 ### Exercise 5 - Add Linkedin DataHub’s internal MySQL database as an ingestion source
 Linkedin DataHub creates a new MySQL database as part of its stack. We will try to add this database as an ingestion source for some data inception.
