@@ -151,19 +151,25 @@ The imporantance of organising the metadata of the data sources have a direct im
 1. Append two terms in your newely create term group (`RD`) called `experiments` and `results`.
 1. Hereafter create one new term (`analysis`) that inherits from the `RD` term group. How do you expect `analysis` will fit in the hierarchy? 
 
+**Hint:** Watch this short session [DataHub 201: Business Glossary](https://youtu.be/pl9zx0CtdiU?si=1JLSC0C5uD7pOth2) on youtube.
+
 **Task: BONUS: Create the same glossary terms in a yaml file.**
 
 **Note:** A solution for this exercise is all yours! However, it is important to stretch that this method enables version control - which all of us prefers!
 
 **Hint:** [GitHub: datahub/metadata-ingestion/examples/bootstrap_data/business_glossary.yml](https://github.com/datahub-project/datahub/blob/master/metadata-ingestion/examples/bootstrap_data/business_glossary.yml)
 
-### Exercise 3 - Checkout analytics!
-DataHub comes with a nice analytics overview. Here we can gain an overview of how the platform is used.
+### Exercise 3 - Checkout analytics overview in the UI.
+The DataHub platform comes with a nice analytics overview page. 
+Here we are able to obtain an overview of the usage of the platform and various other statictic..
 
-**Task:** Play around in the Analytics UI.
+**Task: Play around in the Analytics UI.**
 
-**Task:** Can you find analytics for your newly added Domain?
+- What do see?  
 
+**Task: Find metics for your newly added Domain.** 
+
+- Filter "Data Landscape Summary" to only include the `Engineering` domain and report the "Section Views across Entity Types" metrics to rest of the project group.
 
 ### Exercise 4 - Add a Kafka Ingestion Source
 
