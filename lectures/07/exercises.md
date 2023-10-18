@@ -287,7 +287,7 @@ This exercise is about to add a secodnary ingestion source. The source is an alr
 1. Once you have created the ingestion source it will then run. Make sure that the run is succeeded. If not then you can check the logs to figure out the problem.
 
 ### Exercise 6 - Alice in Metaverse Part 1 👸
-Your task is to create a new table in the database "datahub" and ingest all the words from Alice in Wonderland!
+dummy data
 
 #### Exercise 6.1 - 👸
 1. Create a new database called "alice"
@@ -299,10 +299,22 @@ Look at datahub, and see what changed and what you can see about alice in datahu
 
 #### Exercise 6.2 - 👸
 
-CREATE VIEW alice_agg AS SELECT word, COUNT(*) as n FROM alice GROUP BY word;
+```sql
+CREATE VIEW analysis AS SELECT r.experiment_id, e.created_date, r.valid, AVG(r.value) avg_value FROM results r INNER JOIN experiment e ON r.experiment_id=e.id GROUP BY r.experiment_id, r.valid;
+```
+
+
 **Note:** May need to sync manually.
 
-#### Exercise 6.2 - Check linage
+#### Exercise 6.3 - Check linage
+add desc. to the following three datasets
+- expirment
+- results
+- analysis
+
+
+
+#### Exercise 6.4 - Create linage..
 
 Is it missing, how can be create linage??
 
