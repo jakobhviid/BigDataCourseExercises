@@ -136,20 +136,26 @@ Steps:
 
 ### Exercise 2 - Organizing metadata
 
+The imporantance of organising the metadata of the data sources have a direct impact on the usagebility of the platform. To master the metadata of the data sources need to talk about three components; domains, business glossary and tags. 
 
-- As more metadata us added to DataHub the for
+- **Domains** are collections of related data assets associated with a specific part of your organization, such as the Marketing department." Get a furhter explanation on domains in DataHub [here](https://datahubproject.io/docs/domains/).
+- **Business glossary** can organize data assets using a shared vocabulary. The glossaries are providing a framework for defining a standardized set of data concepts and then associating them with the physical assets that exist within your data ecosystem. Get a furhter explanation on business glossary in DataHub [here](https://datahubproject.io/docs/glossary/business-glossary).
+- **Tags** are also useful for organising metadata, but there is not a strict policy on how to use them. They can be used to e.g. add versioning to an entity, or whether an entity is legacy and to classify the several environments data assets can live in. Get a furhter explanation on tag in DataHub [here](https://datahubproject.io/docs/tags)
 
 
+**Task: Login to the [frontend](http://localhost:9002) and play around in the UI.**  
+**Task: Create your glossary terms with the UI.**  
 
-**Task:** Play around in the UI, and see if you can add the following: 
-1. A new domain
-1. A new Glossary Group
-    - Add 1-2 new glossaries in your new Glossary Group.
-1. One new glossary that inherits from another glossary.
+1. A new domain which refelcts the part of the organization you are interested in. E.g. `Engineering`.
+1. A new business glossary term group. E.g. `RD`.
+1. Append two terms in your newely create term group (`RD`) called `experiments` and `results`.
+1. Hereafter create one new term (`analysis`) that inherits from the `RD` term group. How do you expect `analysis` will fit in the hierarchy? 
 
-**Task:** Now try and use your glossaries on some of the existing dummy data.
+**Task: BONUS: Create the same glossary terms in a yaml file.**
 
-**Task:** What metadata does a glossary term that is inherited by another term show? Can you explain this?
+**Note:** A solution for this exercise is all yours! However, it is important to stretch that this method enables version control - which all of us prefers!
+
+**Hint:** [GitHub: datahub/metadata-ingestion/examples/bootstrap_data/business_glossary.yml](https://github.com/datahub-project/datahub/blob/master/metadata-ingestion/examples/bootstrap_data/business_glossary.yml)
 
 ### Exercise 3 - Checkout analytics!
 DataHub comes with a nice analytics overview. Here we can gain an overview of how the platform is used.
@@ -214,7 +220,7 @@ source:
     type: mysql
     config:
         host_port: 'preq-mysql:3306'
-        database: null
+        database: datahub
         username: root
         include_tables: true
         include_views: true
