@@ -49,7 +49,7 @@ The main components are power by the following technoloiges:
 <summary><strong>Hint:</strong> Create namespace</summary>
 
 ```
-k8s create namespace meta
+kubectl create namespace meta
 ```
 </details>
 
@@ -291,5 +291,5 @@ helm uninstall -n meta preq
 kubectl -n meta delete secret mysql-secrets
 kubectl -n meta delete secret neo4j-secrets
 
-k8s delete namespace meta
+kubectl delete namespace meta
 ```
