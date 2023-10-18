@@ -160,7 +160,7 @@ The imporantance of organising the metadata of the data sources have a direct im
 **Hint:** [GitHub: datahub/metadata-ingestion/examples/bootstrap_data/business_glossary.yml](https://github.com/datahub-project/datahub/blob/master/metadata-ingestion/examples/bootstrap_data/business_glossary.yml)
 
 ### Exercise 3 - Checkout analytics overview in the UI.
-The DataHub platform comes with a nice analytics overview page. 
+The DataHub platform comes with a nice analytics overview page. Navigate to [localhost:9002/analytics](http://localhost:9002/analytics).
 Here we are able to obtain an overview of the usage of the platform and various other statictic..
 
 **Task: Play around in the Analytics UI.**
@@ -173,35 +173,76 @@ Here we are able to obtain an overview of the usage of the platform and various 
 
 ### Exercise 4 - Add a Kafka Ingestion Source
 
-We will now create an Ingestion source for a Kafka cluster. An ingestion source tells DataHub how to connect to a service and allows DataHub to collect metadata from it. In the case of Kafka, it collects topic names, and if you are using for example Avro, then it can collect information about the schema from the schema registry.
+We will now create an Ingestion source for a Kafka cluster. 
+An ingestion source tells DataHub how to connect to a service and allows DataHub to collect metadata from the service. In the case of a given Kafka cluster, DataHub is collecting topic names. The DataHub platform is able to collect information about the record schema from a schema registry service. This recommanded if you are using the Avro file format for the records in the topics.
 
-If you don't have a Kafka cluster already then create one.
+**Note:** We are not using schema registry for this exercise session.
 
-**Task:** Create a Kafka cluster and also deploy Redpanda
 
-**Hint:** Go back to [lecture 3 exercise 1](../03/exercises.md#exercise-1---composing-a-kafka-cluster)
 
-Now that you have a Kafka cluster deployed, you can then add it as an ingestion source.
+**Task: Create a Kafka cluster and also deploy Redpanda.**
 
-**Task:** Create an ingestion source for the Kafka cluster
+**Hint:** Go back to [lecture 3 exercise 1](../03/exercises.md#exercise-1---composing-a-kafka-cluster) and deploy another Kafka cluster.
 
-Once you have created the ingestion source it will then run. Make sure that the run is succeeded. If not then you can check the logs to figure out the problem.
+Once your Kafka cluster has been deployed, you can then add the cluster as an ingestion source in the DataHub platform.
 
-**Task:** Check that the ingestion worked
+**NB:** If you expirence an error code like `429 Too Many Requests` during the deployment we can used the Kafka cluster deployed by the DataHub platform instead.
 
-If the ingestion worked then you should see Kafka as a platform on the start page of Datahub.
+**Task: Create an ingestion source for the Kafka cluster.**
 
-**Task:** Look at the Kafka platform
+1. Navigate to [localhost:9002/ingestion](http://localhost:9002/ingestion).
+1. Click on "Create new source"
+    1. Choose type: `Kafka`.
+    1. Configure recipe:
+        1. Fill the field of Bootstrap Servers:
+            - `preq-kafka:9092` using the internal Kafka cluster in the DataHub plarform
+            - `strimzi-kafka-bootstrap.kafka:9092` if you will you the approach from [lecture 3 exercise 1](../03/exercises.md#exercise-1---composing-a-kafka-cluster).
+        1. Enable stateful ingestion under the advaced settings.
+        1. This will end up in a similar configuration as below:
+            ```yaml
+            source:
+            type: kafka
+            config:
+                connection:
+                    consumer_config:
+                        security.protocol: PLAINTEXT
+                    bootstrap: 'preq-kafka:9092'
+                stateful_ingestion:
+                    enabled: true
+
+            ```
+    1. Schedule Ingestion: Toggle "Run on a schedule"
+    1. Finish up: Provide a name (`Kafka`) for your ingestion source.
+1. Once you have created the ingestion source it will then run. Make sure that the run is succeeded. If not then you can check the logs to figure out the problem.
+
+**Task: Check that the ingestion worked.**
+
+1. Navigate to [localhost:9002](http://localhost:9002).
+1. If the ingestion worked then you should see platform named Kafka on the landing page of Datahub.
+
+**Task: Look at the Kafka platform.** 
 
 You may or may not see any topcs for Kafka on Datahub. If there are no topics, then it is because your Kafka cluster has no topics. Try to create a topic.
 
-**Task:** Create a Kafka topic
+**Task: Create a Kafka topic (Optional).** 
 
-Now that you have created a topic you can then try to check if it is available on Datahub. But you should see that nothing has changed. This is because DataHub pulls metadata on configured intervals. But you can manually trigger the ingestion source.
+Now that you have created a topic you can then try to check if it is available on Datahub. However, you should see that nothing has changed. This is because DataHub pulls metadata on configured intervals.
 
-**Task:** Manually trigger the ingestion source
+**Task: Manually trigger the ingestion source.** 
 
-When it is done running, you can then look for the topic you created and you should see it inside Datahub. You can now document the topic, add tags and terms etc.
+You can manually trigger the ingestion source here [localhost:9002/ingestion](http://localhost:9002/ingestion).
+When it is done, you can look for the your newly created topic and this topic should be explorable in Datahub. 
+
+**Task: Enrich the metadata for a Kafka topic.** 
+
+1. Select a given topic.
+1. Update the metadata fields for the given topic. If the current tags, terms, domains etc. is not suffienct. Then add additional tags, terms and domains to represent the given topic.
+    - About
+    - Owners
+    - Tags
+    - Glossary Terms
+    - Domain
+
 
 ### Exercise 5 - Add Linkedin DataHub’s internal MySQL database as an ingestion source
 Linkedin DataHub creates a new MySQL database as part of its stack. We will try to add this database as an ingestion source for some data inception.
