@@ -171,7 +171,7 @@ Here we are able to obtain an overview of the usage of the platform and various 
 
 - Filter "Data Landscape Summary" to only include the `Engineering` domain and report the "Section Views across Entity Types" metrics to rest of the project group.
 
-### Exercise 4 - Add a Kafka Ingestion Source
+### Exercise 4 - Add a Kafka ingestion source
 
 We will now create an Ingestion source for a Kafka cluster. 
 An ingestion source tells DataHub how to connect to a service and allows DataHub to collect metadata from the service. In the case of a given Kafka cluster, DataHub is collecting topic names. The DataHub platform is able to collect information about the record schema from a schema registry service. This recommanded if you are using the Avro file format for the records in the topics.
@@ -244,45 +244,47 @@ When it is done, you can look for the your newly created topic and this topic sh
     - Domain
 
 
-### Exercise 5 - Add Linkedin DataHub’s internal MySQL database as an ingestion source
-Linkedin DataHub creates a new MySQL database as part of its stack. We will try to add this database as an ingestion source for some data inception.
+### Exercise 5 - Add a MySQL database as ingestion source
+This exercise is about to add a secodnary ingestion source. The source is an already exsisiting MySQL database.
 
+**Task: Create an ingestion source for the MySQL databse cluster.**
 
+1. Navigate to [localhost:9002/ingestion](http://localhost:9002/ingestion).
+1. Create a secret for the database password. Click on "Create new srecet" in the Secrets tab.
+    1. Provide a name: `pw-mysl-db`
+    1. Provide the database password generated in [Exercise 1](#exercise-1---compose-a-datahub-platform).
+    1. Click Create.
+1. Click on "Create new source" in the Sources tab.
+    1. Choose type: `MySQL`.
+    1. Configure recipe:
+        1. Host and Port: `preq-mysql:3306`
+        1. Username: `root`
+        1. Password: `${pw-mysl-db}`
+        1. Add a database allowance filter: `datahub`
+        1. This will end up in a similar configuration as below:
+            ```yaml
+            source:
+                type: mysql
+                config:
+                    host_port: 'preq-mysql:3306'
+                    database: null
+                    username: root
+                    include_tables: true
+                    include_views: true
+                    profiling:
+                        enabled: true
+                        profile_table_level_only: true
+                    stateful_ingestion:
+                        enabled: true
+                    password: '${pwmysqldb}'
+                    database_pattern:
+                        allow:
+                            - datahub
 
-First screate a secret for the password
-
-
-
-- The MySQL database has the following config:
-    - host_port: preq-mysql:3306
-    - database: datahub
-    - username: datahub
-    - password: ${MySQL}
-
-
-1. Set up a new MySQL Ingestion Source using the above config.
-
-```yaml
-source:
-    type: mysql
-    config:
-        host_port: 'preq-mysql:3306'
-        database: datahub
-        username: root
-        include_tables: true
-        include_views: true
-        profiling:
-            enabled: true
-            profile_table_level_only: true
-        stateful_ingestion:
-            enabled: true
-        password: '${MySQL}'
-```
-
-1. Check out your new metadata entities. Can you spot some of the niceties that come with enabling profiling?
-
-**Note:** Profiling: enabled: true # this allows the ingestion source to collect metadata on e.g. sample data and other niceties.
-
+            ```
+    1. Schedule Ingestion: Toggle "Run on a schedule"
+    1. Finish up: Provide a name (`MySQL`) for your ingestion source.
+1. Once you have created the ingestion source it will then run. Make sure that the run is succeeded. If not then you can check the logs to figure out the problem.
 
 ### Exercise 6 - Alice in Metaverse Part 1 👸
 Your task is to create a new table in the database "datahub" and ingest all the words from Alice in Wonderland!
