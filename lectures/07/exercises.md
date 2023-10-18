@@ -43,10 +43,6 @@ The main components are power by the following technoloiges:
 
 **NB:** The technoloiges in **bold** have been chosen for these exercises.
 
-
-introduction to preq-values.yaml, hvor kommer denne fra?
-
-
 **Task: Create a namespace in Kubernetes called `meta`.** 
 
 <details>
