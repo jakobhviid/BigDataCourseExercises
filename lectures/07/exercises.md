@@ -33,7 +33,7 @@ DataHub is composed by four main components:
 - Metadata Change Event (known as MCE) consumer job. An optional component. Its main function is to listen to change proposal events emitted by clients of DataHub which request changes to the Metadata Graph. It then applies these requests against DataHub's storage layer: the Metadata Service.
 - DataHub frontend is a Play service written in Java. It is served as a mid-tier between DataHub GMS which is the backend service and DataHub Web.
 
-**NB:** *Text in above bullets have been copied from [DataHub Metadata Service](https://datahubproject.io/docs/metadata-service), [Metadata Audit Event Consumer Job](https://datahubproject.io/docs/metadata-jobs/mae-consumer-job), [Metadata Change Event Consumer Job](https://datahubproject.io/docs/metadata-jobs/mce-consumer-job), [DataHub Frontend Proxy](https://datahubproject.io/docs/datahub-frontend) respectively.*
+**Note:** *Text in above bullets have been copied from [DataHub Metadata Service](https://datahubproject.io/docs/metadata-service), [Metadata Audit Event Consumer Job](https://datahubproject.io/docs/metadata-jobs/mae-consumer-job), [Metadata Change Event Consumer Job](https://datahubproject.io/docs/metadata-jobs/mce-consumer-job), [DataHub Frontend Proxy](https://datahubproject.io/docs/datahub-frontend) respectively.*
 
 The main components are power by the following technoloiges:
 - Kafka
@@ -41,7 +41,7 @@ The main components are power by the following technoloiges:
 - Search Index: Elasticsearch
 - Graph Index: **Neo4j** or Elasticsearch
 
-**NB:** The technoloiges in **bold** have been chosen for these exercises.
+**Note:** The technoloiges in **bold** have been chosen for these exercises.
 
 **Task: Create a namespace in Kubernetes called `meta`.** 
 
@@ -85,14 +85,14 @@ kubectl -n meta create secret generic neo4j-secrets --from-literal=neo4j-passwor
 
 Execute the following cmd: `helm install -n meta preq datahub/datahub-prerequisites --values preq-values.yaml`
 
-**NB:** This may take several minutes. To keep track of the progress you can either run `kubectl get pods -n meta -w` or an alterantive cmd like `watch -n1 kubectl get pods -n meta` in a secondary terminal session. The latter requries an `watch` executable on your localhost.
+**Note:** This may take several minutes. To keep track of the progress you can either run `kubectl get pods -n meta -w` or an alterantive cmd like `watch -n1 kubectl get pods -n meta` in a secondary terminal session. The latter requries an `watch` executable on your localhost.
 
 
 **Task: Deploy the DataHub platform.**
 
 Execute the following cmd: `helm install -n meta datahub datahub/DataHub --values values.yaml`
 
-**NB:** This may take several minutes. To keep track of the progress you can either run `kubectl get pods -n meta -w` or an alterantive cmd like `watch -n1 kubectl get pods -n meta` in a secondary terminal session. 
+**Note:** This may take several minutes. To keep track of the progress you can either run `kubectl get pods -n meta -w` or an alterantive cmd like `watch -n1 kubectl get pods -n meta` in a secondary terminal session. 
 
 
 **Task: Clean up completed and possible failed pods.**
@@ -186,7 +186,7 @@ An ingestion source tells DataHub how to connect to a service and allows DataHub
 
 Once your Kafka cluster has been deployed, you can then add the cluster as an ingestion source in the DataHub platform.
 
-**NB:** If you expirence an error code like `429 Too Many Requests` during the deployment we can used the Kafka cluster deployed by the DataHub platform instead.
+**Note:** If you expirence an error code like `429 Too Many Requests` during the deployment we can used the Kafka cluster deployed by the DataHub platform instead.
 
 **Task: Create an ingestion source for the Kafka cluster.**
 
@@ -286,70 +286,82 @@ This exercise is about to add a secodnary ingestion source. The source is an alr
     1. Finish up: Provide a name (`MySQL`) for your ingestion source.
 1. Once you have created the ingestion source it will then run. Make sure that the run is succeeded. If not then you can check the logs to figure out the problem.
 
-### Exercise 6 - Alice in Metaverse Part 1 👸
-dummy data
+### Exercise 6 - Adding a custome dataset to DataHub
+The objective of this exercise is to add a custome dataset to DataHub. The exercise exsist of an already complete example. However, you are more than welcome to modify the exsisting example to fit your selected project.
 
-#### Exercise 6.1 - 👸
-1. Create a new database called "alice"
-1. Read alice-in-wonderland.txt
-1. Upload the individual words to the table
+The example is about tracking expirments. In this case a simple experiment where a random value will be drawn multiple times from a uniform distribution between 0 and 1. The resutls of the expirments will be stored in a database composed two tables in a database called `experiment` and `results` and a view called `analysis`. Moreover, a Python script ([hints/experiment.py](./hints/experiment.py)) has been provided to simulate a mulitple new experiments.
 
-Look at datahub, and see what changed and what you can see about alice in datahub!
-**Note:** May need to sync manually.
+#### Exercise 6.1 - Simluate expirments
+Decide weather to go with the exsisteing example or modify and create your own content to match to porject.
 
-#### Exercise 6.2 - 👸
+**Task: Familize your self with [hints/experiment.py](./hints/experiment.py) Python file.**
+- Which framework is used to interact with the databse?
 
-```sql
-CREATE VIEW analysis AS SELECT r.experiment_id, e.created_date, r.valid, AVG(r.value) avg_value FROM results r INNER JOIN experiment e ON r.experiment_id=e.id GROUP BY r.experiment_id, r.valid;
-```
+**Task: Denote the schemas for the `experiment` and `results` tables in the database.**
 
+**Task: Execute the [hints/experiment.py](./hints/experiment.py) Python file.**
 
-**Note:** May need to sync manually.
-
-#### Exercise 6.3 - Check linage
-add desc. to the following three datasets
-- expirment
-- results
-- analysis
+**Note:** This task assumes you already have access to the database from your localhost. If not please enable the port-forwarding: `kubectl port-forward svc/preq-mysql 3306:3306 -n meta`.
 
 
+**Task: Create an `analysis` view in the database to summarise the experiments.**
+- Use the SQL statement below:
+    ```sql
+    CREATE VIEW analysis AS SELECT r.experiment_id, e.created_date, r.valid, AVG(r.value) avg_value FROM results r INNER JOIN experiment e ON r.experiment_id=e.id GROUP BY r.experiment_id, r.valid;
+    ```
 
-#### Exercise 6.4 - Create linage..
+**Task: What are the average value of from the simulated expirments?**
 
-Is it missing, how can be create linage??
+#### Exercise 6.2 - Data discovery and rich metadata on the newly create tables
 
-https://datahubproject.io/docs/api/tutorials/lineage/
+[Exercise 6.1](#exercise-61---simluate-expirments) uses the internal database deployed by DataHub to store the experiments. 
+
+**Task: Navigate to [localhost:9002/ingestion](http://localhost:9002/ingestion) and run ingestion on the MySQL platform.**
+
+**Task: Validate the three newly created datasets in the MySQL platform.**
+
+**Hint:** Nagivate to [http://localhost:9002/search?filter_platform=urn:li:dataPlatform:mysql](http://localhost:9002/search?filter_platform=urn:li:dataPlatform:mysql)
+
+**Task: Update metadata to the three newly created datasets.**
+
+- Datasets of interest: 
+    - [Table/MySQL/datahub/experiment](http://localhost:9002/dataset/urn:li:dataset:(urn:li:dataPlatform:mysql,datahub.experiment,PROD)/Schema?is_lineage_mode=false&schemaFilter=)
+    - [Table/MySQL/datahub/results](http://localhost:9002/dataset/urn:li:dataset:(urn:li:dataPlatform:mysql,datahub.results,PROD)/Schema?is_lineage_mode=false&schemaFilter=)
+    - [View/MySQL/datahub/analysis](http://localhost:9002/dataset/urn:li:dataset:(urn:li:dataPlatform:mysql,datahub.analysis,PROD)/Schema?is_lineage_mode=false&schemaFilter=)
+- Metadata of interest: 
+    - Owner 
+    - Tags
+    - Glossary Terms
+    - Domain
+
+#### Exercise 6.3 - Enable data provenance
+Data procenance is important in analytical applications in order to understand underlying dependencies. The objective of this sub-exercise is to update linage between the three newly create datasets. 
+
+This exercise is motived and inspired by [About DataHub Lineage](https://datahubproject.io/docs/lineage/lineage-feature-guide/) and [Lineage - Why Would You Use Lineage?](https://datahubproject.io/docs/api/tutorials/lineage/). There is a Python file here: [hints/linage.py](./hints/linage.py) which updates the linage between the three datasets. 
+
+**Task: Familize yourself with [hints/linage.py](./hints/linage.py) Python file.**
+
+**Task: Execute the [hints/linage.py](./hints/linage.py) Python file.**
+
+**Task: Navigate to [View/MySQL/datahub/analysis - linage](http://localhost:9002/dataset/urn:li:dataset:(urn:li:dataPlatform:mysql,datahub.analysis,PROD)/Schema?end_time_millis&is_lineage_mode=true&schemaFilter=&start_time_millis) and identify the two upstram datasets.**
+
+**Task: Navigate to [View/MySQL/datahub/analysis - linage](http://localhost:9002/dataset/urn:li:dataset:(urn:li:dataPlatform:mysql,datahub.analysis,PROD)/Schema?end_time_millis&is_lineage_mode=true&schemaFilter=&start_time_millis) and take a screenshot.**
 
 
-```python
-# Inlined from /metadata-ingestion/examples/library/lineage_emitter_rest.py
-import datahub.emitter.mce_builder as builder
-from datahub.emitter.rest_emitter import DatahubRestEmitter
+#### Exercise 6.4 - Data provenance as an expert
 
-# Construct a lineage object.
-lineage_mce = builder.make_lineage_mce(
-    [
-        builder.make_dataset_urn("hive", "fct_users_deleted"),  # Upstream
-    ],
-    builder.make_dataset_urn("hive", "logging_events"),  # Downstream
-)
+We are now interested in updating to column-level lineage from the general linage in [Exercise 6.3](#exercise-63---enable-data-provenance).
 
-# Create an emitter to the GMS REST API.
-emitter = DatahubRestEmitter("http://localhost:8080")
+**Task: Look into the example of column-lecel linage [here](https://datahubproject.io/docs/api/tutorials/lineage/#add-column-level-lineage).**
 
-# Emit metadata!
-emitter.emit_mce(lineage_mce)
-```
+**Task: Create a new Python file which encounter for column-level linage.**
 
-
-**Note:** May need to sync manually.
+**Hint: You may look into [Exercise 6.1](#exercise-61---simluate-expirments) and examene the `analyis` view to understand the linage bewteen the three datasets.**
 
 
 
-
-
-## Clean up 
-
+## Clean up - So far so good. 💪🏼
+You are able to clean up your environment by running the commands in the chunk below:
 
 ```
 helm uninstall -n meta datahub
