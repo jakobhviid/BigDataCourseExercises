@@ -17,7 +17,7 @@ Before you start working on the exercises you are strongly encouraged to clean u
 ### Exercise 1 - Compose a DataHub Platform
 This exercise will compose a DataHub platform which you will use in the upcoming exercises. We recommend following the steps in this exercise and using the two included value files [preq-values.yaml](preq-values.yaml) and [values.yaml](values.yaml) for the helm installation processes. The following steps have been inspired by this guide [Deploying DataHub with Kubernetes](https://datahubproject.io/docs/deploy/kubernetes/). 
 
-**Task: Add the helm repository for DataHub by running the following code.**
+**Task: Add the helm repository for DataHub by running the following command.**
 
 ```
 helm repo add DataHub https://helm.datahubproject.io/
@@ -138,7 +138,7 @@ Steps:
 
 The importance of organizing the metadata of the data sources has a direct impact on the usability of the platform. To master the metadata of the data sources need to talk about three components; domains, business glossary, and tags. 
 
-- **Domains** are collections of related data assets associated with a specific part of your organization, such as the Marketing department." Get a further explanation of domains in DataHub [here](https://datahubproject.io/docs/domains/).
+- **Domains** are collections of related data assets associated with a specific part of your organization, such as the Marketing department. Get a further explanation of domains in DataHub [here](https://datahubproject.io/docs/domains/).
 - **Business glossary** can organize data assets using a shared vocabulary. The glossaries provide a framework for defining a standardized set of data concepts and then associating them with the physical assets that exist within your data ecosystem. Get a further explanation of the business glossary in DataHub [here](https://datahubproject.io/docs/glossary/business-glossary).
 - **Tags** are also useful for organizing metadata, but there is not a strict policy on how to use them. They can be used to e.g. add versioning to an entity, or whether an entity is a legacy and to classify the several environments data assets can live in. Get a further explanation on tags in DataHub [here](https://datahubproject.io/docs/tags).
 
@@ -160,7 +160,7 @@ The importance of organizing the metadata of the data sources has a direct impac
 
 **Hint:** [GitHub: datahub/metadata-ingestion/examples/bootstrap_data/business_glossary.yml](https://github.com/datahub-project/datahub/blob/master/metadata-ingestion/examples/bootstrap_data/business_glossary.yml)
 
-### Exercise 3 - Checkout analytics overview in the UI.
+### Exercise 3 - Checkout analytics overview in the UI
 The DataHub platform comes with a nice analytics overview page. Navigate to [localhost:9002/analytics](http://localhost:9002/analytics).
 Here we can obtain an overview of the usage of the platform and various other statistics.
 
@@ -181,7 +181,7 @@ An ingestion source tells DataHub how to connect to a service and allows DataHub
 
 **Task: Create a Kafka cluster and also deploy Redpanda.**
 
-**Hint:** Go back to [lecture 3 exercise 1](../03/exercises.md#exercise-1---composing-a-kafka-cluster) and deploy another Kafka cluster.
+**Hint:** Go back to [lecture 3 exercise 1](../03/exercises.md#exercise-1---composing-a-kafka-cluster) and deploy a Kafka cluster.
 
 Once your Kafka cluster has been deployed, you can then add the cluster as an ingestion source in the DataHub platform.
 
@@ -285,8 +285,8 @@ This exercise is about adding a secondary ingestion source. The source is an alr
     1. Finish up: Provide a name (`MySQL`) for your ingestion source.
 1. Once you have created the ingestion source it will then run. Make sure that the run is succeeded. If not then you can check the logs to figure out the problem.
 
-### Exercise 6 - Adding a custome dataset to DataHub
-The objective of this exercise is to add a costume dataset to DataHub. The exercise consists of an already complete example. However, you are more than welcome to modify the existing example to fit your selected project.
+### Exercise 6 - Adding a custom dataset to DataHub
+The objective of this exercise is to add a custom dataset to DataHub. The exercise consists of an already complete example. However, you are more than welcome to modify the existing example to fit your selected project.
 
 The example is about tracking experiments. In this case, a simple experiment where a random value will be drawn multiple times from a uniform distribution between 0 and 1. The results of the experiments will be stored in a database composed of two tables in a database called `experiment` and `results` and a view called `analysis`. Moreover, a Python script ([hints/experiment.py](./hints/experiment.py)) has been provided to simulate multiple new experiments.
 
@@ -363,9 +363,6 @@ You are able to clean up your environment by running the commands in the chunk b
 ```
 helm uninstall -n meta datahub
 helm uninstall -n meta preq
-
-kubectl -n meta delete secret mysql-secrets
-kubectl -n meta delete secret neo4j-secrets
 
 kubectl delete namespace meta
 ```
