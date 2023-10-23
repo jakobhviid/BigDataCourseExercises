@@ -342,6 +342,8 @@ This exercise is motivated and inspired by [About DataHub Lineage](https://datah
 
 **Task: Execute the [hints/lineage.py](./hints/lineage.py) Python file.**
 
+**Note:** This task assumes you already have access to Datahub GMS from your localhost. If not please enable the port-forwarding: `kubectl port-forward svc/datahub-datahub-gms 8080:8080 -n meta`.
+
 **Task: Navigate to [View/MySQL/datahub/analysis - lineage](http://localhost:9002/dataset/urn:li:dataset:(urn:li:dataPlatform:mysql,datahub.analysis,PROD)/Schema?end_time_millis&is_lineage_mode=true&schemaFilter=&start_time_millis) and identify the two upstram datasets.**
 
 **Task: Navigate to [View/MySQL/datahub/analysis - lineage](http://localhost:9002/dataset/urn:li:dataset:(urn:li:dataPlatform:mysql,datahub.analysis,PROD)/Schema?end_time_millis&is_lineage_mode=true&schemaFilter=&start_time_millis) and take a screenshot.**
