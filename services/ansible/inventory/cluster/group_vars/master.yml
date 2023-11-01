@@ -1,0 +1,10 @@
+k3s_control_node: true
+k3s_server:
+  disable-cloud-controller: true
+  disable:
+    - traefik
+    - metrics-server
+    - local-storage
+  tls-san:
+    - "{{ k3s_registration_address }}"
+  write-kubeconfig-mode: "0644"

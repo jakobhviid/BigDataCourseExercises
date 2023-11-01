@@ -1,0 +1,61 @@
+- name: Create and prepare namespaces
+  hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - ../vars/teams.yml
+
+  module_defaults:
+    group/k8s:
+      kubeconfig: ../kubeconfig.yml
+
+  tasks:
+    # - name: Delete namespaces
+    #   kubernetes.core.k8s:
+    #     api_version: v1
+    #     kind: Namespace
+    #     name: "{{ item }}"
+    #     state: absent
+    #     wait: true
+    #     wait_condition:
+    #       status: False
+    #     wait_sleep: 2
+    #   loop: "{{ teams }}"
+    - name: Create namespaces
+      kubernetes.core.k8s:
+        api_version: v1
+        kind: Namespace
+        name: "{{ item }}"
+        state: present
+      loop: "{{ teams }}"
+    - name: Create roles
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: rbac.authorization.k8s.io/v1
+          kind: RoleBinding
+          metadata:
+            name: team
+            namespace: "{{ item }}"
+          roleRef:
+            apiGroup: rbac.authorization.k8s.io
+            kind: ClusterRole
+            name: edit
+          subjects:
+            - apiGroup: rbac.authorization.k8s.io
+              kind: User
+              name: "{{ item }}"
+      loop: "{{ teams }}"
+    - name: Image pull secrets
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Secret
+          metadata:
+            name: sdu-gitlab
+            namespace: "{{ item }}"
+          type: kubernetes.io/dockerconfigjson
+          data:
+            .dockerconfigjson: "{{ '{\"auths\":{\"gitlab.sdu.dk:5050\":{\"auth\":\"base64 of gitlab token\"}}}' | ansible.builtin.b64encode }}"
+      loop: "{{ teams }}"

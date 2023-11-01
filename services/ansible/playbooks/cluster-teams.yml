@@ -1,0 +1,95 @@
+- name: Create kubeconfig for each team
+  hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - ../vars/teams.yml
+
+  module_defaults:
+    group/k8s:
+      kubeconfig: ../kubeconfig.yml
+
+  tasks:
+    - name: Generate private key
+      community.crypto.openssl_privatekey:
+        path: "../data/teams/{{ item }}.key"
+        size: 2048
+        type: RSA
+      loop: "{{ teams }}"
+    - name: Generate certificate signing request
+      community.crypto.openssl_csr:
+        privatekey_path: "../data/teams/{{ item }}.key"
+        path: "../data/teams/{{ item }}.csr"
+        common_name: "{{ item }}"
+        organization_name: "{{ item }}"
+      loop: "{{ teams }}"
+    - name: Delete certificate signing request
+      kubernetes.core.k8s:
+        state: absent
+        api_version: certificates.k8s.io/v1
+        kind: CertificateSigningRequest
+        name: "{{ item }}"
+      loop: "{{ teams }}"
+    - name: Create certificate signing request
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          api_version: certificates.k8s.io/v1
+          kind: CertificateSigningRequest
+          metadata:
+            name: "{{ item }}"
+          spec:
+            signerName: "kubernetes.io/kube-apiserver-client"
+            groups:
+              - system:authenticated
+            request: "{{ lookup('file', '../data/teams/{{ item }}.csr') | ansible.builtin.b64encode | trim }}"
+            usages:
+              - digital signature
+              - key encipherment
+              - client auth
+      loop: "{{ teams }}"
+    - name: Approve certificate signing request
+      ansible.builtin.shell: "kubectl --kubeconfig ../kubeconfig.yml certificate approve {{ item }}"
+      loop: "{{ teams }}"
+    - name: Get approved certificate
+      kubernetes.core.k8s_info:
+        api_version: certificates.k8s.io/v1
+        kind: CertificateSigningRequest
+        name: "{{ item }}"
+      register: certificates
+      loop: "{{ teams }}"
+    - name: Save certificates
+      no_log: true
+      local_action: copy content={{ item.resources[0].status.certificate | ansible.builtin.b64decode }} dest=../data/teams/{{ item.resources[0].metadata.name }}.crt
+      loop: "{{ certificates.results }}"
+    - name: Delete certificate signing request
+      ansible.builtin.file:
+        path: ../data/teams/{{ item }}.csr
+        state: absent
+      loop: "{{ teams }}"
+    - name: Create kubeconfig
+      vars:
+        team: "{{ item }}"
+        client_certificate_data: "{{ lookup('file', '../data/teams/{{ item }}.crt') | ansible.builtin.b64encode | trim }}"
+        client_key_data: "{{ lookup('file', '../data/teams/{{ item }}.key') | ansible.builtin.b64encode | trim }}"
+      ansible.builtin.template:
+        src: ../templates/kubeconfig.j2
+        dest: ../data/teams/config-{{ item }}.yml
+      loop: "{{ teams }}"
+    - name: Cleanup files
+      block:
+        - name: Certificate signing request
+          ansible.builtin.file:
+            path: ../data/teams/{{ item }}.csr
+            state: absent
+          loop: "{{ teams }}"
+        - name: Private key
+          ansible.builtin.file:
+            path: ../data/teams/{{ item }}.key
+            state: absent
+          loop: "{{ teams }}"
+        - name: Certificate
+          ansible.builtin.file:
+            path: ../data/teams/{{ item }}.crt
+            state: absent
+          loop: "{{ teams }}"
