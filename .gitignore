@@ -3,3 +3,9 @@
 dev/
 .python-version
 *.ipynb
+
+
+*.csr
+*.key
+kubeconfig.yml
+templates/kubeconfig.j2
