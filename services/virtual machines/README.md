@@ -21,6 +21,26 @@ Watch the video [here](https://www.youtube.com/watch?v=iKM6P7nRzqI&feature=youtu
 - 8GB RAM
 - 2 CPU cores
 
+## Adding new user to the VM
+
+
+For late-coming students or student who changes group during the semester and need to get access to the VMs. do the following:
+
+1. Talk and confirm your situation with the project supervisor.
+1. Reach out to the instructors at this course who can update the group members in [virtualresources.sdu.dk](https://virtualresources.sdu.dk). 
+1. The next step is to add your SDU username to each of the associated VMs in the group. The procedure to follow is listed below and must be replicated multiple times on each of the VMs. For the following steps, you need assistance from a group member who already has access to the VMs.
+With help from your group member follow the next steps:
+    1. Add a new user to the VM: `sudo useradd <SDU username> -m`. 
+    1. Add created user to the group: `sudo usermod <SDU username> -G <SDU username>`.
+    1. Create a `.ssh` folder in the home directory: `sudo mkdir -p /home/<SDU username>/.ssh/` 
+    1. Create a `authorized_keys` file: 
+        1. Enter root user: `sudo su`
+        1. `sudo echo "" > /home/<SDU username>/.ssh/authorized_keys`
+        1. Copy and paste the content of the public key (`id_rsa_scalable_<SDU username>.pub`) from [virtualresources.sdu.dk](https://virtualresources.sdu.dk) into the `/home/<SDU username>/.ssh/authorized_keys` file. 
+        1. exit root user: `exit`
+1. SSH into the VMs from your localhost.
+
+
 ## SSH
 Will will be able to login to the VMs using a SSH connection. You need to download the config file and SSH keys from [virtualresources.sdu.dk](https://virtualresources.sdu.dk) before being able to login. 
 
