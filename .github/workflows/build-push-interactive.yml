@@ -35,4 +35,4 @@ jobs:
         with:
           context: ./services/interactive/
           push: false
-          tags: ${{ env.DOCKER_HUB }}/${{ env.CONTAINER_NAME }}:latest;${{ env.DOCKER_HUB }}/${{ env.CONTAINER_NAME }}:${{ github.run_id }}
+          tags: ${{ env.DOCKER_HUB }}/${{ env.CONTAINER_NAME }}:latest
