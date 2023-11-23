@@ -1,9 +1,9 @@
-name: Build and push - service/interactive
+name: Build and push service/kafka-connect to Docker Hub
 
 on:
   push:
     paths:
-      - "services/interactive/**"
+      - "services/kafka-connect/**"
       - ".github/workflows/**"
     branches: ["main", "dev"]
     tags: ["v*"]
@@ -12,8 +12,8 @@ on:
 
 env:
   DOCKERHUB_USERNAME: anderslaunerbaek
-  IMAGE_NAME: anbae-big-data-course
-  
+  IMAGE_NAME: cp-server-connect-base
+  CP_VERSION: 7.3.1
 
 jobs:
   docker:
@@ -33,6 +33,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: "{{defaultContext}}:services/interactive/"
+          context: "{{defaultContext}}:services/kafka-connect/"
+          build-args: "CP_VERSION=${{ env.CP_VERSION }}"
           push: false
           tags: ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
