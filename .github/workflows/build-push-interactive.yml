@@ -11,8 +11,8 @@ on:
     branches: ["main"]
 
 env:
-  DOCKER_HUB: anderslaunerbaek
-  CONTAINER_NAME: anbae-big-data-course
+  DOCKERHUB_USERNAME: anderslaunerbaek
+  IMAGE_NAME: anbae-big-data-course
   
 
 jobs:
@@ -34,5 +34,5 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./services/interactive/
-          push: false
-          tags: ${{ env.DOCKER_HUB }}/${{ env.CONTAINER_NAME }}:latest
+          push: true
+          tags: ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
