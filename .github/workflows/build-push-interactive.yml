@@ -3,7 +3,7 @@ name: Build and push service/interactive to Docker Hub
 on:
   push:
     paths:
-      - "service/interactive/**"
+      - "services/interactive/**"
       - ".github/workflows/**"
     branches: ["main", "dev"]
     tags: ["v*"]
@@ -28,6 +28,6 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: ./service/interactive/
+          context: ./services/interactive/
           push: false
           tags: user/app:latest
