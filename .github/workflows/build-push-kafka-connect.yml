@@ -35,5 +35,5 @@ jobs:
         with:
           context: "{{defaultContext}}:services/kafka-connect/"
           build-args: "CP_VERSION=${{ env.CP_VERSION }}"
-          push: false
+          push: true
           tags: ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}-${{ env.CP_VERSION }}:latest
