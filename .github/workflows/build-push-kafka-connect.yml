@@ -5,14 +5,14 @@ on:
     paths:
       - "services/kafka-connect/**"
       - ".github/workflows/**"
-    branches: ["main", "dev"]
+    branches: ["main"]
     tags: ["v*"]
   pull_request:
     branches: ["main"]
 
 env:
   DOCKERHUB_USERNAME: jakobhviid
-  IMAGE_NAME: cp-server-connect-base
+  IMAGE_NAME: sdu-big-data-course-kafka-connect
   CP_VERSION: 7.3.1
 
 jobs:
