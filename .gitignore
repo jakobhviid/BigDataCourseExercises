@@ -6,6 +6,8 @@ dev/
 
 
 *.csr
+*.crt
 *.key
 kubeconfig.yml
 templates/kubeconfig.j2
+infrastructure/tmp
