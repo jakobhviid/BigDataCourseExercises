@@ -2,7 +2,7 @@
 
 This folder contains components for creating a custom image that can be used to interact with HDFS by a Python client, to run other commands, and to create files using Visual Studio Code inside Kubernetes.  
 
-The deployment manifest `interactive.yaml` includes a pod definition for the interactive container and another resources used to claim persistent storage in Kubernetes.
+The deployment manifest [`interactive.yaml`](./interactive.yaml) includes a pod definition for the interactive container and another resources used to claim persistent storage in Kubernetes.
 
 The following cmd below can be used for creating a temporary instance of the image.
 ```
