@@ -2,11 +2,11 @@
 
 This folder contains components for creating a custom image that can be used to interact with HDFS by a Python client, to run other commands, and to create files using Visual Studio Code inside Kubernetes.  
 
-The deployment manifest `anbae-big-data-course.yaml` includes a pod definition for the interactive container and two other resources used to claim persistent storage in Kubernetes.
+The deployment manifest `interactive.yaml` includes a pod definition for the interactive container and another resources used to claim persistent storage in Kubernetes.
 
 The following cmd below can be used for creating a temporary instance of the image.
 ```
-kubectl run anbae --rm -i --tty --image anderslaunerbaek/anbae-big-data-course:latest -- bash
+kubectl run interactive --rm -i --tty --image registry.gitlab.sdu.dk/jah/bigdatarepo/interactive:latest -- bash
 ```
 
 ## Attach Visual Studio Code to a running container
