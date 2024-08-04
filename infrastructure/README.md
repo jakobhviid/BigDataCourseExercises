@@ -29,7 +29,7 @@ The above-mentioned steps are automated in the script [create-user.sh](create-us
 1. Ensure the students are listed in the file `users.txt`
 2. Run the following command to create the users on a Kubernetes node running the Microk8s distribution:
 ```bash
-./create-users.sh "IP_ADDRESS"
+./create-users.sh "<IP>"
 ```
 3. The script outputs the kubeconfig files for each student in the folder `~/tmp/<>-kubeconfig.yaml`
 4. Distribute the kubeconfig files to the students.
