@@ -12,4 +12,4 @@ SERVER="https://${SERVER_IP}:16443"
 echo "Create kubeconfigs!"
 while read NAMESPACE; do
   ./create-user.sh "$SERVER" "$NAMESPACE"
-done <groups.txt
+done <users.txt
