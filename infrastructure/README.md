@@ -22,7 +22,7 @@ microk8s enable dns
 ## Create workspace and service accounts for students
 We will create a namespace, a service account, and a role for each namespace. The service account will be used together with a role binding to create a kubeconfig file for each of the students.
 
-The above-mentioned steps are automated in the script [create-user.sh](create-user.sh). The file[create-users.sh](create-users.sh) parses the file [users.txt](users.txt) which includes a list of students for which we want to create access for.
+The above-mentioned steps are automated in the script [create-user.sh](create-user.sh). The file [create-users.sh](create-users.sh) parses the file [users.txt](users.txt) which includes a list of students for which we want to create access for.
 
 
 ### Step by step
