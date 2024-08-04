@@ -1,14 +1,16 @@
 #!/bin/bash
 
+# Accept server and namespace as arguments
+SERVER=$1
+NAMESPACE=$2
+
 # Variables
-# NAMESPACE="group-01"
 SERVICE_ACCOUNT="${NAMESPACE}-sa"
 ROLE="${NAMESPACE}-role"
 ROLE_BINDING="${NAMESPACE}-rolebinding"
 CLUSTER_ROLE="view-clusterrole"
 CLUSTER_ROLE_BINDING="${NAMESPACE}-view-clusterrolebinding"
 SECRET_NAME="${SERVICE_ACCOUNT}-manual-secret"
-SERVER="https://10.123.3.156:16443"
 CA_CERT="/var/snap/microk8s/current/certs/ca.crt"
 KUBECONFIG_DIR="tmp"
 
