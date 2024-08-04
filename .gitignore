@@ -3,6 +3,7 @@
 dev/
 .python-version
 *.ipynb
+.idea/
 
 
 *.csr
