@@ -11,16 +11,17 @@ on:
     branches: ["main"]
 
 env:
-  DOCKERHUB_USERNAME: jakobhviid
-  IMAGE_NAME: sdu-big-data-course-kafka-connect
-  CP_VERSION: 7.3.1
+  USERNAME: jah
+  REGISTRY: registry.gitlab.sdu.dk
+  IMAGE_NAME: bigdatarepo/kafka-connect
+  CP_VERSION: "7.3.1"
 
 jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
@@ -28,12 +29,15 @@ jobs:
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ env.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ${{ env.REGISTRY }}
+          username: ${{ env.USERNAME }}
+          password: ${{ secrets.GITLAB_TOKEN }}
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
           context: "{{defaultContext}}:services/kafka-connect/"
           build-args: "CP_VERSION=${{ env.CP_VERSION }}"
           push: true
-          tags: ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}-${{ env.CP_VERSION }}:latest
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.CP_VERSION }}
+            ${{ env.REGISTRY }}/${{ env.USERNAME }}/${{ env.IMAGE_NAME }}:latest
