@@ -30,6 +30,11 @@ The root of this repository will be related to the content of the current semest
 ├── archive
 │   ├── E22 
 │   └── E23
+├── infrastructure
+│   ├── README.md
+│   ├── create-user.sh
+│   ├── create-users.sh
+│   └── users.txt
 ├── lectures
 │   └── {01,02,03,...,07}
 │       ├── ...
