@@ -38,5 +38,6 @@ jobs:
           context: "{{defaultContext}}:services/kafka-connect/"
           build-args: "CP_VERSION=${{ env.CP_VERSION }}"
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.CP_VERSION }}
-          
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.CP_VERSION }}
+            ${{ env.REGISTRY }}/${{ env.USERNAME }}/${{ env.IMAGE_NAME }}:latest
