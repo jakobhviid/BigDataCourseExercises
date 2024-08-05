@@ -37,3 +37,4 @@ jobs:
           context: "{{defaultContext}}:services/interactive/"
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.USERNAME }}/${{ env.IMAGE_NAME }}:latest
+          
