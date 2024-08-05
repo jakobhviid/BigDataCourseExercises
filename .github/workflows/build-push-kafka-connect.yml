@@ -14,7 +14,7 @@ env:
   USERNAME: jah
   REGISTRY: registry.gitlab.sdu.dk
   IMAGE_NAME: bigdatarepo/kafka-connect
-  CP_VERSION: 7.3.1
+  CP_VERSION: "7.3.1"
 
 jobs:
   docker:
@@ -38,4 +38,4 @@ jobs:
           context: "{{defaultContext}}:services/kafka-connect/"
           build-args: "CP_VERSION=${{ env.CP_VERSION }}"
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.USERNAME }}/${{ env.IMAGE_NAME }}-${{ env.CP_VERSION }}:latest
+          tags: ${{ env.REGISTRY }}/${{ env.USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.CP_VERSION }}
