@@ -3,14 +3,16 @@
 ## Introduction to the instructors
 
 ### Kasper Svane
-![Anders Launer Bæk-Petersen](https://avatars.githubusercontent.com/u/28479232?v=4)
+- TODO: Kasper
+![Kasper Svane](https://avatars.githubusercontent.com/u/54247105?v=4)
 - 9th semester Software Engineering student
 - 
 
 ### Anders Launer Bæk-Petersen
 
 ![Anders Launer Bæk-Petersen](https://avatars.githubusercontent.com/u/28479232?v=4)
-- PhD Fellow ~ Center for Energy Informatics University of Southern Denmark
+- TODO: Kasper
+- PhD Fellow ~ SDU Software Engineering
     - Transferable AI Model Development Framework for Smart Energy Systems
 - Industry for 4,5 years
     - Machine Learning Engineer ~ Energinet
@@ -94,13 +96,23 @@ Get full definitions here: [Overview of Kubernetes Services](https://kubernetes.
 
 ### Exercise 1 - Kubernetes setup
 
-You need a working Kubernetes cluster to solve the exercises for this lecture and the following lectures. The choice of distribution should technically not matter, but we recommend you use minikube because the exercises will assume you use that.
+WIP - Introduction
 
-To install minikube, go to their [getting started](https://minikube.sigs.k8s.io/docs/start/) page and follow the instructions. Note: If you are on Windows we suggest you install using [chocolatey](https://chocolatey.org/install#individual) because it can be used to install other tools that will be used for the exercises.
+#### The kubeconfig file
+WIP - How to distribute the kubeconfig file
 
-The tool used to communicate with a Kubernetes cluster is called "kubectl". It is also installed with minikube and can be used using `minikube kubectl -- <command>`. You can also just [install kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl). Other tools might assume that the kubectl command exists, so you should install kubectl aswell.
+#### The kubectl CLI
 
-Once minikube is installed, you can start and stop it using `minikube start` and `minikube stop`. If you use Docker Desktop, you may notice that it has created a container and a volume called "minikube". **Note**: The first time you start minikube you should use `minikube start --cni=flannel` or you might have problems with [exercise 5](#exercise-5---adding-more-nodes).
+The CLI tool used to communicate with a Kubernetes cluster from your localhost is called "kubectl". It it used though the terminal like `kubectl <command> <flags>`. 
+You read more about the CLI and how to install it here: [install kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl). 
+
+
+#### Wrap up
+
+> All the following exercises assume you have access to the Kubernetes cluster and the `kubectl` CLI installed on your local host.
+
+
+
 
 ### Exercise 2 - Deploy "Hello World" application
 
@@ -110,14 +122,14 @@ The yaml file contains two resources, a deployment and a service. Deployments ar
 
 Inspect the yaml manifest and understand the different parts of it:
 
-- Identify the two resources
+- Identify the two resources.
 - Identify the labels and selectors. How are they used?
 - Try to understand how the environment variables are added to the pods.
 
 Now that you have looked through the yaml you may have figured out the following:
 
-- The deployment creates 3 pods
-- The pods have 3 environment variables that uses a "fieldRef"
+- The deployment creates 3 pods.
+- The pods have 3 environment variables that uses a `fieldRef`.
 - The container listens on port 8080.
 - The service listens for traffic on port 8080 and routes it to port 8080 inside the pod.
 
@@ -133,12 +145,15 @@ Now that you understand the yaml file, run the command `kubectl apply -f hello-k
 
 Now that you have deployed the application the next step is to try and connect to it. The application is a HTTP server that listens for requests on port 8080. To connect to the application, we should do it through the service.
 
-Connecting to a service can be done in different ways. The simplest way to connect to a service from outside of the cluster is to use either the `kubectl port-forward` command, or the `minikube service` command.
 
-To use the `kubectl port-forward` command, run the following command `kubectl port-forward svc/hello-kubernetes 8080:8080`. The command will open a port on your local machine and forward traffic to a port on the service. In this case, it is 8080 on both your local machine and the service, but it could be changed to `9000:8080` to use port 9000 on your local machine and forward it to port 8080 on the service. Open a browser and go to [http://localhost:8080](http://localhost:8080) to access the service.
+Connecting to a service can be done in different ways. The simplest way to connect to a service inside the cluster and to your localhost is by running the `kubectl port-forward` command.
 
-To use the `minikube service` command, run the following command `minikube service hello-kubernetes`. The command will pick a random open port on your local machine, port-forward to the service using that port, and open a window with the correct path in your default browser. You can read more about the command [here](https://minikube.sigs.k8s.io/docs/commands/service/).
+#### Use `kubectl port-forward`
+To use the `kubectl port-forward` command, run the following command `kubectl port-forward svc/<name of service> <localhost port>:<service port>`. The command will open a port on your localhost and forward traffic to a port on the service. In this case, use port `8080` for both your localhost and service (`kubectl port-forward svc/hello-kubernetes 8080:8080`).
+Please feel free to change it to something different. Example to `9000:8080` to use port 9000 on your localhost and forward the traffic to port 8080 on the service. Open a browser and navigate to [http://localhost:8080](http://localhost:8080) to access your deployed application.
 
+
+#### Interact with the application
 Now that you can connect to the application, try and understand the web page. The webpage gives different information about the pod that was handling your request. It displays the pod name, the namespace the pod is inside, and the node that the pod is running on.
 
 Try to refresh the webpage a few times and notice how the values change. You should see that the name of the pod changes. This is because the request was routed to a different pod.
@@ -158,17 +173,8 @@ To manually scale a deployment, you would modify the `replicas` field of the dep
 
 When scaling the amount of replicas, the service will automatically start/stop routing traffic to the new/old pods without disrupting existing connections.
 
-### Exercise 5 - Adding more nodes
 
-You are using minikube on your local machine to run Kubernetes. In the real world, you would have many virtual machines on many different physical machines. Each virtual machine would run Kubernetes and be connected to the other machines to form a Kubernetes cluster. The cluster you have on your machine only has a single node. You can verify this using `kubectl get nodes`. But with minikube you can very easily add and remove nodes.
-
-Use `minikube node add` to add a new node to the cluster and `minikube node delete <name of node>` to delete a node.
-
-Try to create two new nodes and then scale the hello-kubernetes deployment to 10 pods. Try refreshing the webpage a couple of times. You should notice that your requests gets routes to pods on the different nodes. You can also use `kubectl get nodes` to see the new nodes. To see what nodes the pods are running on, use `kubectl get pods -o wide` to get extra information about the pods. You should see that the hello-kubernetes pods are spread out on the different nodes.
-
-Now we want to try to delete the two nodes that you created. Open a new terminal window and use the following command `kubectl get pods -o wide -w`. This command will watch for changes and print them to the terminal. Now try to delete the nodes that you just created and notice how the hello-kubernetes pods that previously ran on the nodes gets terminated and that new pods are created and scheduled to run on the other nodes.
-
-### Exercise 6 - Deploying application using Helm
+### Exercise 5 - Deploy application using Helm
 
 [Helm](https://helm.sh/) is a package manager for Kubernetes. Helm simplifies the process of deploying and managing applications on Kubernetes by providing a standardized way to package, distribute and manage Kubernetes resources. Helm packares are called "charts". A chart is a collection of files that describes a set of Kubernetes resources along with configurations. Charts can be customized to suit specific deployment requirements.
 
@@ -184,7 +190,7 @@ A Helm chart can be configured using "values". The default values can be found i
 
 You can get a list of all Helm releases in the default namespace using the following command `helm list`.
 
-### Exercise 7 - Interactive container
+### Exercise 6 - Interactive container
 
 Similarly to Docker, you can create an interactive container with Kubernetes. You can also get a shell inside an already running container.
 
@@ -206,13 +212,16 @@ Sometimes you don't want to delete the container when you exit the shell. Use th
 
 You can also copy files to containers. Create a file on your local machine called "test.txt" and enter some random text. Open a new terminal inside the directory that you created the file, and use the following command to copy the test.txt file to the ubuntu container: `kubectl cp test.txt ubuntu:/test.txt`. Open the other terminal again and use the `ls` and `cat` commands to verify the file was copied to the container.
 
-### Exercise 8 - Cleaning up
+### Exercise 7 - Cleaning up
 
-Kubernetes resources can be deleted using the `kubectl delete` command. You can either delete individual resources, such as a the hello-kubernetes deployment using the following command `kubectl delete deployment/hello-kubernetes`, or you can delete it using the file you used to create the resources with using the command `kubectl delete -f hello-kubernetes.yaml`. If you used Helm to create the resources then you should also delete it using Helm.
+Kubernetes resources can be deleted using the `kubectl delete` command. You can either delete individual resources, such as a the hello-kubernetes deployment using the following command `kubectl delete deployment/hello-kubernetes`, or you can delete it using the file you used to create the resources with using the command `kubectl delete -f hello-kubernetes.yaml`. 
+> If you used Helm to create the resources then you should also delete it using Helm.
 
+#### Step by step guide to clean up:
 - To begin with, we will delete the first hello-kubernetes deployment that you made using the yaml manifest file: `kubectl delete -f hello-kubernetes.yaml`
 - Next we will uninstall the hello-kubernetes release of the hello-kubernetes Helm chart: `helm uninstall hello-kubernetes`
 - Delete the ubuntu container: `kubectl delete pods/ubuntu`
-- Stop running nodes: `minikube stop`
 
 You can get a list of the pods and services to verify that they are deleted.
+- `kubectl get pods`
+- `kubectl get services`
