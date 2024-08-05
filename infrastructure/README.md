@@ -31,7 +31,7 @@ The above-mentioned steps are automated in the script [create-user.sh](create-us
 ```bash
 ./create-users.sh "<IP>"
 ```
-3. The script outputs the kubeconfig files for each student in the folder `~/tmp/<>-kubeconfig.yaml`
+3. The script outputs the kubeconfig files for each student in the folder `~/tmp/<namespace>-kubeconfig.yaml`
 4. Distribute the kubeconfig files to the students.
 
 
