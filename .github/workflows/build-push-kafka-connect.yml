@@ -11,7 +11,7 @@ on:
     branches: ["main"]
 
 env:
-  USERNAME: anbae
+  USERNAME: jah
   REGISTRY: registry.gitlab.sdu.dk
   IMAGE_NAME: bigdatarepo/kafka-connect
   CP_VERSION: 7.3.1
