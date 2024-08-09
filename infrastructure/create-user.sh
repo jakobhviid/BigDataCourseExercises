@@ -39,7 +39,7 @@ rules:
   verbs: ["get", "list", "watch", "create", "update", "delete"]
 - apiGroups: ["apps"]
   resources: ["daemonsets", "deployments", "replicasets", "statefulsets"]
-  verbs: ["get", "list", "watch", "create", "update", "delete"]
+  verbs: ["get", "list", "watch", "create", "update", "delete", "patch"]
 - apiGroups: ["autoscaling"]
   resources: ["horizontalpodautoscalers"]
   verbs: ["get", "list", "watch", "create", "update", "delete"]
