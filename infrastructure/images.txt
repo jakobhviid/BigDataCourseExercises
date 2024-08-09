@@ -1,0 +1,2 @@
+paulbouwer/hello-kubernetes:1.10.1
+ubuntu:latest
