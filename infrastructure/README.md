@@ -35,6 +35,10 @@ The above-mentioned steps are automated in the script [create-user.sh](create-us
 4. Distribute the kubeconfig files to the students.
 
 
+## Side-load container images
+We will side-load the container images onto cluster in advanced in order to improve latency and limit network load. The current approach is described here. Execute the [side-load.sh](./side-load.sh) file to load the images presented in the [images.txt](./images.txt) file into the cluster.
+
+
 ## Course project
 
 WIP - Todo
