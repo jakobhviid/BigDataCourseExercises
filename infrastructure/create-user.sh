@@ -35,7 +35,7 @@ metadata:
   name: $ROLE
 rules:
 - apiGroups: [""]
-  resources: ["pods", "replicationcontrollers", "services", "pods/portforward"]
+  resources: ["pods", "replicationcontrollers", "services", "pods/portforward", "pods/exec", "pods/attach", "secrets", "serviceaccounts"]
   verbs: ["get", "list", "watch", "create", "update", "delete"]
 - apiGroups: ["apps"]
   resources: ["daemonsets", "deployments", "replicasets", "statefulsets"]
