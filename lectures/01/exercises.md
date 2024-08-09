@@ -11,8 +11,9 @@
 ### Anders Launer Bæk-Petersen
 
 ![Anders Launer Bæk-Petersen](https://avatars.githubusercontent.com/u/28479232?v=4)
-- TODO: Kasper
 - PhD Fellow ~ SDU Software Engineering
+    - Architect a machine learning system from a software perspective
+- PhD Fellow ~ SDU Center for Energy Informatics
     - Transferable AI Model Development Framework for Smart Energy Systems
 - Industry for 4,5 years
     - Machine Learning Engineer ~ Energinet
@@ -21,6 +22,15 @@
 - Master of Science in Mathematical Modelling and Computation ~ Technical University of Denmark 
 - Bachelor of Science in Robot Systems ~ University of Southern Denmark 
 - LinkedIn ~ [linkedin.com/in/anderslaunerbaek](https://www.linkedin.com/in/anderslaunerbaek/)
+
+
+## Exercise lectures
+The format of the exercise lectures is as follows:
+- Two modules of 45 minutes each per week.
+- The first half of the first module will be used to recap and solution sharing from the previous exercises. The reminder of the first module and the second module will be used to work the exercises for the current week. 
+- The exercises will be hands-on exercises where you will be working with Kubernetes and the themes of this weeks lecture.
+- The exercises will be provided in `exercises.md` file in the respective lecture folder.
+
 
 ## Subject and objective for these exercises
 
@@ -96,15 +106,14 @@ Get full definitions here: [Overview of Kubernetes Services](https://kubernetes.
 
 ### Exercise 1 - Kubernetes setup
 
-WIP - Introduction
-
-#### The kubeconfig file
-WIP - How to distribute the kubeconfig file
-
 #### The kubectl CLI
 
 The CLI tool used to communicate with a Kubernetes cluster from your localhost is called "kubectl". It it used though the terminal like `kubectl <command> <flags>`. 
 You read more about the CLI and how to install it here: [install kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl). 
+
+
+#### The kubeconfig file
+You will recive a kubeconfig file before starting on lecture 1. Your personal config file will be shared by email and is needed to access the Kubernetes cluster. The kubeconfig file contains the necessary information to connect to the cluster and authenticate with it. The file is used by the `kubectl` CLI to connect to the cluster.
 
 
 #### Wrap up
@@ -178,23 +187,23 @@ When scaling the amount of replicas, the service will automatically start/stop r
 
 [Helm](https://helm.sh/) is a package manager for Kubernetes. Helm simplifies the process of deploying and managing applications on Kubernetes by providing a standardized way to package, distribute and manage Kubernetes resources. Helm packares are called "charts". A chart is a collection of files that describes a set of Kubernetes resources along with configurations. Charts can be customized to suit specific deployment requirements.
 
-To install Helm go to their [install](https://helm.sh/docs/intro/install/) guide. For Windows users who has chocolatey installed already, simply run `choco install kubernetes-helm`.
+To install Helm go to their [install](https://helm.sh/docs/intro/install/) guide. 
 
 The hello-kubernetes application that you deployed earlier has a Helm chart. Go to the repository [paulbouwer/hello-kubernetes](https://github.com/paulbouwer/hello-kubernetes) on GitHub and download / clone.
 
-To install the chart using the default values, simply open a terminal inside the hello-kubernetes repository you just cloned and type the command `helm install hello-kubernetes ./deploy/helm/hello-kubernetes`. This will install the Helm Chart located at `./deploy/helm/hello-kubernetes` and give the release the name "hello-kubernetes". You can see the status of the Helm release using `helm status hello-kubernetes`. Get a list of the pods and services and see what was created.
+To install the chart using the default `values`, simply open a terminal inside the hello-kubernetes repository you just cloned and type the command `helm install hello-kubernetes-helm ./deploy/helm/hello-kubernetes`. This will install the Helm Chart located at `./deploy/helm/hello-kubernetes` and give the release the name "hello-kubernetes". You can see the status of the Helm release using `helm status hello-kubernetes-helm`. Get a list of the pods and services and see what was created.
 
 You should see that it created 2 pods and 1 service. This is similar to the deployment you made before, except this is installed using Helm. But now that it is installed you should try to connect to it like before, just remember that the service is now called something different. Hint: `kubectl get services`.
 
-A Helm chart can be configured using "values". The default values can be found inside the Helm chart. Open the file located at `./deploy/helm/hello-kubernetes/values.yaml` and see the different values. We want to try to increase the amount of replicas using the `deployment.replicaCount` value. Because we want to modify an existing release, we need to use the `helm upgrade` command. Use `helm upgrade hello-kubernetes ./deploy/helm/hello-kubernetes --set deployment.replicaCount=5` to set the replica count to 5. Now get a list of the pods and notice how the amount of pods changed.
+A Helm chart can be configured using `values`. The default `values` can be found inside the Helm chart. Open the file located at `./deploy/helm/hello-kubernetes/values.yaml` in the repository and see the different values. We want to try to increase the amount of replicas using the `deployment.replicaCount` value. Because we want to modify an existing release, we need to use the `helm upgrade` command. Use `helm upgrade hello-kubernetes ./deploy/helm/hello-kubernetes --set deployment.replicaCount=5` to set the replica count to 5. Now get a list of the pods and notice how the amount of pods changed.
 
 You can get a list of all Helm releases in the default namespace using the following command `helm list`.
 
 ### Exercise 6 - Interactive container
 
-Similarly to Docker, you can create an interactive container with Kubernetes. You can also get a shell inside an already running container.
-
-First, we will try to get a shell inside an existing container. The command to execute commands inside containers is called exec, for example `kubectl exec pods/<name of pod> -- <command>` will run a command inside a running container. To get an interactive shell, you need to use the exec command: `kubectl exec --stdin --tty pods/<name of pod> -- <command>`. To get a shell for one of the hello-kubernetes pods you need to use this: `kubectl exec --stdin --tty pods/<name of pod> -- /bin/sh`.
+Similarly to Docker, you can interact and get a shell of a running container in Kubernetes.
+First, we will try to get a shell inside an existing container. The command to execute commands inside containers is called exec, for example `kubectl exec pods/<name of pod> -- <command>` will run a command inside a running container. 
+To get an interactive shell, you need to use the exec command: `kubectl exec --stdin --tty pods/<name of pod> -- <command>`. To get a shell for one of the hello-kubernetes pods you need to use this: `kubectl exec --stdin --tty pods/<name of pod> -- /bin/sh`.
 
 Once you have a shell you can now run commands inside of it. Try using the `ls` command to list all files and folder inside the current directory. You may notice that this is a NodeJS application. Try to list the contents of the `server.js` file using the `cat` command.
 
@@ -202,15 +211,14 @@ To exit the interactive shell write `exit` and hit the `ENTER` key or just close
 
 You will now create an interactive container that is removed once you exit the shell. Run the following command: `kubectl run ubuntu --rm -i --tty --image ubuntu -- bash`. This will create a pod called "ubuntu" that will run the Ubuntu image. Once you exit the terminal the pod will be deleted.
 
-Because the container is running inside the Kubernetes cluster you can now access services without using the port-forward command. To test this we first want to intall the curl package - use `apt update && apt install curl -y` to install curl. Once curl is installed, write the following command to send a HTTP request to the hello-kubernetes service: `curl hello-kubernetes:8080`. The response will be the HTML for the hello-kubernetes webpage that you have seen earlier. You can try using the command multiple times and see how the response changes.
+Because the container is running inside the Kubernetes cluster you can now access services without using the port-forward command. 
+To test this we first want to intall the curl package - use `apt update && apt install curl -y` to install curl. Once curl is installed, write the following command to send a HTTP request to the hello-kubernetes service: `curl hello-kubernetes:8080`. The response will be the HTML for the hello-kubernetes webpage that you have seen earlier. You can try using the command multiple times and see how the response changes.
 
-Because the service is inside the same namespace as your ubuntu container you can use the DNS entry `hello-kubernetes`. If you want to accesss a service in a different namespace you need to use a different hostname. Use the following command `curl hello-kubernetes.default:8080` where `default` is the namespace that the hello-kubernetes deployment is made in.
-
-Exit the terminal using the exit command.
+Because the service is inside the same namespace as your ubuntu container you can use the DNS entry `hello-kubernetes`. If you want to accesss a service in a different `namespace` you need to use a different `hostname`. Use the following command `curl hello-kubernetes.default:8080` where `default` is another namespace. NB: You will notice that you are not able to `curl` other namespaces.
 
 Sometimes you don't want to delete the container when you exit the shell. Use the following command to create an ubuntu container that won't be deleted when you exit the shell: `kubectl run ubuntu -i --tty --image ubuntu -- bash`. To reattach the same shell again use one of the following command: `kubectl attach ubuntu -c ubuntu -i -t`. You can even open two terminals and use the attach command and the shell will be shared. Try to do this and write something in one shell and see how it is also written in the other.
 
-You can also copy files to containers. Create a file on your local machine called "test.txt" and enter some random text. Open a new terminal inside the directory that you created the file, and use the following command to copy the test.txt file to the ubuntu container: `kubectl cp test.txt ubuntu:/test.txt`. Open the other terminal again and use the `ls` and `cat` commands to verify the file was copied to the container.
+You can also copy files to containers. Use the file on your localhost called `exercises.md`. Open a new terminal inside same directory, and use the following command to copy the `exercises.md` file to the ubuntu container: `kubectl cp exercises.md ubuntu:/exercises.md`. Open the other terminal again and use the `ls` and `cat` commands to verify the file was copied to the container.
 
 ### Exercise 7 - Cleaning up
 
@@ -219,7 +227,7 @@ Kubernetes resources can be deleted using the `kubectl delete` command. You can 
 
 #### Step by step guide to clean up:
 - To begin with, we will delete the first hello-kubernetes deployment that you made using the yaml manifest file: `kubectl delete -f hello-kubernetes.yaml`
-- Next we will uninstall the hello-kubernetes release of the hello-kubernetes Helm chart: `helm uninstall hello-kubernetes`
+- Next we will uninstall the hello-kubernetes release of the hello-kubernetes Helm chart: `helm uninstall hello-kubernetes-helm`
 - Delete the ubuntu container: `kubectl delete pods/ubuntu`
 
 You can get a list of the pods and services to verify that they are deleted.
