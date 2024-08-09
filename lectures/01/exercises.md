@@ -2,11 +2,14 @@
 
 ## Introduction to the instructors
 
-### Kasper Svane
-- TODO: Kasper
-![Kasper Svane](https://avatars.githubusercontent.com/u/54247105?v=4)
+![Kasper Svane](https://media.licdn.com/dms/image/v2/C5603AQEpw3hdYCmKfA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1516890090769?e=1728518400&v=beta&t=KYbU3Gv4E7gx0q76cAug3-lbIPxTxQwNsogFwxAKNL0)
 - 9th semester Software Engineering student
-- 
+- Industry for 3 years
+  - Software Engineer ~ KeyShot
+  - Software Engineer ~ Digizuite
+- Studying Master of Science in Software Engineering ~ University of Southern Denmark
+- Bachelor in Engineering in Software Engineering ~ University of Southern Denmark
+- LinkedIn ~ [linkedin.com/in/kasper-svane](https://www.linkedin.com/in/kasper-svane-706303b9/)
 
 ### Anders Launer Bæk-Petersen
 
