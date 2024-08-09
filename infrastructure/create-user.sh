@@ -14,19 +14,13 @@ SECRET_NAME="${SERVICE_ACCOUNT}-manual-secret"
 CA_CERT="/var/snap/microk8s/current/certs/ca.crt"
 KUBECONFIG_DIR="tmp"
 
-# Check if MicroK8s is running
-microk8s status --wait-ready || { echo "MicroK8s is not running. Exiting."; exit 1; }
-
-# Enable necessary addons
-microk8s enable rbac dns cert-manager || { echo "Failed to enable addons. Exiting."; exit 1; }
-
 # Create namespace if it doesn't exist
 microk8s kubectl get namespace $NAMESPACE || microk8s kubectl create namespace $NAMESPACE || { echo "Failed to create namespace. Exiting."; exit 1; }
 
 # Create ServiceAccount if it doesn't exist
 microk8s kubectl get serviceaccount $SERVICE_ACCOUNT -n $NAMESPACE || microk8s kubectl create serviceaccount $SERVICE_ACCOUNT -n $NAMESPACE || { echo "Failed to create ServiceAccount. Exiting."; exit 1; }
 
-# Create Role for full CRUD permissions within the specific namespace
+# Create Role for full CRUD permissions denoted by (*) within the specific namespace
 cat <<EOF | microk8s kubectl apply -f -
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -34,18 +28,12 @@ metadata:
   namespace: $NAMESPACE
   name: $ROLE
 rules:
-- apiGroups: [""]
-  resources: ["pods", "replicationcontrollers", "services", "pods/portforward", "pods/exec", "pods/attach", "secrets", "serviceaccounts"]
+- apiGroups: ["*"]
+  resources: ["*"]
   verbs: ["get", "list", "watch", "create", "update", "delete"]
 - apiGroups: ["apps"]
   resources: ["daemonsets", "deployments", "replicasets", "statefulsets"]
   verbs: ["get", "list", "watch", "create", "update", "delete", "patch"]
-- apiGroups: ["autoscaling"]
-  resources: ["horizontalpodautoscalers"]
-  verbs: ["get", "list", "watch", "create", "update", "delete"]
-- apiGroups: ["batch"]
-  resources: ["cronjobs", "jobs"]
-  verbs: ["get", "list", "watch", "create", "update", "delete"]
 EOF
 
 # Create RoleBinding for full CRUD permissions within the specific namespace
@@ -65,24 +53,15 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 EOF
 
-# Create ClusterRole for read-only permissions across all namespaces
+# Create ClusterRole for read-only permissions across all namespaces denoted by (*)
 cat <<EOF | microk8s kubectl apply -f -
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: $CLUSTER_ROLE
 rules:
-- apiGroups: [""]
-  resources: ["pods", "services", "endpoints", "nodes", "namespaces"]
-  verbs: ["get", "list", "watch"]
-- apiGroups: ["apps"]
-  resources: ["daemonsets", "deployments", "replicasets", "statefulsets"]
-  verbs: ["get", "list", "watch"]
-- apiGroups: ["autoscaling"]
-  resources: ["horizontalpodautoscalers"]
-  verbs: ["get", "list", "watch"]
-- apiGroups: ["batch"]
-  resources: ["cronjobs", "jobs"]
+- apiGroups: ["*"]
+  resources: ["*"]
   verbs: ["get", "list", "watch"]
 EOF
 
