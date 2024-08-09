@@ -34,6 +34,46 @@ The above-mentioned steps are automated in the script [create-user.sh](create-us
 3. The script outputs the kubeconfig files for each student in the folder `~/tmp/<namespace>-kubeconfig.yaml`
 4. Distribute the kubeconfig files to the students.
 
+## Add custom domain to Kubernetes API Certificates
+
+1. Update the csr.conf.template in ´certs´ folder in the ´microk8s´ cluster
+
+````bash
+sudo nano /var/snap/microk8s/current/certs/csr.conf.template
+````
+
+2. Add the new custom domain 
+
+````
+...
+
+[ alt_names ]
+DNS.1 = kubernetes
+DNS.2 = kubernetes.default
+DNS.3 = kubernetes.default.svc
+DNS.4 = kubernetes.default.svc.cluster
+DNS.5 = kubernetes.default.svc.cluster.local
+DNS.6 = CUSTOM-DOMAIN (Added)
+IP.1 = 127.0.0.1
+IP.2 = xxx.xxx.xxx.xxx
+IP.3 = SERVER_IP (Added, only if errors)
+#MOREIPS
+
+...
+````
+
+3. Sign the CSR with the existing CA to generate a new server certificate
+
+````bash
+sudo openssl x509 -req -in /var/snap/microk8s/current/certs/server.csr -CA /var/snap/microk8s/current/certs/ca.crt -CAkey /var/snap/microk8s/current/certs/ca.key -CAcreateserial -out /var/snap/microk8s/current/certs/server.crt -days 365 -extensions v3_ext -extfile /var/snap/microk8s/current/certs/csr.conf.template
+````
+
+4. Restart MicroK8s Services
+
+````bash
+sudo microk8s stop
+sudo microk8s start
+````
 
 ## Course project
 
