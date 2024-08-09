@@ -20,6 +20,7 @@ microk8s kubectl get namespace $NAMESPACE || microk8s kubectl create namespace $
 # Create ServiceAccount if it doesn't exist
 microk8s kubectl get serviceaccount $SERVICE_ACCOUNT -n $NAMESPACE || microk8s kubectl create serviceaccount $SERVICE_ACCOUNT -n $NAMESPACE || { echo "Failed to create ServiceAccount. Exiting."; exit 1; }
 
+
 # Create Role for full CRUD permissions denoted by (*) within the specific namespace
 cat <<EOF | microk8s kubectl apply -f -
 apiVersion: rbac.authorization.k8s.io/v1
@@ -52,6 +53,7 @@ roleRef:
   name: $ROLE
   apiGroup: rbac.authorization.k8s.io
 EOF
+
 
 # Create ClusterRole for read-only permissions across all namespaces denoted by (*)
 cat <<EOF | microk8s kubectl apply -f -
