@@ -24,7 +24,7 @@ helm repo add stackable https://repo.stackable.tech/repository/helm-stable/
 
 **Task**: Install the nessesary Stackable operators to set up a HDFS cluster. 
 **Hint**: `helm install ...`.
-> This is similar to the [exercise 5 from last week](../01/exercises.md# ) where you installed the hello-kubernetes application using helm, except now install something using a helm repository.
+> This is similar to the [exercise 5 from last week](../01/exercises.md#) where you installed the hello-kubernetes application using `helm`.
 
 Install the following operators:
 ```
