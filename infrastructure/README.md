@@ -78,6 +78,31 @@ sudo microk8s start
 ## Side-load container images
 We will side-load the container images onto cluster in advanced in order to improve latency and limit network load. The current approach is described here. Execute the [side-load.sh](./side-load.sh) file to load the images presented in the [images.txt](./images.txt) file into the cluster.
 
+## Observability
+The Microk8s addon `observability` provides information about the Kubernetes cluster utilizing Prometheus to scape the K8's cluster.
+To gain an overview of the cluster health and load, the addon comes with Grafana. The steps below shows how to gain access to the Grafana Dashboards.
+
+
+1. Get the Grafana Stack credentials
+
+````bash
+microk8s kubectl get secret -n observability kube-prom-stack-grafana -o jsonpath="{.data.admin-user}" | base64 --decode; echo
+microk8s kubectl get secret -n observability kube-prom-stack-grafana -o jsonpath="{.data.admin-password}" | base64 --decode; echo
+````
+
+2. Identify the Grafana Stack pod
+
+````bash
+kubectl get pods -n observability
+````
+
+3. Port-forward the Grafana Stack pod
+
+````bash
+kubectl port-forward -n observability kube-prom-stack-grafana-8dc65649-82k98 3000:3000
+````
+
+4. Enter the credentials
 
 ## Course project
 
