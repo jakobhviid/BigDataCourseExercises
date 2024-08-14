@@ -1,10 +1,41 @@
 # HDFS
 
+
+
+`bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8`
+`bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8`
+
+
 We will be using Kubernetes operators and helm charts from [stackable.tech](stackable.tech) for creating the HDFS cluster.
 
 The commands below are copied from their documentation and can be found here: [HDFS - getting started](https://docs.stackable.tech/home/stable/hdfs/getting_started/installation#_helm).
 
 ## Installation
+
+
+
+```
+kubectl apply -f persistent-volume-claims.yaml
+kubectl apply -f configmap.yaml
+kubectl apply -f services.yaml
+kubectl apply -f datanodes.yaml
+kubectl apply -f namenode.yaml
+```
+
+
+```
+kubectl delete -f namenode.yaml
+kubectl delete -f datanodes.yaml
+kubectl delete -f services.yaml
+kubectl delete -f configmap.yaml
+kubectl delete -f persistent-volume-claims.yaml
+```
+
+
+
+
+
+
 We will add the helm chart repository from [stackable.tech](stackable.tech).
 
 ```

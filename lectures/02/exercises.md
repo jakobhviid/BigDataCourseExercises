@@ -13,6 +13,22 @@ The exercises for this week's lecture will be about HDFS and file formats. You w
 
 ### Exercise 1 - Set up HDFS cluster
 
+
+
+
+```
+kubectl apply -f hadoop-persistent-volume-claims.yaml
+kubectl apply -f hadoop-datanode-deployment.yaml
+kubectl apply -f hadoop-datanode-deployment.yaml
+
+```
+
+
+
+
+
+
+
 You will need a working HDFS cluster to solve the exercises for today. To set up HDFS, we will be using a [Kubernetes operator](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/) made by a company called [Stackable](https://stackable.tech/). Kubernetes operators are custom controllers that automate the management of applications within Kubernetes clusters and may make use of [custom resources](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/).
 
 
