@@ -31,9 +31,6 @@ metadata:
 rules:
 - apiGroups: ["*"]
   resources: ["*"]
-  verbs: ["get", "list", "watch", "create", "update", "delete"]
-- apiGroups: ["apps"]
-  resources: ["daemonsets", "deployments", "replicasets", "statefulsets"]
   verbs: ["get", "list", "watch", "create", "update", "delete", "patch"]
 EOF
 
