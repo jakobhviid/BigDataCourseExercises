@@ -11,12 +11,44 @@ Before proceeding, make sure you have a Kubernetes cluster running and `kubectl`
 - [datanodes.yaml](./datanodes.yaml)
 - [namenode.yaml](./namenode.yaml)
 
-Once ready, apply the following commands to deploy the HDFS cluster.
-```bash
+Once ready, apply the following commands to deploy the HDFS cluster in the following order
+
+1. Deploy the configmap
+````bash 
 kubectl apply -f configmap.yaml
-kubectl apply -f datanodes.yaml
+````
+
+2. Ensure it's deployed
+
+````bash
+kubectl get configmap hadoop-config
+````
+
+3. Deploy the namenode.yaml
+
+````bash
 kubectl apply -f namenode.yaml
-```
+````
+
+4. Ensure the pod is created successfully
+
+````bash
+kubectl get pod -w
+kubectl describe pod namenode-<ID>
+kubectl logs namenode-<ID>
+````
+
+5. Deploy the datanodes.yaml
+
+````bash
+kubectl apply -f datanodes.yaml
+````
+
+6. Ensure that 3 datanode pods are created 
+
+````bash
+kubectl get pod -w 
+````
 
 ### Verify HDFS works
 Create a connection to namenode pod using port-forwarding as below:
