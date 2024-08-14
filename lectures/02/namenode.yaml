@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hdfs-namenode
+spec:
+  type: NodePort
+  ports:
+    - name: "port2"
+      port: 9870
+      targetPort: 9870
+    - name: "port1"
+      port: 9000
+      targetPort: 9000
+  selector:
+    app: hdfs-namenode
+---
+apiVersion: "v1"
+kind: "PersistentVolumeClaim"
+metadata:
+  name: "namenode-claim"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hdfs-namenode
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hdfs-namenode
+  template:
+    metadata:
+      labels:
+        app: hdfs-namenode
+    spec:
+      volumes:
+        - name: namenode-storage
+          persistentVolumeClaim:
+            claimName: namenode-claim
+      containers:
+        - name: hdfs-namenode
+          image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+          volumeMounts:
+            - name: namenode-storage
+              mountPath: "/hadoop/dfs/name"
+              
+          env:
+            - name: CLUSTER_NAME
+              value: "test"
+            - name: CORE_CONF_hadoop_http_staticuser_user
+              value: "root"
+            - name: CORE_CONF_hadoop_proxyuser_hue_hosts
+              value: "*"
+            - name: CORE_CONF_hadoop_proxyuser_hue_groups
+              value: "*"
+            - name: CORE_CONF_io_compression_codecs
+              value: "org.apache.hadoop.io.compress.SnappyCodec"
+
+            - name: HDFS_CONF_dfs_webhdfs_enabled
+              value: "true"
+            - name: HDFS_CONF_dfs_permissions_enabled
+              value: "false"
+            - name: HDFS_CONF_dfs_permissions
+              value: "false"
+            - name: HDFS_CONF_dfs_namenode_datanode_registration_ip___hostname___check
+              value: "false"
+                
+          ports:
+            - name: "port1"
+              containerPort: 9000
+            - name: "port2"
+              containerPort: 9870
