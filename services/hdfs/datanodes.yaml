@@ -54,7 +54,7 @@ spec:
   ports:
     - name: datanode2
       protocol: TCP
-      port: 9865
+      port: 9864
       targetPort: 9864
 ---
 apiVersion: v1
@@ -67,7 +67,7 @@ spec:
   ports:
     - name: datanode3
       protocol: TCP
-      port: 9866
+      port: 9864
       targetPort: 9864
 ---
 apiVersion: apps/v1
