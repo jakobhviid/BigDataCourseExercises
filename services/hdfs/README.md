@@ -54,7 +54,7 @@ kubectl get pod -w
 Create a connection to namenode pod using port-forwarding as below:
 
 ```bash
-k8s port-forward svc/namenode 9870:9870
+kubectl port-forward svc/namenode 9870:9870
 ```
 
 We expect the HDFS cluster to be empty once installed. The following cmd will used for accessing the content of the root directory in HDFS by the namenode pod. 
