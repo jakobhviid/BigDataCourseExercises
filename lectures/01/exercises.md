@@ -34,6 +34,8 @@ The format of the exercise lectures is as follows:
 - The exercises will be hands-on exercises where you will be working with Kubernetes and the themes of this weeks lecture.
 - The exercises will be provided in `exercises.md` file in the respective lecture folder.
 
+Please open issues [here](https://github.com/jakobhviid/BigDataCourseExercises/issues) if you encounter unclear information or experience bugs in our examples!
+
 
 ## Subject and objective for these exercises
 

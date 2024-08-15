@@ -1,5 +1,9 @@
 # Lecture 02 - HFDS and different file formats
 
+The exercises for this week's lecture will be about HDFS and file formats. You will be creating a HDFS cluster and interacting with it in different ways.
+
+Please open issues [here](https://github.com/jakobhviid/BigDataCourseExercises/issues) if you encounter unclear information or experience bugs in our examples!
+
 ## Attach Visual Studio Code to an interactive container in Kubernetes
 
 For progressing in today's exercises we recommend you to look into attaching Visual Studio Code to an interactive container in Kubernetes. This will shorten the development time of services that depend on resources inside Kubernetes. Furthermore, a simpler access to the HDFS deployment in Kubernetes.
@@ -8,9 +12,6 @@ Please read about the concept [here](https://code.visualstudio.com/docs/devconta
 You can navigate to the `services/interactive` folder in the repository and read the [README.md](../../services/interactive/README.md) file to get a better understanding of how to attach Visual Studio Code to an interactive container in Kubernetes in this course.
 
 ## Exercises
-
-The exercises for this week's lecture will be about HDFS and file formats. You will be creating a HDFS cluster and interacting with it in different ways.
-
 ### Exercise 1 - Set up HDFS cluster
 
 The initial task is to set up a HDFS cluster. Please familiarize yourself with and read the [README.md](../../services/hdfs/README.md) file in the `services/hdfs` folder of the repository. This will guide you through the installation of an HDFS cluster on Kubernetes.
