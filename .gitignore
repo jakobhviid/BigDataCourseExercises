@@ -13,3 +13,4 @@ kubeconfig.yml
 templates/kubeconfig.j2
 infrastructure/tmp
 lectures/01/hello-kubernetes/
+__pycache__/
