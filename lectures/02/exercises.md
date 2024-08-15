@@ -2,10 +2,10 @@
 
 ## Attach Visual Studio Code to an interactive container in Kubernetes
 
-For progressing in today's exercises we recommend you to look into attaching Visual Studio Code to an interactive container in Kubernetes. This will shorten the development time of services that depend on services inside Kubernetes. Furthermore, a simpler access to the HDFS deployment in Kubernetes.
+For progressing in today's exercises we recommend you to look into attaching Visual Studio Code to an interactive container in Kubernetes. This will shorten the development time of services that depend on resources inside Kubernetes. Furthermore, a simpler access to the HDFS deployment in Kubernetes.
 Please read about the concept [here](https://code.visualstudio.com/docs/devcontainers/containers) to get a complete overview.
 
-You can get further examples in this repository here `./servies/interactive` and read further here [Interactive containers](../../services/interactive/README.md).
+You can navigate to the `services/interactive` folder in the repository and read the [README.md](../../services/interactive/README.md) file to get a better understanding of how to attach Visual Studio Code to an interactive container in Kubernetes in this course.
 
 ## Exercises
 
@@ -13,76 +13,25 @@ The exercises for this week's lecture will be about HDFS and file formats. You w
 
 ### Exercise 1 - Set up HDFS cluster
 
+The initial task is to set up a HDFS cluster. Please familiarize yourself with and read the [README.md](../../services/hdfs/README.md) file in the `services/hdfs` folder of the repository. This will guide you through the installation of an HDFS cluster on Kubernetes.
 
+**Tasks**: Follow the instructions in the [README.md](../../services/hdfs/README.md) file to deploy the HDFS cluster.
 
-
+**Validate**: Verify that the HDFS cluster is up and running. There will be a single namenode and three datanodes inside your namespace as illustrated in the chunk below.
+```bash
+kubectl get pods                 ○ bd-anbae/anbae
+NAME                           READY   STATUS    RESTARTS   AGE
+namenode-56cb988785-hj4j7      1/1     Running   0          52m
+datanode1                      1/1     Running   0          52m
+datanode2                      1/1     Running   0          52m
+datanode3                      1/1     Running   0          52m
 ```
-kubectl apply -f hadoop-persistent-volume-claims.yaml
-kubectl apply -f hadoop-datanode-deployment.yaml
-kubectl apply -f hadoop-datanode-deployment.yaml
-
-```
-
-
-
-
-
-
-
-You will need a working HDFS cluster to solve the exercises for today. To set up HDFS, we will be using a [Kubernetes operator](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/) made by a company called [Stackable](https://stackable.tech/). Kubernetes operators are custom controllers that automate the management of applications within Kubernetes clusters and may make use of [custom resources](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/).
-
-
-#### The Stackable operator
-To install the operator needed to set up the HDFS cluster you need to start adding the Stackable repository to `helm`. You can follow their installation guide here: [installation guide using Helm](https://docs.stackable.tech/home/stable/hdfs/getting_started/installation#_helm) or: 
-```
-helm repo add stackable https://repo.stackable.tech/repository/helm-stable/
-``` 
-
-**Task**: Install the nessesary Stackable operators to set up a HDFS cluster. 
-**Hint**: `helm install ...`.
-> This is similar to the [exercise 5 from last week](../01/exercises.md#) where you installed the hello-kubernetes application using `helm`.
-
-Install the following operators:
-```
-helm install --wait zookeeper-operator stackable/zookeeper-operator --version 24.7.0
-helm install --wait hdfs-operator stackable/hdfs-operator --version 24.7.0
-helm install --wait commons-operator stackable/commons-operator --version 24.7.0
-helm install --wait --set kubeletDir=/var/snap/microk8s/common/var/lib/kubelet secret-operator stackable/secret-operator --version 24.7.0
-helm install --wait listener-operator stackable/listener-operator --version 24.7.0
-```
-
-
-> **Note**: Since we are using the MicroK8s distribution of Kubernetes we need to install the secrets-operator using the following option: `--set kubeletDir=/var/snap/microk8s/common/var/lib/kubelet`.
-
-**Verification**: You can verify that the operators are installed by checking if there are 4 pods inside the stackable namespace, one for each operator you installed.
-
-**Hint**: To get resources inside a specific namespace add `-n stackable` to the kubectl command, for example: `kubectl -n stackable get pods`.
-
-Once all operator pods have the "Running" status, you can then proceed to create the HDFS cluster. You can follow the [Stackable guide to create a HDFS cluster](https://docs.stackable.tech/home/stable/hdfs/getting_started/first_steps). But before you can create the HDFS cluster you will need to create a ZooKeeper cluster. ZooKeeper is a centralized application for storing and syncronizes state and is used by HDFS for [failure detection and automatic failover](https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/HDFSHighAvailabilityWithNFS.html#Automatic_Failover). ZooKeeper has a hierical data model where each node can have children nodes associated with it. Each node is called a ZNode. You can read more about how ZooKeeper stores data [here](https://zookeeper.apache.org/doc/r3.1.2/zookeeperProgrammers.html#ch_zkDataModel).
-
-**Note**: If you are using minikube and have multiple nodes then you need to remove the nodes. An init container for the zookeeper pods will crash and the pods will get the status `Init:CrashLoopBackOff` if they are scheduled to run on a worker node. You may track the issue [here](https://github.com/stackabletech/zookeeper-operator/issues/727).
-
-**Tasks**:
-
-1. Create a ZooKeeper cluster with 1 replica
-2. Create a ZNode for the HDFS cluster
-3. Create a HDFS cluster with 2 name nodes, 1 journal node, and 1 data node
-
-**Note**: You may set up the HDFS cluster anywhere you like. You could create a namespace called "lecture2" for todays exercises, or you can simply use the "default" namespace.
-
-**Hint**: Follow the Stackable guide.
-
-**Note**: For a highly available HDFS setup you will need a ZooKeeper cluster with atleast 3 nodes to maintain quorum, and a HDFS cluster made up of atleast 2 JournalNodes, 2 NameNodes, 2 DataNodes and a replica factor of 2. This might be excessive for a laptop so the exercises will assume a minimal setup.
-
-**Note**: A minimal HDFS cluster should also work with only 1 name node but for some reason it does not with with the Stackable operator.
-
-It might take a long time to create the ZooKeeper and HDFS clusters. This is because the images are relatively large (almost 3GB in total) and the download speed from the Stackable image registry is relatively low. To see what is going on with a specific pod you can use the `kubectl describe` command.
 
 ### Exercise 2 - Interacting with HDFS cluster using CLI
 
 Now that we have a HDFS cluster lets now try and use it. HDFS has a CLI tool for interacting with HDFS clusters. Because the cluster is running inside of Kubernetes, we also need to access it from inside Kubernetes.
 
-Much like you created an interactive container with Ubuntu [last week](../01/exercises.md#exercise-7---interactive-container) you now need to create an interactive container using the `apache/hadoop:3` image.
+Much like you created an interactive container with Ubuntu [last week](../01/exercises.md#exercise-6---interactive-container ) you now need to create an interactive container using the `apache/hadoop:3` image.
 
 **Task**: Create interactive container with the `apache/hadoop:3` image.
 
@@ -95,33 +44,10 @@ HDFS works much like a normal file system. The commands to interact with HDFS ar
 
 Because we have not configured the HDFS CLI tool to use the HDFS cluster it fails back to the local file system. The command `hdfs dfs -ls /` is actually equivilant to `ls -laL /`.
 
-To use the HDFS cluster we need to tell the HDFS CLI to use the HDFS cluster we have made. This is done using the `-fs` option, for example: `hdfs dfs -fs hdfs://namenode:port`. You also need to use the "stackable" user when interacting with the HDFS cluster. This can be done by setting an environment variable for the current shell session: `export HADOOP_USER_NAME=stackable`.
+To use the HDFS cluster we need to tell the HDFS CLI to use the HDFS cluster we have made. This is done using the `-fs` option, for example: `hdfs dfs -fs hdfs://namenode:9000 -ls /`. You also need to use the `root` user when interacting with the HDFS cluster. This can be done by setting an environment variable for the current shell session: `export HADOOP_USER_NAME=root`.
 
 **Task**: Try to list the files inside the root directory in the HDFS cluster
-
-**Note**: Make sure you connect to the active name node. Only one name node is active, the other ones are in "standby" mode and will only be promoted in case of a failover. You know if it is not the active one if the result of the command is `Operation category READ is not supported in state standby`.
-
-<details>
-  <summary><strong>Hint:</strong> Hostname and port</summary>
-
-  The port that the HDFS client uses is 8020.
-
-  There is a service called simple-hdfs-namenode-default with no ip. The service is a ["headless service"](https://kubernetes.io/docs/concepts/services-networking/service/#headless-services). This means that the service does not provide load balancing and proxying, but it does provide DNS resolution for pods that match the selector: `pod-name.service-name` will return the IP of the pod.
-</details>
-
-<details>
-  <summary><strong>Hint:</strong> Full example</summary>
-
-  The service called "simple-hdfs-namenode-default" is a ["headless service"](https://kubernetes.io/docs/concepts/services-networking/service/#headless-services). 
-
-  Use `kubectl get pods` to get a list of all pods. If you have two name nodes then the pods should be called "simple-hdfs-namenode-default-0" and "simple-hdfs-namenode-default-1". To get the IP of the pod running name node 0, tha would be the following domain `simple-hdfs-namenode-default-0.simple-hdfs-namenode-default`. You can choose either one of the pods but it may not be the active one. If it is not the active one then try a different name node. The port for HDFS NameNode metadata service is 8020, which is what HDFS clients use.
-
-  Before we run a command inside the interactive container we need to set the HDFS username: `export HADOOP_USER_NAME=stackable`.
-
-  The full command would for example be `hdfs dfs -fs hdfs://simple-hdfs-namenode-default-0.simple-hdfs-namenode-default:8020 -ls /` for name node 0.
-</details>
-
-You should see that there are no files in the directory. We will fix this now.
+**Validate**: Verfify there are no files in the root directory. The following exercises will be about creating files, reading files, uploading files, and deleting files in HDFS. The HDFS CLI tool is used for this.
 
 **Task**: Create a file inside the interactive container called "test.txt" and add some text to it.
 
@@ -131,24 +57,24 @@ You should see that there are no files in the directory. We will fix this now.
   The container does not have nano or vim installed. You can simply create a file by echoing some text and piping it into a file: `echo "hello" > test.txt`. Verify that the file exists by using `ls` and verify its contents using `cat test.txt`.
 </details>
 
-To add a file to the HDFS cluster using the HDFS CLI you can use the put command.
+To add a file to the HDFS cluster using the HDFS CLI you can use the `-put` command.
 
 **Task**: Upload the file to the HDFS cluster
 
 <details>
   <summary><strong>Hint:</strong> Uploading the file</summary>
 
-  `hdfs dfs -put ./test.txt /test.txt`
+  `hdfs dfs -fs hdfs://namenode:9000 -put ./<filename> /<filename>`
 </details>
 
-Now that you have uploaded a file to HDFS you can try to list the files to verify that it is added. Similarly to Unix systems you can use the `cat` command to read files.
+Now that you have uploaded a file to HDFS you can try to list the files to verify that it is added. Similarly to Unix systems you can use the `-cat` command to read the content of a given file.
 
 **Task**: Read the contents of the file you just uploaded to HDFS
 
 <details>
   <summary><strong>Hint:</strong> Reading the file</summary>
 
-  `hdfs dfs -cat /test.txt`
+  `hdfs dfs -fs hdfs://namenode:9000 -cat /test.txt`
 </details>
 
 **Task**: Try to delete the file from HDFS
@@ -158,38 +84,14 @@ Now that you have uploaded a file to HDFS you can try to list the files to verif
 <details>
   <summary><strong>Hint:</strong> Deleting the file</summary>
 
-  `hdfs dfs -rm /test.txt`
+  `hdfs dfs -fs hdfs://namenode:9000 -rm /test.txt`
 </details>
 
 You are now able to list files and folders, read files, upload files, and delete files, using HDFS.
 
-### Exercise 3 (optional) - Mount HDFS config to interactive container
+### Exercise 3 - Uploading Alice in Wonderland to HDFS
 
-Instead of manually specifying the URI ("hdfs://namenode:port") and making sure you connect to the correct name node you can let the HDFS client decide this for you using a HDFS config file(s) (called "core-site.xml" and "hdfs-site.xml").
-
-The Stackable operator creates a Kubernetes resource called a ConfigMap. A ConfigMap is a resource that contains key-value pairs used for configuration. It can be used in various ways, but we want to mount the ConfigMap as a file to the interactive container.
-
-Before we mount it we want to take a look at the ConfigMap and try to understand it.
-
-**Task**: Get the contents of the ConfigMap resource using the `kubectl describe` command.
-
-**Hint**: The ConfigMap resource should be called "simple-hdfs".
-
-<details>
-  <summary><strong>Hint:</strong> Full example</summary>
-
-  List all ConfigMaps using `kubectl get configmap`.
-
-  There should be a ConfigMap called "simple-hdfs".
-
-  Describe the ConfigMap using `kubectl describe configmap/simple-hdfs`.
-</details>
-
-To create the interactive container and mount the config, use the provided [hdfs-cli.yaml file](./hdfs-cli.yaml)
-
-### Exercise 4 - Uploading Alice in Wonderland to HDFS
-
-For the next exercises you will be working with the Alice in Wonderland book. It can be found [here](https://www.gutenberg.org/files/11/11-0.txt) as raw text.
+For the next exercises you will be working with the Alice in Wonderland book. The book can be read from this URL [https://www.gutenberg.org/files/11/11-0.txt](https://www.gutenberg.org/files/11/11-0.txt) as raw text.
 
 **Task**: Upload Alice in Wonderland to HDFS
 
@@ -198,65 +100,64 @@ For the next exercises you will be working with the Alice in Wonderland book. It
 <details>
   <summary><strong>Hint:</strong> Full example</summary>
 
-  1. Gain interactive shell inside a pod running apache/hadoop:3. You can use the pod from [exercise 3](#exercise-3-optional---mount-hdfs-config-to-interactive-container).
+  1. `exec` into the interactive pod running apache/hadoop:3. You can use the pod from [exercise 2](#exercise-2---interacting-with-hdfs-cluster-using-cli).
   2. Download Alice in Wonderland using `wget -O alice-in-wonderland.txt https://www.gutenberg.org/files/11/11-0.txt`.
-  3. Upload Alice in Wonderland to HDFS using `hdfs dfs -put ./alice-in-wonderland.txt /`
+  3. Upload Alice in Wonderland to HDFS using `hdfs dfs -fs hdfs://namenode:9000 -put ./alice-in-wonderland.txt /`
 
 </details>
 
-### Exercise 5 - Interacting with HDFS cluster using Python
+### Exercise 4 - Interacting with HDFS cluster using Python
 
 We now want to try to interact with the HDFS cluster using Python. To do this, there are a few files provided:
 
-- [`client.py`](./client.py) - This file is used to create a HDFS client
+- [`client.py`](./src/client.py) - This file is used to create a HDFS client
 - [`simple-client.py`](./simple-client.py) - This script contains examples for how to read a file and how to create a file.
 
-**Task**: Open the files and understand what they do.
-
-Create an [interactive container](../01/exercises.md#exercise-7---interactive-container) with the `python:3.11` image and [attach Visual Studio Code to it](#attach-visual-studio-code-to-an-interactive-container-in-kubernetes).
+**Task**: Familiarize yourself with the provided files, open the files and understand what they do.
 
 **Tasks**:
+1. Create an [interactive container](../01/exercises.md#exercise-6---interactive-container) with the `python:3.11` image and [attach Visual Studio Code to it](#attach-visual-studio-code-to-an-interactive-container-in-kubernetes).
+1. Copy the [`simple-client.py`](./simple-client.py) and [`client.py`](./src/client.py) files to the container.
+1. Install `hdfs` library using `pip install hdfs` in the container.
+1. Verify the `client.py` module uses the correct namenode.
+1. Run the `simple-client.py` script and observe whats happening.
 
-1. Copy the `simple-client.py` and `client.py` files to the container
-2. Install `hdfs` library using `pip install hdfs`
-3. Configure `client.py` to use the correct name nodes
-4. Run the `simple-client.py` script and observe what it does
+**Notice**: You should see that the script prints the entire Alice in Wonderland text to the console and that it then creates a file called "write.txt" with some text.
 
-You should see that the script prints the entire Alice in Wonderland text to the console and that it then creates a file called "write.txt" with some text.
+**Further reading**: You can read more about the HDFS Python library [here](https://hdfscli.readthedocs.io/en/latest/quickstart.html#python-bindings).
 
-You can read more about the HDFS Python library [here](https://hdfscli.readthedocs.io/en/latest/quickstart.html#python-bindings).
+### Exercise 5 - Analyzing file and saving result in JSON format using Python
 
-### Exercise 6 - Analyzing file and saving result in JSON format using Python
-
-Now that we have a dataset in HDFS and know how to interact with HDFS, we will analyze the data and save the results to a JSON file in HDFS.
+Now we know how to put files in HDFS, read files from HDFS and how to interact with HDFS. The next exercise will analyze the data and save the results to a JSON file in HDFS.
 
 **Task**: Open the [`counting-json.py`](./counting-json.py) file and try to understand it.
 
-You should see that the script reads the Alice in Wonderland file and counts all words in the file. It then saves the 10 most common words to a file called "word-count.json".
+**Notice**: You should see that the script reads the Alice in Wonderland file and counts all words in the file. It then saves the 10 most common words to a file called "word-count.json".
 
 **Tasks**:
 
-1. Copy the script to the container
-2. Install required libraries
-3. Run the script
-4. Read the result. What are the five most common words in Alice in Wonderland, and how many times are they repeated?
+1. Copy the script to the interactive container.
+1. Install required libraries (if needed).
+1. Run the [`counting-json.py`](./counting-json.py) file.
+1. Read the result directly from HDFS. 
+    1. What are the five most common words in Alice in Wonderland?
+    1. How many times are they repeated?
 
-### Exercise 7 - Analyzing file and saving result in Avro format using Python
+### Exercise 6 - Analyzing file and saving result in Avro format using Python
 
 Instead of saving the result as a JSON file, we will now try to save it as an Avro file.
 
 **Task**: Open the [`counting-avro.py`](./counting-avro.py) file and try to understand it.
 
-You should see that the script reads the Alice in Wonderland file similarly to [exercise 6](#exercise-6---analyzing-file-and-saving-result-in-json-file-using-python), but saving the file is a bit different.
+You should see that the script reads the Alice in Wonderland file similarly to [exercise 5](#exercise-5---analyzing-file-and-saving-result-in-json-format-using-python). However, saving the file is different.
 
 **Tasks**:
+1. Copy the script to the interactive container.
+1. Install required libraries (if needed).
+1. Run the [`counting-avro.py`](./counting-avro.py) file.
+1. Read and output the result of the stored files directly from HDFS using HDFS CLI.
 
-1. Copy the script to the container
-2. Install required libraries
-3. Run the script
-4. Read the result
-
-### Exercise 8 - Analyzing file and saving result in Parquet format using Python
+### Exercise 7 - Analyzing file and saving result in Parquet format using Python
 
 We will now try to save a Parquet file to HDFS.
 
@@ -264,15 +165,16 @@ We will now try to save a Parquet file to HDFS.
 
 **Tasks**:
 
-1. Copy the script to the container
-2. Install required libraries
-3. Run the script
-4. Read the result. How many column do the dataframe have?
+1. Copy the script to the interactive container.
+1. Install required libraries (if needed).
+1. Run the [`counting-avro.py`](./counting-avro.py) file.
+1. Read and output the result of the stored files directly from HDFS using HDFS CLI.
+    1. How many column do the dataframe have?
 
-### Exercise 9 - Create six fictive data sources
+### Exercise 8 - Create six fictive data sources
 
 
-The objective of this exercise is to create a fictive data source. We want to create a Python program that enables the simulation of multiple data sources. The fictive data source is a sensor that measures the wattage of an electricity line. The sample rate of the sensor will be adjustable and default to 1Hz. The ID of the sensor must differentiate the six data streams and the valid range of the wattage for these electricity lines is between ±600MW. 
+The objective of this exercise is to create a fictive data source. We want to create a Python program that enables the simulation of multiple data sources. The fictive data source could be a sensor that measures the wattage of an electricity line. The sample rate of the sensor will be adjustable. However, this will default to 1Hz. The ID of the sensor must differentiate the six data streams and the valid range of the wattage for these electricity lines is between ±600MW. 
 
 You need to write a program simulates the above-mentioned information. The program at this stage may only provide a single temporal aspect ("real_time"). However, the schema must accommodate other temporal aspects such as "edge prediction" in the future. 
 
@@ -342,9 +244,5 @@ It is now up to you to take the components and gue them together in the [`data-s
 
 </details>
 
-<details>
-  <summary><strong>Hint:</strong> Build your image and publish to Docker Hub</summary>
 
-Look into [`make-and-publish-image.sh`](../../services/interactive/make-and-publish-image.sh) in the `services/interactive/...` folder of the repository.
-</details>
 
