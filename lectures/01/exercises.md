@@ -228,7 +228,7 @@ You can also copy files to containers. Use the file on your localhost called `ex
 Kubernetes resources can be deleted using the `kubectl delete` command. You can either delete individual resources, such as a the hello-kubernetes deployment using the following command `kubectl delete deployment/hello-kubernetes`, or you can delete it using the file you used to create the resources with using the command `kubectl delete -f hello-kubernetes.yaml`. 
 > If you used Helm to create the resources then you should also delete it using Helm.
 
-#### Step by step guide to clean up:
+## Step by step guide to clean up:
 - To begin with, we will delete the first hello-kubernetes deployment that you made using the yaml manifest file: `kubectl delete -f hello-kubernetes.yaml`
 - Next we will uninstall the hello-kubernetes release of the hello-kubernetes Helm chart: `helm uninstall hello-kubernetes-helm`
 - Delete the ubuntu container: `kubectl delete pods/ubuntu`
