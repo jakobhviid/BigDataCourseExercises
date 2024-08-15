@@ -1,46 +1,4 @@
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: redpanda
-spec:
-  type: NodePort
-  ports:
-    - port: 8080
-      targetPort: 8080
-  selector:
-    app: redpanda
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: redpanda
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: redpanda
-  template:
-    metadata:
-      labels:
-        app: redpanda
-    spec:
-      containers:
-        - name: redpanda
-          image: redpandadata/console:latest
-          env:
-            - name: KAFKA_BROKERS
-              value: "strimzi-kafka-bootstrap:9092"
-            - name: KAFKA_SCHEMAREGISTRY_ENABLED
-              value: "true"
-            - name: KAFKA_SCHEMAREGISTRY_URLS
-              value: "http://kafka-schema-registry:8081"
-            - name: CONNECT_ENABLED
-              value: "true"
-            - name: CONNECT_CLUSTERS_NAME
-              value: "Connectors"
-            - name: CONNECT_CLUSTERS_URL
-              value: "http://kafka-connect:8083"
+
 ---
 apiVersion: v1
 kind: Service
@@ -73,7 +31,7 @@ spec:
           image: confluentinc/cp-schema-registry:7.3.1
           env:
             - name: SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS
-              value: "strimzi-kafka-bootstrap:9092"
+              value: "kafka.anbae.svc.cluster.local:9092"
             - name: SCHEMA_REGISTRY_HOST_NAME
               valueFrom:
                 fieldRef:
@@ -96,7 +54,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: kafka-connect-pv-claim
+  name: kafka-connect-pvc
 spec:
   accessModes:
     - ReadWriteOnce
@@ -125,10 +83,10 @@ spec:
       volumes:
         - name: kafka-connect-pv-storage
           persistentVolumeClaim:
-            claimName: kafka-connect-pv-claim
+            claimName: kafka-connect-pvc
       containers:
         - name: kafka-connect
-          image: anderslaunerbaek/cp-server-connect-base:lec03hdfs2
+          image: registry.gitlab.sdu.dk/jah/bigdatarepo/kafka-connect:7.3.1
           imagePullPolicy: "Always"
           securityContext:
             allowPrivilegeEscalation: false
