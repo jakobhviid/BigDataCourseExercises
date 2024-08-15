@@ -1,8 +1,8 @@
 # HDFS
 
 We will be using the following Docker images for the HDFS cluster:
-- `bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8`
-- `bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8`
+- [bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8](https://hub.docker.com/r/bde2020/hadoop-namenode)
+- [bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8](https://hub.docker.com/r/bde2020/hadoop-datanode)
 
 ## Installation
 The following steps will guide you through the installation of an HDFS cluster on Kubernetes.
@@ -78,7 +78,7 @@ curl -s -XGET "http://localhost:9870/webhdfs/v1/?op=LISTSTATUS"
 To remove the HDFS cluster, run the following commands:
 
 ```bash
-kubectl apply -f configmap.yaml
-kubectl apply -f datanodes.yaml
-kubectl apply -f namenode.yaml
+kubectl delete -f datanodes.yaml
+kubectl delete -f namenode.yaml
+kubectl delete -f configmap.yaml
 ```
