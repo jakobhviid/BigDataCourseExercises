@@ -6,7 +6,7 @@ The deployment manifest [`interactive.yaml`](./interactive.yaml) includes a pod 
 
 The following cmd below can be used for creating a temporary instance of the image.
 ```
-kubectl run interactive --rm -i --tty --image registry.gitlab.sdu.dk/jah/bigdatarepo/interactive:latest -- bash
+kubectl run interactive --rm -i --tty --image registry.gitlab.sdu.dk/jah/bigdatarepo/interactive:latest -- /bin/bash
 ```
 
 ## Attach Visual Studio Code to a running container

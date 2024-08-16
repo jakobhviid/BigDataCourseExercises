@@ -10,12 +10,20 @@ microk8s status --wait-ready
 ```
 
 ### Addons
+Addons enabled by default
+````bash
+ha-cluster
+helm
+helm3
+````
+
 We will enable the following addons:
 
 ```bash
 microk8s enable cert-manager
 microk8s enable rbac
 microk8s enable dns
+microk8s enable observability (Will also enable hostpath-storage and storage)
 ```
 
 
@@ -103,6 +111,32 @@ kubectl port-forward -n observability kube-prom-stack-grafana-8dc65649-82k98 300
 ````
 
 4. Enter the credentials
+
+## Adjusting max pod limit
+By default, a single node can only contain `110` pods. To increase the pod limit, follow the steps below:
+
+1. Open the MicroK8s kubelet configuration file
+````bash
+sudo nano /var/snap/microk8s/current/args/kubelet
+````
+
+2. Modify or add the `max-pods` setting to the desired amount e.g 500
+````bash
+--max-pods=500
+````
+
+3. Save and close the file
+
+4. Restart the microK8s cluster
+````bash
+sudo microk8s.stop
+sudo microk8s.start
+````
+
+5. Verify the change 
+````bash
+kubectl describe node <your-node-name> 
+````
 
 ## Course project
 

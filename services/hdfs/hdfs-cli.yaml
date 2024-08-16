@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hdfs-config
+data:
+  core-site.xml: |
+    <?xml version="1.0"?>
+    <configuration>
+        <property>
+            <name>fs.defaultFS</name>
+            <value>hdfs://namenode:9000</value>
+        </property>
+    </configuration>
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hdfs-cli
+spec:
+  containers:
+    - image: apache/hadoop:3
+      name: hadoop
+      env:
+        - name: HADOOP_USER_NAME
+          value: root
+      args:
+        - bash
+      stdin: true
+      tty: true
+      volumeMounts:
+        - name: hdfs-config
+          # Mount the new config files to the /opt/hadoop/etc/hadoop directory
+          mountPath: /opt/hadoop/etc/hadoop
+  initContainers:
+    - name: init-config
+      image: apache/hadoop:3
+      # First copy the default config files to the /config directory, then copy the config map files to the /config directory and overwrite the default config files
+      command: ["sh", "-c", "cp -rT /opt/hadoop/etc/hadoop /config && cp -rT /hdfs-config /config"]
+      volumeMounts:
+        # Mount the HDFS config map to the /hdfs-config directory
+        - name: hdfs-config-map
+          mountPath: /hdfs-config
+          # Mount the empty volume to the /config directory
+        - name: hdfs-config
+          mountPath: /config
+  volumes:
+    # Create a volume using the config map
+    - name: hdfs-config-map
+      configMap:
+        name: hdfs-config
+      # Create an empty volume
+    - name: hdfs-config
+      emptyDir: {}
