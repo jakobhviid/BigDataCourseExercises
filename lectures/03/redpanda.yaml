@@ -4,12 +4,13 @@ kind: Service
 metadata:
   name: redpanda
 spec:
-  type: NodePort
-  ports:
-    - port: 8080
-      targetPort: 8080
   selector:
     app: redpanda
+  ports:
+    - name: web
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -27,17 +28,27 @@ spec:
     spec:
       containers:
         - name: redpanda
-          image: redpandadata/console:v2.7.1
+          # image: quay.io/cloudhut/kowl:master
+          image: confluentinc/cp-enterprise-control-center:7.3.1
+          # image: docker.redpanda.com/redpandadata/console:v2.7.0
+          # image: redpandadata/console:latest
+          ports:
+            - containerPort: 8080
           env:
-            - name: KAFKA_BROKERS
+            - name: PORT
+              value: "8080"
+            - name: CONTROL_CENTER_BOOTSTRAP_SERVERS
+            # - name: KAFKA_BROKERS
               value: "kafka.anbae.svc.cluster.local:9092"
-            - name: KAFKA_SCHEMAREGISTRY_ENABLED
-              value: "true"
-            - name: KAFKA_SCHEMAREGISTRY_URLS
-              value: "http://kafka-schema-registry:8081"
-            - name: CONNECT_ENABLED
-              value: "true"
-            - name: CONNECT_CLUSTERS_NAME
-              value: "Connectors"
-            - name: CONNECT_CLUSTERS_URL
-              value: "http://kafka-connect:8083"
+            - name: CONTROL_CENTER_REPLICATION_FACTOR
+              value: "1"
+          #   - name: KAFKA_SCHEMAREGISTRY_ENABLED
+          #     value: "true"
+          #   - name: KAFKA_SCHEMAREGISTRY_URLS
+          #     value: "http://kafka-schema-registry:8081"
+          #   - name: CONNECT_ENABLED
+          #     value: "true"
+          #   - name: CONNECT_CLUSTERS_NAME
+          #     value: "Connectors"
+          #   - name: CONNECT_CLUSTERS_URL
+          #     value: "http://kafka-connect:8083"

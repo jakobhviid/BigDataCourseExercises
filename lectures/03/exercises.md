@@ -11,6 +11,15 @@ Please open issues [here](https://github.com/jakobhviid/BigDataCourseExercises/i
 
 ### Exercise 1 - Composing a Kafka cluster
 
+
+
+helm install kafka oci://registry-1.docker.io/bitnamicharts/kafka
+
+
+
+
+
+
 The objective of this exercise is to deploy a Kafka cluster. We will be using operators from a company called [strimzi.io](http://strimzi.io). The image below links to a short introductory video on how to set up Kafka inside Kubernetes. 
 
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/1qO2qGuJNQI/0.jpg)](https://www.youtube.com/watch?v=1qO2qGuJNQI)
