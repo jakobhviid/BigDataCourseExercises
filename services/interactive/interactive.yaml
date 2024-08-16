@@ -32,6 +32,14 @@ spec:
           volumeMounts:
             - name: interactive-storage
               mountPath: /root/code
+          # env:
+          #   - name: KAFKA_SASL_USERNAME
+          #     value: "user1"
+          #   - name: KAFKA_SASL_PASSWORD
+          #     valueFrom:
+          #       secretKeyRef:
+          #         name: kafka-user-passwords
+          #         key: client-passwords
       volumes:
         - name: interactive-storage
           persistentVolumeClaim:
