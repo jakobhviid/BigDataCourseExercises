@@ -1,0 +1,149 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: hadoop-datanode1-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: hadoop-datanode2-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: hadoop-datanode3-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: datanode1
+  labels:
+    app: datanode1
+spec:
+  containers:
+    - name: datanode1
+      image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+      ports:
+        - containerPort: 9864
+      env:
+        - name: SERVICE_PRECONDITION
+          value: "namenode:9870"
+      envFrom:
+        - configMapRef:
+            name: hadoop-config
+      volumeMounts:
+        - name: hadoop-datanode1-storage
+          mountPath: /hadoop/dfs/data
+  volumes:
+    - name: hadoop-datanode1-storage
+      persistentVolumeClaim:
+        claimName: hadoop-datanode1-pvc
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: datanode2
+  labels:
+    app: datanode2
+spec:
+  containers:
+    - name: datanode2
+      image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+      ports:
+        - containerPort: 9864
+      env:
+        - name: SERVICE_PRECONDITION
+          value: "namenode:9870"
+      envFrom:
+        - configMapRef:
+            name: hadoop-config
+      volumeMounts:
+        - name: hadoop-datanode2-storage
+          mountPath: /hadoop/dfs/data
+  volumes:
+    - name: hadoop-datanode2-storage
+      persistentVolumeClaim:
+        claimName: hadoop-datanode2-pvc
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: datanode3
+  labels:
+    app: datanode3
+spec:
+  containers:
+    - name: datanode3
+      image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+      ports:
+        - containerPort: 9864
+      env:
+        - name: SERVICE_PRECONDITION
+          value: "namenode:9870"
+      envFrom:
+        - configMapRef:
+            name: hadoop-config
+      volumeMounts:
+        - name: hadoop-datanode3-storage
+          mountPath: /hadoop/dfs/data
+  volumes:
+    - name: hadoop-datanode3-storage
+      persistentVolumeClaim:
+        claimName: hadoop-datanode3-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: datanode1
+spec:
+  selector:
+    app: datanode1
+  ports:
+    - name: datanode1
+      protocol: TCP
+      port: 9864
+      targetPort: 9864
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: datanode2
+spec:
+  selector:
+    app: datanode2
+  ports:
+    - name: datanode2
+      protocol: TCP
+      port: 9864
+      targetPort: 9864
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: datanode3
+spec:
+  selector:
+    app: datanode3
+  ports:
+    - name: datanode3
+      protocol: TCP
+      port: 9864
+      targetPort: 9864
