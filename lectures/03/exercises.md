@@ -3,27 +3,32 @@
 
 ## Exercises
 
-The exercises for this week's lecture will be about distributed transport and streaming. You will be creating a Kafka cluster and various publishing programs and subscribing programs to stream records.
+The exercises for this week's lecture is be about distributed transport and streaming. You will be creating a Kafka cluster and various publishing programs and subscribing programs to stream records.
 The focus of today's lecture is to interact with Kafka, create Python producer and consumer programs, and configure Kafka registry and Kafka connect modules. 
 
 Please open issues [here](https://github.com/jakobhviid/BigDataCourseExercises/issues) if you encounter unclear information or experience bugs in our examples!
 
 
-### Exercise 1 - Compose a Kafka cluster
+### Exercise 1 - Deploy a Kafka cluster
 
-The objective of this exercise is to deploy a Kafka cluster. This year will be using a helm chart from [Bitnami package for Apache Kafk](https://artifacthub.io/packages/helm/bitnami/kafka#bitnami-package-for-apache-kafka) to deploy a Kafka cluster. For the remaining steps of this exercise is to copy and paste commands into a terminal session using `helm` and `kubectl`.
+The objective of this exercise is to deploy a Kafka cluster. This year will be using a helm chart from [Bitnami package for Apache Kafk](https://artifacthub.io/packages/helm/bitnami/kafka#bitnami-package-for-apache-kafka) to deploy a Kafka cluster.
 
-**Task**: Install Kafka using the helm chart by the following command with default parameters and values: `helm install --values kafka-values.yaml kafka oci://registry-1.docker.io/bitnamicharts/kafka`
-
+**Task**: Deploy Kafka using the `helm` and the follwoing [kafka-values.yaml](kafka-values.yaml) file.
+```bash
+helm install --values kafka-values.yaml kafka oci://registry-1.docker.io/bitnamicharts/kafka`
+```
 **Notice**: When you need to delete the Kafka cluster, you can use the following command: `helm delete kafka`.
 
 ### Exercise 2 - The Redpanda console
-To interact with Kafka, we will use [Redpanda Console](https://redpanda.com/redpanda-console-kafka-ui). The console is a web-based user interface that allows you to interact with Kafka topics, schema registry, and Kafka connectors. 
+We will use the [Redpanda Console](https://redpanda.com/redpanda-console-kafka-ui) to interact with Kafka. The console is a web-based user interface that allows you to interact with Kafka topics, schema registry, and Kafka connectors. 
 
 
-**Task:** Deploy Redpanda using manifest file [redpanda.yaml](./redpanda.yaml) with the following command: `kubectl apply -f redpanda.yaml`.
+**Task:** Deploy Redpanda using manifest file [redpanda.yaml](./redpanda.yaml) with the following command: 
+```bash
+kubectl apply -f redpanda.yaml
+```
 
-**Task:** Access Redpanda using the following command: `kubectl port-forward svc/redpanda 8080:8080`. Open [Redpanda](http://127.0.0.1:8080) in your browser!
+**Task:** Access Redpanda using the following command: `kubectl port-forward svc/redpanda 8080:8080` to open [Redpanda](http://127.0.0.1:8080) in your browser!
 
 **Task:** Explore the following tabs:
 - [Overview](http://127.0.0.1:8080/overview)
@@ -34,7 +39,7 @@ To interact with Kafka, we will use [Redpanda Console](https://redpanda.com/redp
  
 **Task:** Question: What does the [Topics](http://127.0.0.1:8080/topics) view show you?
 
-**Task:** Manual interaction with Kafka using Redpanda UI:
+**Task:** Manual interaction with Kafka using the Redpanda UI:
 1. Use Redpanda to create a topic called `test-redpanda`.
 1. Use Redpanda to produce record with key=`1` and value=`{"id":1,"status":"it works"}` to the created topic `test-redpanda`.
 1. Use Redpanda to delete all the messages in topic `test-redpanda`.
@@ -48,49 +53,35 @@ To interact with Kafka, we will use [Redpanda Console](https://redpanda.com/redp
  
 </details>
 
-### Exercise 3 - Kafka Connect, Kafka Schema Registry, and Kafka KSQL
+### Exercise 3 - Additional deployments of Kafka Connect, Kafka Schema Registry, and Kafka KSQL
 
+Besides the Redpanda console, we will also use the Kafka Connect, Kafka Schema Registry, and Kafka KSQL to facilitate a distributed transportion and streaming of records in Kafka. These services are included in the given in the manifest files:
+- [kafka-schema-registry.yaml](./kafka-schema-registry.yaml)
+- [kafka-connect.yaml](./kafka-connect.yaml)
+- [kafka-ksqldb.yaml](./kafka-ksqldb.yaml)
 
-KSQL_SASL_JAAS_CONFIG="org.apache.kafka.common.security.plain.PlainLoginModule required username=\"<username>\" password=\"<strong-password>\";"
+**Task**: Familiarize yourself with the three mentioned files.
+**Task**: Create addional deployments of Kafka Connect, Kafka Schema Registry, and Kafka KSQL using the following commands:
+1. Apply the Kafka Schema Registry manifest file to your namespace. `kubectl apply -f kafka-schema-registry.yaml`
+1. Apply the Kafka Connect module to your namespace. `kubectl apply -f kafka-connect.yaml`
+1. Apply the Kafka Ksqldb server to your namespace. `kubectl apply -f kafka-ksqldb.yaml`
 
-manifest files to remove an external dependencies. Therefore we recommend you familiarize yourself with the two mentioned files: 
-
-- [kafka.yaml](./kafka.yaml)
-- [kafka-extra.yaml](kafka-extra.yaml)
-
-**NB:** Make sure your terminal path is relative to these files before moving forward.
-
-#### Extra services
-
-You need extra services to interact with Kafka. All of these services are included in the [kafka-extra.yaml](kafka-extra.yaml) file.
-
-**Task:** Apply the [Kafka-extra manifest](kafka-extra.yaml.yaml) to the `kafka` namespace.
-<details>
-  <summary><strong>Hint:</strong> Apply Kafka extra services manifest</summary>
-
-  ```
-  kubectl apply -n kafka -f kafka-extra.yaml
-  ```
-</details>
 
 The list below summarises the extra services and briefly demonstrate how to interact with them:
-- Redpanda (redpanda)
-  - `kubectl port-forward svc/redpanda  8080:8080 -n kafka`. Open [http://127.0.0.1:8080](http://127.0.0.1:8080) in your browser!
 - Registry (kafka-schema-registry) 
-  - `kubectl port-forward svc/kafka-schema-registry  8081:8081 -n kafka`. Make a curl in a terminal [http://127.0.0.1:8081](http://127.0.0.1:8081) and get this output:
+  - `kubectl port-forward svc/kafka-schema-registry  8081:8081`. Make a `curl` cmd in a terminal using the URL [http://127.0.0.1:8081](http://127.0.0.1:8081) and get this output:
     ```
     curl http://127.0.0.1:8081
     {}%                                  
     ```
 - Connect (kafka-connect)
-  - `kubectl port-forward svc/kafka-connect  8083:8083 -n kafka`. Make a curl in a terminal [http://127.0.0.1:8083](http://127.0.0.1:8083) and get this output:
+  - `kubectl port-forward svc/kafka-connect  8083:8083`. Make a `curl` cmd in a terminal using the URL [http://127.0.0.1:8083](http://127.0.0.1:8083) and get this output:
     ```
     curl http://127.0.0.1:8083
     {"version":"7.3.1-ce","commit":"a453cbd27246f7bb","kafka_cluster_id":"ibXE6-pLRouRr7kLM6o_MQ"}%                                    
     ```
-- KsqlDB (kafka-ksqldb-server)
-- KsqlDB CLI (kafka-ksqldb-cli)
-  - `kubectl exec --namespace=kafka --stdin --tty deployment/kafka-ksqldb-cli -- ksql http://kafka-ksqldb-server:8088` make sure you will reach a console similar to this:
+- KsqlDB (kafka-ksqldb-server) and KsqlDB CLI (kafka-ksqldb-cli)
+  - `kubectl exec --stdin --tty deployment/kafka-ksqldb-cli -- ksql http://kafka-ksqldb-server:8088` make sure you will reach a console similar to this:
 
     ```
                       
@@ -115,32 +106,55 @@ The list below summarises the extra services and briefly demonstrate how to inte
     ksql> 
     ```
 
-#### Validate in deployment of Kafka using a simple producer and consumer
+#### Validate the deployment of Kafka using a simple producer and consumer
 
 
 **Tasks:** Producing and consuming topic messages
 
-1. Run this command in a terminal: `kubectl -n kafka run kafka-producer -it --rm --image=quay.io/strimzi/kafka:0.37.0-kafka-3.5.1 -- bin/kafka-console-producer.sh --bootstrap-server strimzi-kafka-bootstrap:9092 --topic test`
-2. Run this command in another terminal: `kubectl -n kafka run kafka-consumer-1 -it --rm --image=quay.io/strimzi/kafka:0.37.0-kafka-3.5.1 -- bin/kafka-console-consumer.sh --bootstrap-server strimzi-kafka-bootstrap:9092 --topic test`
+1. Create a Kafka pod and attach to it using `kubectl run` and `kubectl exec` commands.
+```bash
+kubectl run kafka-client --restart='Never' --image docker.io/bitnami/kafka:3.8.0-debian-12-r3  --command -- sleep infinity
+```
+    
+    - asd 
+
+```bash
+kubectl exec --tty -i kafka-client -- bash
+```
+1.
+
+```bash
+kafka-console-producer.sh \
+            --broker-list kafka-controller-0.kafka-controller-headless.anbae.svc.cluster.local:9092,kafka-controller-1.kafka-controller-headless.anbae.svc.cluster.local:9092,kafka-controller-2.kafka-controller-headless.anbae.svc.cluster.local:9092 \
+            --topic test
+```
+```bash
+kafka-console-consumer.sh \
+            --bootstrap-server kafka:9092 \
+            --topic test \
+            --from-beginning
+```
+
+1. Run this command in a terminal: `kubectl run kafka-producer -it --rm --image=quay.io/strimzi/kafka:0.37.0-kafka-3.5.1 -- bin/kafka-console-producer.sh --bootstrap-server strimzi-kafka-bootstrap:9092 --topic test`
+2. Run this command in another terminal: `kubectl run kafka-consumer-1 -it --rm --image=quay.io/strimzi/kafka:0.37.0-kafka-3.5.1 -- bin/kafka-console-consumer.sh --bootstrap-server strimzi-kafka-bootstrap:9092 --topic test`
 3. Try typing text in the first terminal and hit enter
 4. Look at the second terminal. What happened?
 
-**Task:** Delete the two pods you just created (`kafka-producer` and `kafka-consumer`).
+**Task:** Delete the pod you just created (`kafka-client`).
 
 <details>
-  <summary><strong>Hint:</strong> Delete the pods</summary>
+  <summary><strong>Hint:</strong> Delete the pod</summary>
 
-  CTRL + C should exit the terminal and delete the pods. If not then just use the commands below.
+  CTRL + C should exit the terminal and delete the pod. If not then just use the commands below.
 
   ```
-  kubectl delete -n kafka pod/kafka-producer
-  kubectl delete -n kafka pod/kafka-consumer
+  kubectl delete pod/kafka-client
   ```
 </details>
 
 
 
-### Exercise 3 - Produce messages to Kafka using Python
+### Exercise 4 - Produce messages to Kafka using Python
 
 The objective of this exercise is to create a program which publishes messages to a Kafka topic. The exercise builds on top of [exercise 9 from lecture 2](../02/exercises.md#exercise-9---create-six-fictive-data-sources), but instead of saving the data to HDFS we will publish it to a Kafka topic and use a Kafka Connector to save the samples to HDFS. 
 This exercise focuses on creating the topic and creating the producer. If you have not solved the exercise from last week then you can use the files provided [here](./hints/simple-producer.py).
@@ -185,7 +199,7 @@ To verify that the program is producing messages to the `INGESTION` topic. Open 
  
 </details>
 
-### Exercise 4 - Consume messages from Kafka using Python with single and multiple consumers
+### Exercise 5 - Consume messages from Kafka using Python with single and multiple consumers
 
 The objective of this exercise is to write a Python consumer and to print the messages from the `INGESTION` topic.
 
@@ -254,7 +268,7 @@ DEFAULT_CONSUMER    3186
 - How can we get two consumers to receive unique records?
 - What defines the maximum number of active parallel consumers within one consumer group?
 
-### Exercise 5 - Kafka Ksql
+### Exercise 6 - Kafka Ksql
 
 The objective of this exercise is use ksqlDB to split the records in the `INGESTION` topic into six separate streams ` SENSOR_ID_{1, 2, ..., 6}` based on the sensor id in the `payload` field of the JSON file.
 
@@ -321,7 +335,7 @@ The objective of this exercise is use ksqlDB to split the records in the `INGEST
 
 
 
-### Exercise 6 - Kafka Connect and HDFS
+### Exercise 7 - Kafka Connect and HDFS
 The objective of this exercise is apply and configure a Kafka Connect module to write the records from the `INGESTION` topic into HDFS as mentioned in [exercise 03](#exercise-03---produce-messages-to-kafka-using-python).
 
 The module of interest is the [HDFS 2 Sink Connector](https://docs.confluent.io/kafka-connectors/hdfs/current/overview.html) created by a company called Confluent. The module will be accessible through the ready-running `kafka-connect` service. The creation of the underlying image of our `kafka-connect` service can be further explored here: [kafka-connect - README.md](../../services/kafka-connect/README.md). 
@@ -334,7 +348,7 @@ The module of interest is the [HDFS 2 Sink Connector](https://docs.confluent.io/
   <details>
     <summary><strong>Hint:</strong>Post the configuration using curl</summary>
 
-    This example will be using port-forwarding. Therefore ensure `kubectl port-forward svc/kafka-connect 8083:8083 -n kafka` has been enabled.
+    This example will be using port-forwarding. Therefore ensure `kubectl port-forward svc/kafka-connect 8083:8083` has been enabled.
 
     Look into the configuration in the chunk below and the command in your terminal:
 
