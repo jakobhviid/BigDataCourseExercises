@@ -9,14 +9,14 @@ Please open issues [here](https://github.com/jakobhviid/BigDataCourseExercises/i
 For progressing in today's exercises we recommend you to look into attaching Visual Studio Code to an interactive container in Kubernetes. This will shorten the development time of services that depend on resources inside Kubernetes. Furthermore, a simpler access to the HDFS deployment in Kubernetes.
 Please read about the concept [here](https://code.visualstudio.com/docs/devcontainers/containers) to get a complete overview.
 
-You can navigate to the `services/interactive` folder in the repository and read the [README.md](../../services/interactive/README.md) file to get a better understanding of how to attach Visual Studio Code to an interactive container in Kubernetes in this course.
+You can navigate to the `services/interactive` folder in the repository and read the [README](../../services/interactive/README.md) file to get a better understanding of how to attach Visual Studio Code to an interactive container in Kubernetes in this course.
 
 ## Exercises
 ### Exercise 1 - Set up HDFS cluster
 
-The initial task is to set up a HDFS cluster. Please familiarize yourself with and read the [README.md](../../services/hdfs/README.md) file in the `services/hdfs` folder of the repository. This will guide you through the installation of an HDFS cluster on Kubernetes.
+The initial task is to set up a HDFS cluster. Please familiarize yourself with and read the [README](../../services/hdfs/README.md) file in the `services/hdfs` folder of the repository. This will guide you through the installation of an HDFS cluster on Kubernetes.
 
-**Tasks**: Follow the instructions in the [README.md](../../services/hdfs/README.md) file to deploy the HDFS cluster.
+**Tasks**: Follow the instructions in the [README](../../services/hdfs/README.md) file to deploy the HDFS cluster.
 
 **Validate**: Verify that the HDFS cluster is up and running. There will be a single namenode and three datanodes inside your namespace as illustrated in the chunk below.
 ```bash
