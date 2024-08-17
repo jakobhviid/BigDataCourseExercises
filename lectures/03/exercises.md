@@ -391,3 +391,26 @@ The module of interest is the [HDFS 2 Sink Connector](https://docs.confluent.io/
 WIP
 ### Exercise 8 - Sqoop
 WIP
+
+## Step by step guide to clean up:
+
+To clean up the resources created in this lecture, you can follow the steps below:
+- Todays exercises.
+  1. `kubectl delete -f redpanda.yaml`
+  1. `kubectl delete -f kafka-schema-registry.yaml`
+  1. `kubectl delete -f kafka-connect.yaml`
+  1. `kubectl delete -f kafka-ksqldb.yaml`
+  1. `kubectl delete pod kafka-client`
+  1. `helm delete kafka`
+- `cd` into the `services/hdfs` folder in the repository.
+  1. `kubectl delete -f datanodes.yaml`
+  1. `kubectl delete -f namenode.yaml`
+  1. `kubectl delete -f configmap.yaml`
+  1. `kubectl delete -f pvc.yaml`
+- `cd` into the `services/interactive` folder in the repository.
+  1. `kubectl delete -f interactive.yaml`
+
+
+You can get a list of the pods and services to verify that they are deleted.
+- `kubectl get pods`
+- `kubectl get services`

@@ -250,18 +250,15 @@ It is now up to you to take the components and gue them together in the [`data-s
 ## Step by step guide to clean up:
 
 To clean up the resources created in this lecture, you can follow the steps below:
-- run the follow cmd: `kubectl delete pod <name>` created in [exercise 2](#exercise-2---interacting-with-hdfs-cluster-using-cli).
-- cd into the `services/hdfs` folder in the repository.
+- run the follow cmd: `kubectl delete pod <name>` to delete the pod created in [exercise 2](#exercise-2---interacting-with-hdfs-cluster-using-cli).
+- `cd` into the `services/hdfs` folder in the repository.
   1. `kubectl delete -f datanodes.yaml`
   1. `kubectl delete -f namenode.yaml`
   1. `kubectl delete -f configmap.yaml`
-- cd into the `services/interactive` folder in the repository.
+  1. `kubectl delete -f pvc.yaml`
+- `cd` into the `services/interactive` folder in the repository.
   1. `kubectl delete -f interactive.yaml`
 
-
-To begin with, we will delete the first hello-kubernetes deployment that you made using the yaml manifest file: `kubectl delete -f hello-kubernetes.yaml`
-- Next we will uninstall the hello-kubernetes release of the hello-kubernetes Helm chart: `helm uninstall hello-kubernetes-helm`
-- Delete the ubuntu container: `kubectl delete pods/ubuntu`
 
 You can get a list of the pods and services to verify that they are deleted.
 - `kubectl get pods`
