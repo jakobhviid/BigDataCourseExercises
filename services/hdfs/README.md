@@ -13,24 +13,29 @@ Before proceeding, make sure you have a Kubernetes cluster running and `kubectl`
 
 Once ready, apply the following commands to deploy the HDFS cluster in the following order
 
-1. Deploy the configmap
+1. Deploy the persistent volume claims.
+````bash 
+kubectl apply -f pvc.yaml
+````
+
+2. Deploy the configmap.
 ````bash 
 kubectl apply -f configmap.yaml
 ````
 
-2. Ensure it's deployed
+3. Ensure it's deployed.
 
 ````bash
 kubectl get configmap hadoop-config
 ````
 
-3. Deploy the namenode.yaml
+4. Deploy the namenode.
 
 ````bash
 kubectl apply -f namenode.yaml
 ````
 
-4. Ensure the pod is created successfully
+5. Ensure the pod is created successfully
 
 ````bash
 kubectl get pod -w
@@ -38,13 +43,13 @@ kubectl describe pod namenode-<ID>
 kubectl logs namenode-<ID>
 ````
 
-5. Deploy the datanodes.yaml
+6. Deploy the datanodes.
 
 ````bash
 kubectl apply -f datanodes.yaml
 ````
 
-6. Ensure that 3 datanode pods are created 
+7. Ensure that 3 datanode pods are created 
 
 ````bash
 kubectl get pod -w 
@@ -62,7 +67,6 @@ We expect the HDFS cluster to be empty once installed. The following cmd will us
 ```bash
 curl -s -XGET "http://localhost:9870/webhdfs/v1/?op=LISTSTATUS"
 
-
 {
     "FileStatuses": {
         "FileStatus": [
@@ -77,8 +81,13 @@ curl -s -XGET "http://localhost:9870/webhdfs/v1/?op=LISTSTATUS"
 
 To remove the HDFS cluster, run the following commands:
 
+1. Delete the datanodes and namenode pods
 ```bash
 kubectl delete -f datanodes.yaml
 kubectl delete -f namenode.yaml
+```
+2. Delete the configmap and persistent volume claims - if needed.
+```bash
+kubectl delete -f pcv.yaml
 kubectl delete -f configmap.yaml
 ```
