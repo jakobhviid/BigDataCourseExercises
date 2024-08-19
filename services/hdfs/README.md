@@ -88,6 +88,6 @@ kubectl delete -f namenode.yaml
 ```
 2. Delete the configmap and persistent volume claims - if needed.
 ```bash
-kubectl delete -f pcv.yaml
+kubectl delete -f pvc.yaml
 kubectl delete -f configmap.yaml
 ```
