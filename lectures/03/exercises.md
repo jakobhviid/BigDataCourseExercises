@@ -121,10 +121,15 @@ kubectl exec --tty -i kafka-client -- bash
 ``` 
 3. Run the following commands in the first terminal to produce messages to the Kafka topic `test`:
 ```bash
+# Define the namespace variable
+NAMESPACE="anbae"
+
+# Use the variable in your Kafka producer command
 kafka-console-producer.sh \
-            --broker-list kafka-controller-0.kafka-controller-headless.anbae.svc.cluster.local:9092,kafka-controller-1.kafka-controller-headless.anbae.svc.cluster.local:9092,kafka-controller-2.kafka-controller-headless.anbae.svc.cluster.local:9092 \
-            --topic test
+  --broker-list kafka-controller-0.kafka-controller-headless.${NAMESPACE}.svc.cluster.local:9092,kafka-controller-1.kafka-controller-headless.${NAMESPACE}.svc.cluster.local:9092,kafka-controller-2.kafka-controller-headless.${NAMESPACE}.svc.cluster.local:9092 \
+  --topic test
 ```
+
 4. Run the following commands in the second terminal to consume messages from the Kafka topic `test`:
 ```bash
 kafka-console-consumer.sh \
@@ -390,7 +395,55 @@ The module of interest is the [HDFS 2 Sink Connector](https://docs.confluent.io/
 ### Exercise 8 - Flume
 WIP
 ### Exercise 8 - Sqoop
-WIP
+
+1. Deploy the Sqoop deployment
+
+````bash
+kubectl apply -f sqoop.yaml
+````
+
+2. Deploy the Postgres helm chart
+
+````bash
+helm install postgresql --version=12.1.5 --set auth.username=root --set auth.password=pwd1234 --set auth.database=employees --set primary.extendedConfiguration="password_encryption=md5" --repo https://charts.bitnami.com/bitnami postgresql
+````
+
+3. Login to the database 
+````bash
+PGPASSWORD=pwd1234 psql -U root -d employees
+````
+
+4. Seed the database
+
+````
+CREATE TABLE employees (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    department VARCHAR(255) NOT NULL,
+    salary DECIMAL(10, 2) NOT NULL
+);
+
+INSERT INTO employees (name, department, salary) VALUES
+('John Doe', 'Engineering', 75000),
+('Jane Smith', 'Marketing', 65000),
+('Alice Johnson', 'HR', 60000),
+('Robert Brown', 'Finance', 80000);
+
+SELECT * FROM employees;
+````
+
+3. Exec into the Sqoop pod
+
+4. Ingest the database into hdfs 
+````bash
+sqoop import \
+  --connect "jdbc:postgresql://postgresql-0.postgresql-hl.svane.svc.cluster.local:5432/employees" \
+  --username root \
+  --password pwd1234 \
+  --table employees \
+  --target-dir /employees \
+  --m 1
+````
 
 ## Step by step guide to clean up:
 
