@@ -1,16 +1,14 @@
----
 apiVersion: v1
-kind: Service
+kind: ConfigMap
 metadata:
-  name: redpanda
-spec:
-  selector:
-    app: redpanda
-  ports:
-    - name: web
-      protocol: TCP
-      port: 8080
-      targetPort: 8080
+  name: redpanda-config
+data:
+  KAFKA_BROKERS: "kafka:9092"
+  KAFKA_SCHEMAREGISTRY_ENABLED: "true"
+  KAFKA_SCHEMAREGISTRY_URLS: "http://kafka-schema-registry:8081"
+  CONNECT_ENABLED: "true"
+  CONNECT_CLUSTERS_NAME: "Connectors"
+  CONNECT_CLUSTERS_URL: "http://kafka-connect:8083"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -31,17 +29,19 @@ spec:
           image: redpandadata/console:v2.7.0
           ports:
             - containerPort: 8080
-          env:
-            - name: KAFKA_BROKERS
-              value: "kafka:9092"
-            - name: KAFKA_SCHEMAREGISTRY_ENABLED
-              value: "true"
-            - name: KAFKA_SCHEMAREGISTRY_URLS
-              value: "http://kafka-schema-registry:8081"
-            - name: CONNECT_ENABLED
-              value: "true"
-            - name: CONNECT_CLUSTERS_NAME
-              value: "Connectors"
-            - name: CONNECT_CLUSTERS_URL
-              value: "http://kafka-connect:8083"
-              
+          envFrom:
+            - configMapRef:
+                name: redpanda-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redpanda
+spec:
+  selector:
+    app: redpanda
+  ports:
+    - name: web
+      protocol: TCP
+      port: 8080
+      targetPort: 8080

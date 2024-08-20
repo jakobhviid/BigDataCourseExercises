@@ -1,14 +1,25 @@
 apiVersion: v1
-kind: Service
+kind: ConfigMap
 metadata:
-  name: kafka-connect
-spec:
-  type: NodePort
-  ports:
-    - port: 8083
-      targetPort: 8083
-  selector:
-    app: kafka-connect
+  name: kafka-connect-config
+data:
+  HADOOP_USER_NAME: "root"
+  CONNECT_BOOTSTRAP_SERVERS: "kafka:9092"
+  CONNECT_REST_PORT: "8083"
+  CONNECT_GROUP_ID: "kafka-connect-group-id-01"
+  CONNECT_CONFIG_STORAGE_TOPIC: "_connect-configs"
+  CONNECT_OFFSET_STORAGE_TOPIC: "_connect-offsets"
+  CONNECT_STATUS_STORAGE_TOPIC: "_connect-status"
+  CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: "1"
+  CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: "1"
+  CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: "1"
+  CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components,/data/connect-jars"
+  CONNECT_KEY_CONVERTER: "io.confluent.connect.avro.AvroConverter"
+  CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: "http://kafka-schema-registry:8081"
+  CONNECT_VALUE_CONVERTER: "io.confluent.connect.avro.AvroConverter"
+  CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: "http://kafka-schema-registry:8081"
+  CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+  CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -51,42 +62,23 @@ spec:
           volumeMounts:
             - mountPath: "/data/"
               name: kafka-connect-pv-storage
+          envFrom:
+            - configMapRef:
+                name: kafka-connect-config
           env:
-            - name: HADOOP_USER_NAME
-              value: "root"
-            - name: CONNECT_BOOTSTRAP_SERVERS
-              value: "kafka:9092"
-            - name: CONNECT_REST_PORT
-              value: "8083"
             - name: CONNECT_REST_ADVERTISED_HOST_NAME
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
-            - name: CONNECT_GROUP_ID
-              value: "kafka-connect-group-id-01"
-            - name: CONNECT_CONFIG_STORAGE_TOPIC
-              value: "_connect-configs"
-            - name: CONNECT_OFFSET_STORAGE_TOPIC
-              value: "_connect-offsets"
-            - name: CONNECT_STATUS_STORAGE_TOPIC
-              value: "_connect-status"
-            - name: CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR
-              value: "1"
-            - name: CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR
-              value: "1"
-            - name: CONNECT_STATUS_STORAGE_REPLICATION_FACTOR
-              value: "1"
-            - name: CONNECT_PLUGIN_PATH
-              value: "/usr/share/java,/usr/share/confluent-hub-components,/data/connect-jars"
-            - name: CONNECT_KEY_CONVERTER
-              value: "io.confluent.connect.avro.AvroConverter"
-            - name: CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL
-              value: "http://kafka-schema-registry:8081"
-            - name: CONNECT_VALUE_CONVERTER
-              value: "io.confluent.connect.avro.AvroConverter"
-            - name: CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL
-              value: "http://kafka-schema-registry:8081"
-            - name: CONNECT_INTERNAL_KEY_CONVERTER
-              value: "org.apache.kafka.connect.json.JsonConverter"
-            - name: CONNECT_INTERNAL_VALUE_CONVERTER
-              value: "org.apache.kafka.connect.json.JsonConverter"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-connect
+spec:
+  type: NodePort
+  ports:
+    - port: 8083
+      targetPort: 8083
+  selector:
+    app: kafka-connect

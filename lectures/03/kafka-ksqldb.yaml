@@ -1,14 +1,14 @@
 apiVersion: v1
-kind: Service
+kind: ConfigMap
 metadata:
-  name: kafka-ksqldb-server
-spec:
-  type: NodePort
-  ports:
-    - port: 8088
-      targetPort: 8088
-  selector:
-    app: kafka-ksqldb-server
+  name: kafka-ksqldb-server-config
+data:
+  KSQL_BOOTSTRAP_SERVERS: "kafka:9092"
+  KSQL_KSQL_SCHEMA_REGISTRY_URL: "http://kafka-schema-registry:8081"
+  KSQL_LISTENERS: "http://0.0.0.0:8088"
+  KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: "true"
+  KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE: "true"
+  KSQL_KSQL_SERVICE_ID: "kafka-ksqldb-group-id-01"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -27,19 +27,9 @@ spec:
       containers:
         - name: kafka-ksqldb-server
           image: confluentinc/cp-ksqldb-server:7.3.1
-          env:
-            - name: KSQL_BOOTSTRAP_SERVERS
-              value: "kafka:9092"
-            - name: KSQL_KSQL_SCHEMA_REGISTRY_URL
-              value: "http://kafka-schema-registry:8081"
-            - name: KSQL_LISTENERS
-              value: "http://0.0.0.0:8088"
-            - name: KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE
-              value: "true"
-            - name: KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE
-              value: "true"
-            - name: KSQL_KSQL_SERVICE_ID
-              value: "kafka-ksqldb-group-id-01"
+          envFrom:
+            - configMapRef:
+                name: kafka-ksqldb-server-config
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -60,3 +50,15 @@ spec:
           image: confluentinc/cp-ksqldb-cli:7.3.1
           tty: true
           stdin: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-ksqldb-server
+spec:
+  type: NodePort
+  ports:
+    - port: 8088
+      targetPort: 8088
+  selector:
+    app: kafka-ksqldb-server
