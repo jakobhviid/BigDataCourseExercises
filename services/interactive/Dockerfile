@@ -8,6 +8,7 @@ RUN apt-get update && apt install software-properties-common -yq tzdata \
     && add-apt-repository ppa:deadsnakes/ppa \
     && apt update \
     && apt install -y python3.11 python3-pip \
+    && apt-get install -qq openjdk-8-jdk-headless  \
     && update-alternatives --install /usr/bin/python python /usr/bin/python3.11 1 \
     && rm -rf /var/lib/apt/lists/*
 
