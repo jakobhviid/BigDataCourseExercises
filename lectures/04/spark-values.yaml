@@ -1,18 +1,7 @@
-listeners:
-  client:
-    protocol: 'PLAINTEXT'
+version: 9.2.9
+app_version: 3.5.2
+worker:
+  replicaCount: 2
 image:
   repository: "bitnami/spark"
   tag: "3.5.2-debian-12-r0"
-controller:
-  replicaCount: 3
-
-
-helm install spark oci://registry-1.docker.io/bitnamicharts/spark
-
-
-
-  kubectl port-forward --namespace anbae svc/spark-master-svc 8080:80
-  echo "Visit http://127.0.0.1:8080 to use your application"
-
-

@@ -5,27 +5,31 @@ Apache Spark is built to work on top of the Hadoop ecosystem and can be used to 
 
 Please open issues [here](https://github.com/jakobhviid/BigDataCourseExercises/issues) if you encounter unclear information or experience bugs in our examples!
 
-
-
-
-
 ## Exercises
 
-### Exercise 1 - Setup
+### Exercise 1 - Deploying Apache Spark on Kubernetes
 
 Before you get to play around with Apache Spark you need to do some setup.
 
+**Task**: Inspect the [spark-values.yaml](./spark-values.yaml) file to see how the Spark deployment is configured.
+
+**Task**: Install the Spark Helm chart using the following command:
 ```bash
-helm install spark oci://registry-1.docker.io/bitnamicharts/spark
+helm install --values spark-values.yaml spark oci://registry-1.docker.io/bitnamicharts/spark
+```
+
+**Task**: Inspect the UI of the Spark deployment and validate that there are two worker nodes alive.
+```bash
+kubectl port-forward svc/spark-master-svc 8080:80
 ```
 
 ### Exercise 2 - Running a Spark job locally and in your deployment
-
 The first exercise is to run a Spark job that estimates pi. The program is written in Python and is located in the Spark repository. The program is an example of how to run a Spark job. The program is simple and only uses compute resources.
 
 **Task**: Inspect the [pi-estimation.py](./pi-estimation.py) file.
 
 **Task**: Try to visualize the [DAG](https://en.wikipedia.org/wiki/Directed_acyclic_graph) this program will create. 
+
 **Help**: 
 - Take a look [here](https://stackoverflow.com/a/30685279/9698208) to better understand how the DAG is created for the Spark program.
 - You are able to get other examples of Spark programs [here](https://spark.apache.org/examples.html).
