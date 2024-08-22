@@ -1,3 +1,5 @@
+version: 30.0.4
+app_version: 3.8.0
 listeners:
   client:
     protocol: 'PLAINTEXT'
