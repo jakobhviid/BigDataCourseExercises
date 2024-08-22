@@ -5,7 +5,7 @@ if __name__ == "__main__":
 
     streaming_df = (
         spark.readStream.format("kafka")
-        .option("kafka.bootstrap.servers", "strimzi-kafka-bootstrap.kafka:9092")
+        .option("kafka.bootstrap.servers", "kafka:9092")
         .option("subscribe", "INGESTION")
         .option("startingOffsets", "earliest")
         .load()
