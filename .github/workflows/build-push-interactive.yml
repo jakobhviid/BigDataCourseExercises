@@ -32,7 +32,7 @@ jobs:
           username: ${{ env.USERNAME }}
           password: ${{ secrets.GITLAB_TOKEN }}
       - name: Build and push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: "{{defaultContext}}:services/interactive/"
           push: true

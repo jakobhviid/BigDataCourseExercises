@@ -33,7 +33,7 @@ jobs:
           username: ${{ env.USERNAME }}
           password: ${{ secrets.GITLAB_TOKEN }}
       - name: Build and push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: "{{defaultContext}}:services/kafka-connect/"
           build-args: "CP_VERSION=${{ env.CP_VERSION }}"
