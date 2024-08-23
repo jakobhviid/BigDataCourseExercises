@@ -393,7 +393,31 @@ The module of interest is the [HDFS 2 Sink Connector](https://docs.confluent.io/
 
 
 ### Exercise 8 - Flume
-WIP
+
+1. Deploy the Flume deployment
+
+````bash
+kubectl apply -f sqoop.yaml
+````
+
+2. Create an interactive container with the python:3.11 image
+
+````bash
+kubectl run python -i --tty --image python:3.11 -- bash
+````
+
+3. Copy the text_input.py file to the container
+
+````bash
+kubectl cp ./text_input.py python:/text_input.py
+````
+
+4. Install the Request module 
+
+````
+pip install requests
+````
+
 ### Exercise 8 - Sqoop
 
 1. Deploy the Sqoop deployment

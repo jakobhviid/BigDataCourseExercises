@@ -1,0 +1,105 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: flume-config
+data:
+  flume.conf: |
+    flume-agent.sources = source1
+    flume-agent.channels = memoryChannel
+    flume-agent.sinks = hdfsSink
+
+    # Source: HTTP source that listens on port 12345
+    flume-agent.sources.source1.type = http
+    flume-agent.sources.source1.port = 12345
+
+    # Channel: memory-based channel
+    flume-agent.channels.memoryChannel.type = memory
+    flume-agent.channels.memoryChannel.capacity = 10000
+    flume-agent.channels.memoryChannel.transactionCapacity = 1000
+
+    # Sink: write to HDFS
+    flume-agent.sinks.hdfsSink.type = hdfs
+    flume-agent.sinks.hdfsSink.hdfs.path = hdfs://namenode:9000/flume/%Y/%m/%d/%H/
+    flume-agent.sinks.hdfsSink.hdfs.filePrefix = events-
+    flume-agent.sinks.hdfsSink.hdfs.round = true
+    flume-agent.sinks.hdfsSink.hdfs.roundValue = 1
+    flume-agent.sinks.hdfsSink.hdfs.roundUnit = minute
+    flume-agent.sinks.hdfsSink.hdfs.rollInterval = 60
+    flume-agent.sinks.hdfsSink.hdfs.rollSize = 0
+    flume-agent.sinks.hdfsSink.hdfs.rollCount = 0
+
+    # Bind the source to the channel and the sink to the channel
+    flume-agent.sources.source1.channels = memoryChannel
+    flume-agent.sinks.hdfsSink.channel = memoryChannel
+  flume-startup.json: |
+    [
+      {
+        "bash": "/app/bin/flume-ng",
+        "agent": "flume-agent",
+        "--name": "flume-agent",
+        "--conf-file": "/config/flume.conf",
+        "--conf": "/config/"
+      }
+    ]
+
+  log4j.properties: |
+    # Define the root logger with a console appender
+    log4j.rootLogger = INFO, console
+
+    # Console appender configuration
+    log4j.appender.console = org.apache.log4j.ConsoleAppender
+    log4j.appender.console.target = System.out
+    log4j.appender.console.layout = org.apache.log4j.PatternLayout
+    log4j.appender.console.layout.ConversionPattern = %d{ISO8601} [%t] %-5p %c{2} - %m%n
+
+    # Optional: File appender configuration
+    log4j.appender.file = org.apache.log4j.RollingFileAppender
+    log4j.appender.file.File = /app/logs/flume.log
+    log4j.appender.file.MaxFileSize = 10MB
+    log4j.appender.file.MaxBackupIndex = 5
+    log4j.appender.file.layout = org.apache.log4j.PatternLayout
+    log4j.appender.file.layout.ConversionPattern = %d{ISO8601} [%t] %-5p %c{2} - %m%n
+
+    # Set the logging level for specific categories if needed
+    log4j.logger.org.apache.flume = INFO
+    log4j.logger.org.apache.hadoop = WARN
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flume
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flume
+  template:
+    metadata:
+      labels:
+        app: flume
+    spec:
+      containers:
+        - name: flume
+          image: bde2020/flume:latest
+          command: [ "/app/bin/flume-ng", "agent", "--conf-file", "/config/flume.conf", "--name", "flume-agent", "--conf", "/config/" ]
+          volumeMounts:
+            - name: flume-config
+              mountPath: /config
+          ports:
+            - containerPort: 12345
+      volumes:
+        - name: flume-config
+          configMap:
+            name: flume-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flume
+spec:
+  selector:
+    app: flume
+  ports:
+    - protocol: TCP
+      port: 12345
+      targetPort: 12345
