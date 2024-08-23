@@ -8,7 +8,7 @@ data:
     <configuration>
         <property>
             <name>fs.defaultFS</name>
-            <value>hdfs://namenode.svane.svc.cluster.local:9000</value>
+            <value>hdfs://namenode:9000</value>
         </property>
     </configuration>
 ---
@@ -34,19 +34,27 @@ spec:
                 name: sqoop-config
           volumeMounts:
             - name: sqoop-config-volume
-              mountPath: /etc/hadoop/conf
+              mountPath: /usr/local/hadoop/etc/hadoop/core-site.xml
+              subPath: core-site.xml
           command: ["/bin/bash", "-c", "--"]
           args:
             - >
-              curl -L -o /tmp/postgresql-42.2.24.jar https://jdbc.postgresql.org/download/postgresql-42.2.24.jar &&
-              while true; do sleep 30; done;
+              sed -i 's|^mirrorlist=|#mirrorlist=|g' /etc/yum.repos.d/CentOS-Base.repo &&
+              sed -i 's|^#baseurl=http://mirror.centos.org/centos/$releasever|baseurl=http://vault.centos.org/centos/7.9.2009|g' /etc/yum.repos.d/CentOS-Base.repo &&
+              yum clean all &&
+              yum install -y postgresql &&
+              curl -L -o /usr/local/sqoop/lib/postgresql-42.2.24.jar https://jdbc.postgresql.org/download/postgresql-42.2.24.jar &&
+              tail -f /dev/null;
           env:
             - name: HADOOP_CLASSPATH
-              value: "/tmp/postgresql-42.2.24.jar"
+              value: "/usr/local/sqoop/lib/postgresql-42.2.24.jar"
       volumes:
         - name: sqoop-config-volume
           configMap:
             name: sqoop-config
+            items:
+              - key: core-site.xml
+                path: core-site.xml
 ---
 apiVersion: v1
 kind: Service

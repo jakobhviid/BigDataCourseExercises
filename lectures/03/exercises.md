@@ -408,6 +408,11 @@ kubectl apply -f sqoop.yaml
 helm install postgresql --version=12.1.5 --set auth.username=root --set auth.password=pwd1234 --set auth.database=employees --set primary.extendedConfiguration="password_encryption=md5" --repo https://charts.bitnami.com/bitnami postgresql
 ````
 
+3. Exec into the PostgresSql pod
+````bash
+kubectl exec -it postgresql-0 -- bash 
+````
+
 3. Login to the database 
 ````bash
 PGPASSWORD=pwd1234 psql -U root -d employees
@@ -432,23 +437,76 @@ INSERT INTO employees (name, department, salary) VALUES
 SELECT * FROM employees;
 ````
 
-3. Exec into the Sqoop pod
+5. Exec into the Sqoop pod
 
-4. Ingest the database into hdfs 
+4. Check that Sqoop can connect to the database
+````bash
+sqoop list-databases \
+  --connect "jdbc:postgresql://postgresql-0.postgresql-hl.<NAMESPACE>.svc.cluster.local:5432/employees" \
+  --username root \
+  --password pwd1234 
+````
+
+5. Ingest the database into hdfs 
 ````bash
 sqoop import \
-  --connect "jdbc:postgresql://postgresql-0.postgresql-hl.svane.svc.cluster.local:5432/employees" \
+  --connect "jdbc:postgresql://postgresql-0.postgresql-hl.<NAMESPACE>.svc.cluster.local:5432/employees" \
   --username root \
   --password pwd1234 \
   --table employees \
   --target-dir /employees \
+  --direct \
   --m 1
+````
+
+Expected output
+````
+Warning: /usr/local/sqoop/../hbase does not exist! HBase imports will fail.
+Please set $HBASE_HOME to the root of your HBase installation.
+Warning: /usr/local/sqoop/../hcatalog does not exist! HCatalog jobs will fail.
+Please set $HCAT_HOME to the root of your HCatalog installation.
+Warning: /usr/local/sqoop/../accumulo does not exist! Accumulo imports will fail.
+Please set $ACCUMULO_HOME to the root of your Accumulo installation.
+Warning: /usr/local/sqoop/../zookeeper does not exist! Accumulo imports will fail.
+Please set $ZOOKEEPER_HOME to the root of your Zookeeper installation.
+2024-08-23 09:55:46,594 INFO sqoop.Sqoop: Running Sqoop version: 1.4.7
+2024-08-23 09:55:46,617 WARN tool.BaseSqoopTool: Setting your password on the command-line is insecure. Consider using -P instead.
+2024-08-23 09:55:46,688 INFO manager.SqlManager: Using default fetchSize of 1000
+2024-08-23 09:55:46,688 INFO tool.CodeGenTool: Beginning code generation
+2024-08-23 09:55:46,809 INFO manager.SqlManager: Executing SQL statement: SELECT t.* FROM "employees" AS t LIMIT 1
+2024-08-23 09:55:46,834 INFO orm.CompilationManager: HADOOP_MAPRED_HOME is /usr/local/hadoop
+Note: /tmp/sqoop-root/compile/499d9f344cd22bb55b69c541d7b178f9/employees.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+2024-08-23 09:55:48,211 INFO orm.CompilationManager: Writing jar file: /tmp/sqoop-root/compile/499d9f344cd22bb55b69c541d7b178f9/employees.jar
+2024-08-23 09:55:48,223 INFO manager.DirectPostgresqlManager: Beginning psql fast path import
+2024-08-23 09:55:48,225 INFO manager.SqlManager: Executing SQL statement: SELECT t.* FROM "employees" AS t LIMIT 1
+2024-08-23 09:55:48,230 INFO manager.DirectPostgresqlManager: Copy command is COPY (SELECT "id", "name", "department", "salary" FROM "employees" WHERE 1=1) TO STDOUT WITH DELIMITER E'\54' CSV ;
+2024-08-23 09:55:48,234 INFO manager.DirectPostgresqlManager: Performing import of table employees from database employees
+2024-08-23 09:55:49,111 INFO manager.DirectPostgresqlManager: Transfer loop complete.
+2024-08-23 09:55:49,112 INFO manager.DirectPostgresqlManager: Transferred 124 bytes in 0.0836 seconds (1.4486 KB/sec)
+````
+
+6. Check HDFS that the Postgres database has been ingested
+
+````bash
+hdfs dfs -fs hdfs://namenode:9000 -cat /employees/part-m-00000
+````
+
+Expected output
+
+````
+1,John Doe,Engineering,75000.00
+2,Jane Smith,Marketing,65000.00
+3,Alice Johnson,HR,60000.00
+4,Robert Brown,Finance,80000.00
 ````
 
 ## Step by step guide to clean up:
 
 To clean up the resources created in this lecture, you can follow the steps below:
 - Todays exercises.
+  1. `kubectl delete -f sqoop.yaml`
+  1. `helm delete postgresql`
   1. `kubectl delete -f redpanda.yaml`
   1. `kubectl delete -f kafka-schema-registry.yaml`
   1. `kubectl delete -f kafka-connect.yaml`
