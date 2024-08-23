@@ -541,6 +541,8 @@ To clean up the resources created in this lecture, you can follow the steps belo
 - Todays exercises.
   1. `kubectl delete -f sqoop.yaml`
   1. `helm delete postgresql`
+  1. `kubectl delete pod python`
+  1. `kubectl delete -f flume.yaml`
   1. `kubectl delete -f redpanda.yaml`
   1. `kubectl delete -f kafka-schema-registry.yaml`
   1. `kubectl delete -f kafka-connect.yaml`
