@@ -1,4 +1,6 @@
 import requests
+import json
+import random
 
 def main():
     flume_url = "http://flume:12345"
@@ -10,7 +12,20 @@ def main():
             print("Exiting the program.")
             break
         try:
-            response = requests.post(flume_url, data=user_input)
+            # Generate a random key between 1 and 6
+            random_key = random.randint(1, 6)
+
+            # Create a JSON array with a single event
+            data = [
+                {
+                    "headers": {
+                        "source": "python-script",
+                        "key": random_key
+                    },
+                    "body": user_input
+                }
+            ]
+            response = requests.post(flume_url, json=data)
             if response.status_code == 200:
                 print("Data sent to Flume successfully.")
             else:

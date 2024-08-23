@@ -394,29 +394,39 @@ The module of interest is the [HDFS 2 Sink Connector](https://docs.confluent.io/
 
 ### Exercise 8 - Flume
 
-1. Deploy the Flume deployment
+1. Create a new topics called ´logs´  in RedPanda
+
+2. Deploy the Flume deployment
 
 ````bash
 kubectl apply -f sqoop.yaml
 ````
 
-2. Create an interactive container with the python:3.11 image
+3. Create an interactive container with the python:3.11 image
 
 ````bash
 kubectl run python -i --tty --image python:3.11 -- bash
 ````
 
-3. Copy the text_input.py file to the container
+4. Copy the text_input.py file to the container
 
 ````bash
 kubectl cp ./text_input.py python:/text_input.py
 ````
 
-4. Install the Request module 
+5. Install the Requests package 
 
 ````
 pip install requests
 ````
+
+6. Run the text_input.py script
+
+````
+python text_input.py
+````
+
+7. See the data ingested into Kafka through the RedPanda UI into the ´logs´ topic
 
 ### Exercise 8 - Sqoop
 

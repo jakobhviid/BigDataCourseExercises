@@ -6,31 +6,39 @@ data:
   flume.conf: |
     flume-agent.sources = source1
     flume-agent.channels = memoryChannel
-    flume-agent.sinks = hdfsSink
+    flume-agent.sinks = kafkaSink
+    # flume-agent.sinks = HDFS kafkaSink
 
     # Source: HTTP source that listens on port 12345
     flume-agent.sources.source1.type = http
     flume-agent.sources.source1.port = 12345
+    flume-agent.sources.source1.channels = memoryChannel
 
     # Channel: memory-based channel
     flume-agent.channels.memoryChannel.type = memory
     flume-agent.channels.memoryChannel.capacity = 10000
     flume-agent.channels.memoryChannel.transactionCapacity = 1000
-
+    
     # Sink: write to HDFS
-    flume-agent.sinks.hdfsSink.type = hdfs
-    flume-agent.sinks.hdfsSink.hdfs.path = hdfs://namenode:9000/flume/%Y/%m/%d/%H/
-    flume-agent.sinks.hdfsSink.hdfs.filePrefix = events-
-    flume-agent.sinks.hdfsSink.hdfs.round = true
-    flume-agent.sinks.hdfsSink.hdfs.roundValue = 1
-    flume-agent.sinks.hdfsSink.hdfs.roundUnit = minute
-    flume-agent.sinks.hdfsSink.hdfs.rollInterval = 60
-    flume-agent.sinks.hdfsSink.hdfs.rollSize = 0
-    flume-agent.sinks.hdfsSink.hdfs.rollCount = 0
+    flume-agent.sinks.HDFS.type = hdfs
+    flume-agent.sinks.HDFS.hdfs.path = hdfs://namenode:9000/logs
+    flume-agent.sinks.HDFS.hdfs.fileType = DataStream
+    flume-agent.sinks.HDFS.hdfs.filePrefix = %{basename}
+    flume-agent.sinks.HDFS.hdfs.batchSize = 1000
+    flume-agent.sinks.HDFS.hdfs.rollSize = 0
+    flume-agent.sinks.HDFS.hdfs.rollCount = 10000
+    flume-agent.sinks.HDFS.channel = memoryChannel
 
-    # Bind the source to the channel and the sink to the channel
-    flume-agent.sources.source1.channels = memoryChannel
-    flume-agent.sinks.hdfsSink.channel = memoryChannel
+    # Sink: write to Kafka
+    flume-agent.sinks.kafkaSink.type = org.apache.flume.sink.kafka.KafkaSink
+    flume-agent.sinks.kafkaSink.kafka.topic = logs
+    flume-agent.sinks.kafkaSink.kafka.bootstrap.servers = kafka:9092
+    flume-agent.sinks.kafkaSink.kafka.brokerList = strimzi-kafka-bootstrap.kafka:9092
+    flume-agent.sinks.kafkaSink.flumeBatchSize = 20
+    flume-agent.sinks.kafkaSink.kafka.producer.acks = 1
+    flume-agent.sinks.kafkaSink.producer.acks = 1
+    flume-agent.sinks.kafkaSink.channel = memoryChannel
+
   flume-startup.json: |
     [
       {
@@ -81,7 +89,7 @@ spec:
       containers:
         - name: flume
           image: bde2020/flume:latest
-          command: [ "/app/bin/flume-ng", "agent", "--conf-file", "/config/flume.conf", "--name", "flume-agent", "--conf", "/config/" ]
+          command: [ "/app/bin/flume-ng", "agent", "--conf-file", "/config/flume.conf", "--name", "flume-agent", "--conf", "/config/", "-Dflume.root.logger=DEBUG" ]
           volumeMounts:
             - name: flume-config
               mountPath: /config
