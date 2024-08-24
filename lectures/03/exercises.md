@@ -525,7 +525,7 @@ Now the database have been seeded with employees and now be ingested with Apache
 
   ````bash
   sqoop list-databases \
-    --connect "jdbc:postgresql://postgresql-0.postgresql-hl.<NAMESPACE>.svc.cluster.local:5432/employees" \
+    --connect "jdbc:postgresql://postgresql:5432/employees" \
     --username root \
     --password pwd1234 
   ````
@@ -538,7 +538,7 @@ Now the database have been seeded with employees and now be ingested with Apache
 
   ````bash
   sqoop import \
-  --connect "jdbc:postgresql://postgresql-0.postgresql-hl.<NAMESPACE>.svc.cluster.local:5432/employees" \
+  --connect "jdbc:postgresql://postgresql:5432/employees" \
   --username root \
   --password pwd1234 \
   --table employees \
