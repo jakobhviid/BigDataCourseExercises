@@ -422,7 +422,7 @@ The below-mentioned file provide one solution for exercise.
 
 **Task**: Open [localhost:8080/topics/flume-logs](http://localhost:8080/topics/flume-logs). You should now see the streamed data
 
-**Optional task** Set up a new HDFS 2 Sink Connector to ingest the data into HDFS from the `flume-logs` Kafka topic
+**Optional task**: Set up a new HDFS 2 Sink Connector to ingest the data into HDFS from the `flume-logs` Kafka topic
 
 ### Exercise 9 - Sqoop
 The objective of this exercise is to ingest a database table into HDFS utilizing Sqoop.
