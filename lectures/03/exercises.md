@@ -396,8 +396,6 @@ The module of interest is the [HDFS 2 Sink Connector](https://docs.confluent.io/
 The objective of this exercise is to ingest data from a command-line program into Kafka using Flume. 
 This will simulate a scenario where an endpoint continuously provides new data that can be ingested using Flume.
 
-**Task**: Create a new topic in Kafka called `flume-logs`
-
 **Task**: Deploy the Flume deployment
 
 **Task**: Create an interactive container with the python:3.11 image
