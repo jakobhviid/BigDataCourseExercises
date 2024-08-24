@@ -31,7 +31,7 @@ data:
 
     # Sink: write to Kafka
     flume-agent.sinks.kafkaSink.type = org.apache.flume.sink.kafka.KafkaSink
-    flume-agent.sinks.kafkaSink.kafka.topic = logs
+    flume-agent.sinks.kafkaSink.kafka.topic = flume-logs
     flume-agent.sinks.kafkaSink.kafka.bootstrap.servers = kafka:9092
     flume-agent.sinks.kafkaSink.kafka.brokerList = strimzi-kafka-bootstrap.kafka:9092
     flume-agent.sinks.kafkaSink.flumeBatchSize = 20
@@ -60,7 +60,7 @@ data:
     log4j.appender.console.layout = org.apache.log4j.PatternLayout
     log4j.appender.console.layout.ConversionPattern = %d{ISO8601} [%t] %-5p %c{2} - %m%n
 
-    # Optional: File appender configuration
+    # File appender configuration
     log4j.appender.file = org.apache.log4j.RollingFileAppender
     log4j.appender.file.File = /app/logs/flume.log
     log4j.appender.file.MaxFileSize = 10MB
@@ -68,7 +68,7 @@ data:
     log4j.appender.file.layout = org.apache.log4j.PatternLayout
     log4j.appender.file.layout.ConversionPattern = %d{ISO8601} [%t] %-5p %c{2} - %m%n
 
-    # Set the logging level for specific categories if needed
+    # Set the logging level for specific categories
     log4j.logger.org.apache.flume = INFO
     log4j.logger.org.apache.hadoop = WARN
 ---

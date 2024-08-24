@@ -11,7 +11,7 @@ Please open issues [here](https://github.com/jakobhviid/BigDataCourseExercises/i
 
 ### Exercise 1 - Deploy a Kafka cluster
 
-The objective of this exercise is to deploy a Kafka cluster. This year will be using a helm chart from [Bitnami package for Apache Kafk](https://artifacthub.io/packages/helm/bitnami/kafka#bitnami-package-for-apache-kafka) to deploy a Kafka cluster.
+The objective of this exercise is to deploy a Kafka cluster. This year will be using a helm chart from [Bitnami package for Apache Kafka](https://artifacthub.io/packages/helm/bitnami/kafka#bitnami-package-for-apache-kafka) to deploy a Kafka cluster.
 
 **Task**: Deploy Kafka using the `helm` and the follwoing [kafka-values.yaml](kafka-values.yaml) file.
 ```bash
@@ -179,7 +179,7 @@ This exercise focuses on creating the topic and creating the producer. If you ha
 **Task**: Now that you have created the producer program it is time to run it.
 
 
-**Notice**: We recommand to use an interactive container and attach to it using [vscode](../02/exercises.md#attach-visual-studio-code-to-an-interactive-container-in-kubernetes) as we did last time in lecture 2.
+**Notice**: We recommend to use an interactive container and attach to it using [vscode](../02/exercises.md#attach-visual-studio-code-to-an-interactive-container-in-kubernetes) as we did last time in lecture 2.
 
 **Verification**: To verify that the program is producing messages to the `INGESTION` topic. Open Redpanda console [localhost:8080/topics/INGESTION](http://127.0.0.1:8080/topics/INGESTION?p=-1&s=50&o=-1#messages).
 
@@ -293,7 +293,7 @@ The objective of this exercise is use ksqlDB to split the records in the `INGEST
 </details>
 
 
-**Task**: Create a stream over the exsiting `INGESTION` topic with the following name `STREAM_INGESTION`.
+**Task**: Create a stream over the existing `INGESTION` topic with the following name `STREAM_INGESTION`.
 
 
 <details>
@@ -393,97 +393,153 @@ The module of interest is the [HDFS 2 Sink Connector](https://docs.confluent.io/
 
 
 ### Exercise 8 - Flume
+The objective of this exercise is to ingest data from a command-line program into Kafka using Flume. 
+This will simulate a scenario where an endpoint continuously provides new data that can be ingested using Flume.
 
-1. Create a new topics called ´logs´  in RedPanda
+**Task**: Create a new topic in Kafka called `flume-logs`
 
-2. Deploy the Flume deployment
+**Task**: Deploy the Flume deployment
 
+**Task**: Create an interactive container with the python:3.11 image
+
+<details>
+  <summary><strong>Hint</strong>: kubectl run</summary>
+
+  ```
+  kubectl run python -i --tty --image python:3.11 -- bash
+  ```
+
+</details>
+
+**Task**: Create a command-line program and run it in the terminal in your interactive container.
+
+<details>
+  <summary><strong>Hint</strong>: A text input program.</summary>
+
+The below-mentioned file provide one solution for exercise.
+
+- [text_input.py](./hints/text_input.py)
+
+  </details>
+
+**Task**: Open [localhost:8080/topics/flume-logs](http://localhost:8080/topics/flume-logs). You should now see the streamed data
+
+**Optional task** Set up a new HDFS 2 Sink Connector to ingest the data into HDFS from the `flume-logs` Kafka topic
+
+### Exercise 9 - Sqoop
+The objective of this exercise is to ingest a database table into HDFS utilizing Sqoop.
+
+#### Useful Sqoop commands
+
+- `sqoop list-databases --connect "jdbc:<DB_DRIVER>://<DB_URL>/<DB_TABLE>"`
+- `sqoop import --connect "jdbc:<DB_DRIVER>://<DB_URL>/<DB_TABLE>"`
+
+**Task**: Deploy PostgresSQL database using Helm Chart with the following command:
 ````bash
-kubectl apply -f sqoop.yaml
+helm install postgresql \
+  --version=12.1.5 \
+  --set auth.username=root \
+  --set auth.password=pwd1234 \
+  --set auth.database=employees \
+  --set primary.extendedConfiguration="password_encryption=md5" \
+  --repo https://charts.bitnami.com/bitnami \
+  postgresql
 ````
 
-3. Create an interactive container with the python:3.11 image
+**Task**: Get interactive shell with PostgresSQL.
 
-````bash
-kubectl run python -i --tty --image python:3.11 -- bash
-````
+<details>
+  <summary><strong>Hint</strong>: kubectl exec</summary>
 
-4. Copy the text_input.py file to the container
+  ```
+  kubectl exec -it postgresql-0  -- bash
+  ```
 
-````bash
-kubectl cp ./text_input.py python:/text_input.py
-````
+</details>
 
-5. Install the Requests package 
+**Task**: Seed the database with employees
 
-````
-pip install requests
-````
+<details>
+  <summary><strong>Hint</strong>: Create a new table with employees</summary>
 
-6. Run the text_input.py script
+  - Login to the database
+  ````bash
+  PGPASSWORD=pwd1234 psql -U root -d employees
+  ````
 
-````
-python text_input.py
-````
-
-7. See the data ingested into Kafka through the RedPanda UI into the ´logs´ topic
-
-### Exercise 8 - Sqoop
-
-1. Deploy the Sqoop deployment
-
-````bash
-kubectl apply -f sqoop.yaml
-````
-
-2. Deploy the Postgres helm chart
-
-````bash
-helm install postgresql --version=12.1.5 --set auth.username=root --set auth.password=pwd1234 --set auth.database=employees --set primary.extendedConfiguration="password_encryption=md5" --repo https://charts.bitnami.com/bitnami postgresql
-````
-
-3. Exec into the PostgresSql pod
-````bash
-kubectl exec -it postgresql-0 -- bash 
-````
-
-3. Login to the database 
-````bash
-PGPASSWORD=pwd1234 psql -U root -d employees
-````
-
-4. Seed the database
-
-````
-CREATE TABLE employees (
+  - Seed the database with employees
+  ```
+  CREATE TABLE employees (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     department VARCHAR(255) NOT NULL,
     salary DECIMAL(10, 2) NOT NULL
-);
+  );
+  
+  INSERT INTO employees (name, department, salary) VALUES
+  ('John Doe', 'Engineering', 75000),
+  ('Jane Smith', 'Marketing', 65000),
+  ('Alice Johnson', 'HR', 60000),
+  ('Robert Brown', 'Finance', 80000);
+  ```
 
-INSERT INTO employees (name, department, salary) VALUES
-('John Doe', 'Engineering', 75000),
-('Jane Smith', 'Marketing', 65000),
-('Alice Johnson', 'HR', 60000),
-('Robert Brown', 'Finance', 80000);
+</details>
 
-SELECT * FROM employees;
-````
+<details>
+  <summary><strong>Verify</strong>: Check employees were added</summary>
 
-5. Exec into the Sqoop pod
+  ````bash
+  SELECT * FROM employees;
+  ````
 
-4. Check that Sqoop can connect to the database
-````bash
-sqoop list-databases \
-  --connect "jdbc:postgresql://postgresql-0.postgresql-hl.<NAMESPACE>.svc.cluster.local:5432/employees" \
-  --username root \
-  --password pwd1234 
-````
+  Expected output
+  ````
+    id |     name      | department  |  salary
+  ----+---------------+-------------+----------
+    1 | John Doe      | Engineering | 75000.00
+    2 | Jane Smith    | Marketing   | 65000.00
+    3 | Alice Johnson | HR          | 60000.00
+    4 | Robert Brown  | Finance     | 80000.00
+  (4 rows)
+  ````
 
-5. Ingest the database into hdfs 
-````bash
-sqoop import \
+</details>
+
+Now the database have been seeded with employees and now be ingested with Apache Sqoop
+
+**Task**: Deploy the Sqoop deployment
+
+**Task**: Get interactive shell with Sqoop.
+
+<details>
+  <summary><strong>Hint</strong>: kubectl exec</summary>
+
+  ```
+  kubectl exec -it sqoop-<ID> -- bash
+  ```
+
+</details>
+
+**Task**: Verify that Sqoop can connect to the PostgresSQL database
+
+<details>
+  <summary><strong>Hint</strong>: List databases with Sqoop</summary>
+
+  ````bash
+  sqoop list-databases \
+    --connect "jdbc:postgresql://postgresql-0.postgresql-hl.<NAMESPACE>.svc.cluster.local:5432/employees" \
+    --username root \
+    --password pwd1234 
+  ````
+</details>
+
+**Task**: Ingest the database into HDFS
+
+<details>
+  <summary><strong>Hint</strong>: Use Sqoop to import database</summary>
+
+  ````bash
+  sqoop import \
   --connect "jdbc:postgresql://postgresql-0.postgresql-hl.<NAMESPACE>.svc.cluster.local:5432/employees" \
   --username root \
   --password pwd1234 \
@@ -491,9 +547,10 @@ sqoop import \
   --target-dir /employees \
   --direct \
   --m 1
-````
+  ````
+</details>
 
-Expected output
+The expected output should look like this:
 ````
 Warning: /usr/local/sqoop/../hbase does not exist! HBase imports will fail.
 Please set $HBASE_HOME to the root of your HBase installation.
@@ -520,20 +577,9 @@ Note: Recompile with -Xlint:deprecation for details.
 2024-08-23 09:55:49,112 INFO manager.DirectPostgresqlManager: Transferred 124 bytes in 0.0836 seconds (1.4486 KB/sec)
 ````
 
-6. Check HDFS that the Postgres database has been ingested
+**Task**: Verify that the PostgresSQL table `employees` were ingested into HDFS
 
-````bash
-hdfs dfs -fs hdfs://namenode:9000 -cat /employees/part-m-00000
-````
-
-Expected output
-
-````
-1,John Doe,Engineering,75000.00
-2,Jane Smith,Marketing,65000.00
-3,Alice Johnson,HR,60000.00
-4,Robert Brown,Finance,80000.00
-````
+  - Make sure a directory `/employees` were added to HDFS
 
 ## Step by step guide to clean up:
 
