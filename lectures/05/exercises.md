@@ -21,7 +21,7 @@ You are also strongly encouraged to read [this](https://trino.io/Presto_SQL_on_E
 Install MinIO
 
 ```text
-helm install minio oci://registry-1.docker.io/bitnamicharts/minio --set service.type=NodePort --set auth.rootUser=admin --set auth.rootPassword=password
+helm install minio oci://registry-1.docker.io/bitnamicharts/minio --set auth.rootUser=admin --set auth.rootPassword=password
 ```
 
 Create S3Connection that will be used by Hive metastore service to connect to MinIO.
@@ -46,16 +46,16 @@ helm install postgresql \
 
 **Note:** You may have to delete the `\` and newlines so that it is one command.
 
-Everything required to create the Hive metastore service is now ready. Apply the [hive.yaml](./hive.yaml) file.
+Everything required to create the Hive metastore service is now ready. Apply the [hive-metastore.yaml](./hive-metastore.yaml) file.
 
 #### Trino cluster
 
+Apply the [trino-configmap.yaml](./trino-configmap.yaml) file.
+
 ````bash
 helm repo add trino https://trinodb.github.io/charts/
-helm install trino trino/trino
+helm install trino trino/trino --set configMap=trino-config
 ````
-
-Apply the [trino.yaml](./trino.yaml) file. This file contains the TrinoCluster resource and TrinoCatalog resource. The [TrinoCatalog resource](https://docs.stackable.tech/home/stable/trino/concepts#_catalogs) is used to create an instance of a connector, in this case it is a Hive connector. Not a lot of connectors are supported by Stackable, but it will suffice for these exercises.
 
 ### Exercise 2 - Count words in Alice in Wonderland with Hive
 
