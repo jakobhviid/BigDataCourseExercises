@@ -37,7 +37,6 @@ Deploy postgres database.
 ```text
 helm install postgresql \
 --version=12.1.5 \
---namespace default \
 --set auth.username=hive \
 --set auth.password=hive \
 --set auth.database=hive \
@@ -50,6 +49,11 @@ helm install postgresql \
 Everything required to create the Hive metastore service is now ready. Apply the [hive.yaml](./hive.yaml) file.
 
 #### Trino cluster
+
+````bash
+helm repo add trino https://trinodb.github.io/charts/
+helm install trino trino/trino
+````
 
 Apply the [trino.yaml](./trino.yaml) file. This file contains the TrinoCluster resource and TrinoCatalog resource. The [TrinoCatalog resource](https://docs.stackable.tech/home/stable/trino/concepts#_catalogs) is used to create an instance of a connector, in this case it is a Hive connector. Not a lot of connectors are supported by Stackable, but it will suffice for these exercises.
 

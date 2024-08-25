@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: hive
+spec:
+  serviceName: "hive"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hive
+  template:
+    metadata:
+      labels:
+        app: hive
+    spec:
+      containers:
+        - name: hive-metastore
+          image: bde2020/hive:2.3.2-postgresql-metastore
+          ports:
+            - containerPort: 9083
+          env:
+            - name: HIVE_METASTORE_URIS
+              value: "thrift://hive:9083"
+          envFrom:
+            - configMapRef:
+                name: hive-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hive
+spec:
+  selector:
+    app: hive
+  ports:
+    - protocol: TCP
+      port: 9083
+      targetPort: 9083

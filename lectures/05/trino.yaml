@@ -1,0 +1,74 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: trino-config
+data:
+  config.properties: |
+    coordinator=true
+    node-scheduler.include-coordinator=false
+    http-server.http.port=8080
+    query.max-memory=5GB
+    query.max-memory-per-node=1GB
+    discovery-server.enabled=true
+    discovery.uri=http://trino:8080
+
+  hive.properties: |
+    connector.name=hive
+    hive.metastore.uri=thrift://hive:9083
+    hive.metastore-cache-ttl=20m
+    hive.allow-drop-table=true
+    hive.s3.aws-access-key=minioadmin
+    hive.s3.aws-secret-key=minioadmin
+    hive.s3.endpoint=http://minio:9000
+    hive.s3.path-style-access=true
+    hive.s3.ssl.enabled=false
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: trino
+spec:
+  serviceName: "trino"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trino
+  template:
+    metadata:
+      labels:
+        app: trino
+    spec:
+      containers:
+        - name: trino
+          image: trinodb/trino:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: HADOOP_FS_DEFAULTFS
+              value: "hdfs://namenode:9000"
+          envFrom:
+            - configMapRef:
+                name: hadoop-config
+          volumeMounts:
+            - name: trino-config
+              mountPath: /etc/trino/config.properties
+              subPath: config.properties
+            - name: trino-config
+              mountPath: /etc/trino/catalog/hive.properties
+              subPath: hive.properties
+      volumes:
+        - name: trino-config
+          configMap:
+            name: trino-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: trino
+spec:
+  selector:
+    app: trino
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
