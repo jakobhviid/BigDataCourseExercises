@@ -4,16 +4,16 @@
 ## Exercises
 
 The exercises for this week's lecture is be about distributed transport and streaming. You will be creating a Kafka cluster and various publishing programs and subscribing programs to stream records.
-The focus of today's lecture is to interact with Kafka, create Python producer and consumer programs, and configure Kafka registry and Kafka connect modules. 
+The focus of today's lecture is to interact with Kafka, create Python producer and consumer programs, and configure Kafka registry and Kafka connect modules. Furhtermore, we introduce exercises to Sqoop and Flume.
 
 Please open issues [here](https://github.com/jakobhviid/BigDataCourseExercises/issues) if you encounter unclear information or experience bugs in our examples!
 
 
 ### Exercise 1 - Deploy a Kafka cluster
 
-The objective of this exercise is to deploy a Kafka cluster. This year will be using a helm chart from [Bitnami package for Apache Kafka](https://artifacthub.io/packages/helm/bitnami/kafka#bitnami-package-for-apache-kafka) to deploy a Kafka cluster.
+The objective of this exercise is to deploy a Kafka cluster. This year will be using a helm chart from [Bitnami](https://artifacthub.io/packages/helm/bitnami/kafka#bitnami-package-for-apache-kafka) to deploy a Kafka cluster.
 
-**Task**: Deploy Kafka using the `helm` and the follwoing [kafka-values.yaml](kafka-values.yaml) file.
+**Task**: Deploy Kafka using the `helm` and the following [kafka-values.yaml](kafka-values.yaml) file.
 ```bash
 helm install --values kafka-values.yaml kafka oci://registry-1.docker.io/bitnamicharts/kafka`
 ```
@@ -41,7 +41,7 @@ kubectl apply -f redpanda.yaml
 
 **Task**: Manual interaction with Kafka using the Redpanda UI:
 1. Use Redpanda to create a topic called `test-redpanda`.
-1. Use Redpanda to produce record with key=`1` and value=`{"id":1,"status":"it works"}` to the created topic `test-redpanda`.
+1. Use Redpanda to produce record with `key=1` and `value={"id":1,"status":"it works"}` to the created topic `test-redpanda`.
 1. Use Redpanda to delete all the messages in topic `test-redpanda`.
 
 <details>
@@ -55,7 +55,7 @@ kubectl apply -f redpanda.yaml
 
 ### Exercise 3 - Additional deployments of Kafka Connect, Kafka Schema Registry, and Kafka KSQL
 
-Besides the Redpanda console, we will also use the Kafka Connect, Kafka Schema Registry, and Kafka KSQL to facilitate a distributed transportion and streaming of records in Kafka. These services are included in the given in the manifest files:
+Besides the Redpanda console, we will also use Kafka Connect, Kafka Schema Registry, and Kafka KSQL to facilitate a distributed transport and streaming of records in Kafka. These services are included in the given in the manifest files:
 - [kafka-schema-registry.yaml](./kafka-schema-registry.yaml)
 - [kafka-connect.yaml](./kafka-connect.yaml)
 - [kafka-ksqldb.yaml](./kafka-ksqldb.yaml)
@@ -78,7 +78,7 @@ The list below summarises the extra services and briefly demonstrate how to inte
   - `kubectl port-forward svc/kafka-connect  8083:8083`. Make a `curl` cmd in a terminal using the URL [http://127.0.0.1:8083](http://127.0.0.1:8083) and get this output:
     ```
     curl http://127.0.0.1:8083
-    {"version":"7.3.1-ce","commit":"a453cbd27246f7bb","kafka_cluster_id":"ibXE6-pLRouRr7kLM6o_MQ"}%                                    
+    {"version":"7.3.1-ce","commit":"a453cbd27246f7bb","kafka_cluster_id":"<kafka_cluster_id>"}%                                    
     ```
 - KsqlDB (kafka-ksqldb-server) and KsqlDB CLI (kafka-ksqldb-cli)
   - `kubectl exec --stdin --tty deployment/kafka-ksqldb-cli -- ksql http://kafka-ksqldb-server:8088` make sure you will reach a console similar to this:
@@ -111,7 +111,7 @@ The list below summarises the extra services and briefly demonstrate how to inte
 
 **Tasks**: Producing and consuming topic messages
 
-1. Create a Kafka client pod(`docker.io/bitnami/kafka:3.8.0-debian-12-r3`) using `kubectl run`.
+1. Create a Kafka client pod (`docker.io/bitnami/kafka:3.8.0-debian-12-r3`) using `kubectl run`.
 ```bash
 kubectl run kafka-client --restart='Never' --image docker.io/bitnami/kafka:3.8.0-debian-12-r3  --command -- sleep infinity
 ```
@@ -122,7 +122,7 @@ kubectl exec --tty -i kafka-client -- bash
 3. Run the following commands in the first terminal to produce messages to the Kafka topic `test`:
 ```bash
 # Define the namespace variable
-NAMESPACE="anbae"
+NAMESPACE="<your_namespace>"
 
 # Use the variable in your Kafka producer command
 kafka-console-producer.sh \
@@ -181,7 +181,7 @@ This exercise focuses on creating the topic and creating the producer. If you ha
 
 **Notice**: We recommend to use an interactive container and attach to it using [vscode](../02/exercises.md#attach-visual-studio-code-to-an-interactive-container-in-kubernetes) as we did last time in lecture 2.
 
-**Verification**: To verify that the program is producing messages to the `INGESTION` topic. Open Redpanda console [localhost:8080/topics/INGESTION](http://127.0.0.1:8080/topics/INGESTION?p=-1&s=50&o=-1#messages).
+**Verification**: To verify that the program is producing messages to the `INGESTION` topic. Open Redpanda console: [localhost:8080/topics/INGESTION](http://127.0.0.1:8080/topics/INGESTION?p=-1&s=50&o=-1#messages).
 
 <details>
   <summary><strong>Hints</strong>: The creation of the Python producer</summary>
@@ -396,9 +396,9 @@ The module of interest is the [HDFS 2 Sink Connector](https://docs.confluent.io/
 The objective of this exercise is to ingest data from a command-line program into Kafka using Flume. 
 This will simulate a scenario where an endpoint continuously provides new data that can be ingested using Flume.
 
-**Task**: Deploy the Flume deployment
+**Task**: Deploy the Flume deployment.
 
-**Task**: Create an interactive container with the python:3.11 image
+**Task**: Create an interactive container with the python:3.11 image.
 
 <details>
   <summary><strong>Hint</strong>: kubectl run</summary>
@@ -420,9 +420,9 @@ The below-mentioned file provide one solution for exercise.
 
   </details>
 
-**Task**: Open [localhost:8080/topics/flume-logs](http://localhost:8080/topics/flume-logs). You should now see the streamed data
+**Task**: Open [localhost:8080/topics/flume-logs](http://localhost:8080/topics/flume-logs). You should now see the streamed data.
 
-**Optional task**: Set up a new HDFS 2 Sink Connector to ingest the data into HDFS from the `flume-logs` Kafka topic
+**Optional task**: Set up a new HDFS 2 Sink Connector to ingest the data into HDFS from the `flume-logs` Kafka topic.
 
 ### Exercise 9 - Sqoop
 The objective of this exercise is to ingest a database table into HDFS utilizing Sqoop.
@@ -455,7 +455,7 @@ helm install postgresql \
 
 </details>
 
-**Task**: Seed the database with employees
+**Task**: Seed the database with employees.
 
 <details>
   <summary><strong>Hint</strong>: Create a new table with employees</summary>
@@ -505,7 +505,7 @@ helm install postgresql \
 
 Now the database have been seeded with employees and now be ingested with Apache Sqoop
 
-**Task**: Deploy the Sqoop deployment
+**Task**: Deploy the Sqoop deployment.
 
 **Task**: Get interactive shell with Sqoop.
 
