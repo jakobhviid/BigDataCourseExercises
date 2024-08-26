@@ -1,15 +1,19 @@
-from pyspark.sql import SparkSession
+from src.utils import FS, SPARK_ENV, get_spark_context
 
 if __name__ == "__main__":
-    spark = SparkSession.builder.appName("Exercise 04").getOrCreate()
+    # Create a Spark session and context
+    spark = get_spark_context(app_name="Kafka Streamning", config=SPARK_ENV.K8S)
+    sc = spark.sparkContext
 
-    streaming_df = (
-        spark.readStream.format("kafka")
-        .option("kafka.bootstrap.servers", "kafka:9092")
-        .option("subscribe", "INGESTION")
-        .option("startingOffsets", "earliest")
-        .load()
-    )
+    kafka_options = {
+        "kafka.bootstrap.servers": "kafka:9092",
+        "startingOffsets": "earliest",  # Start from the beginning when we consume from kafka
+        "subscribe": "INGESTION",  # Our topic name
+    }
+
+    # Subscribe to Kafka topic "hello"
+    df = spark.readStream.format("kafka").options(**kafka_options).load()
+    deserialized_df = df.selectExpr("CAST(key AS STRING)", "CAST(value AS STRING)")
 
     # TODO - create your logic
     # streaming_df.selectExpr("CAST(key AS STRING)", "CAST(value AS STRING)")

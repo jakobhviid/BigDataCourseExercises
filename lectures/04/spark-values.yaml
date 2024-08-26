@@ -1,7 +1,22 @@
 version: 9.2.9
 app_version: 3.5.2
-worker:
-  replicaCount: 2
 image:
   repository: "bitnami/spark"
   tag: "3.5.2-debian-12-r0"
+master:
+  resources:
+    limits:
+      cpu: 1
+      memory: 2Gi
+    requests:
+      cpu: 1
+      memory: 1Gi
+worker:
+  replicaCount: 2
+  resources:
+    limits:
+      cpu: 1
+      memory: 2Gi
+    requests:
+      cpu: 1
+      memory: 1Gi

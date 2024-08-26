@@ -1,7 +1,7 @@
 # Lecture 04 - Spark
 
 The exercises for this lecture are about Apache Spark. Apache Spark is a unified analytics engine for big data processing, with built-in modules for streaming, SQL, machine learning, and graph processing. It can be used to process large amounts of data in parallel on a cluster of computers.
-Apache Spark is built to work on top of the Hadoop ecosystem and can be used to process data stored in HDFS, S3, or other storage systems. Spark can be used to process data in batch or in real-time using Spark Streaming.
+Apache Spark is built to work on top of the Hadoop ecosystem and can be used to process data stored in HDFS, S3, or other storage systems.
 
 Please open issues [here](https://github.com/jakobhviid/BigDataCourseExercises/issues) if you encounter unclear information or experience bugs in our examples!
 
@@ -9,7 +9,7 @@ Please open issues [here](https://github.com/jakobhviid/BigDataCourseExercises/i
 
 ### Exercise 1 - Deploying Apache Spark on Kubernetes
 
-Before you get to play around with Apache Spark you need to do some setup.
+Before you get to play around with Apache Spark you need to deploy your Spark environment on your Kubernetes cluster. We will be using a helm chart to deploy Spark on Kubernetes.
 
 **Task**: Inspect the [spark-values.yaml](./spark-values.yaml) file to see how the Spark deployment is configured.
 
@@ -24,7 +24,7 @@ kubectl port-forward svc/spark-master-svc 8080:80
 ```
 
 ### Exercise 2 - Running a Spark job locally and in your deployment
-The first exercise is to run a Spark job that estimates pi. The program is written in Python and is located in the Spark repository. The program is an example of how to run a Spark job. The program is simple and only uses compute resources.
+The first exercise is to run a Spark job that estimates pi. The program is written in Python and is located in the Spark repository. The program is an example of how to run a Spark job that both can run on localhost and in your Spark environment.
 
 **Task**: Inspect the [pi-estimation.py](./pi-estimation.py) file.
 
@@ -35,7 +35,7 @@ The first exercise is to run a Spark job that estimates pi. The program is writt
 - You are able to get other examples of Spark programs [here](https://spark.apache.org/examples.html).
 
 **Task**: Run the [pi-estimation.py](./pi-estimation.py) file locally.
-- How will the number of partitions affect the result?
+- How will the number of partitions argument affect the result?
 
 **Task**: Update the [pi-estimation.py](./pi-estimation.py) file to be executed on the inside your Kubernetes cluster.
 - Does the number of partitions affect the runtime? 
@@ -56,14 +56,34 @@ In this exercise you will run a Spark job that will read a file and count the oc
 **Notice**:You can also read about the word count program from Apache Spark [here](https://spark.apache.org/examples.html) and [here](https://github.com/apache/spark/blob/c1b12bd56429b98177e5405900a08dedc497e12d/examples/src/main/python/wordcount.py).
 
 
-### Exercise 4 - Running Spark Streaming Jobs - Kafka
-The objectives of this exercise are to run a Spark streaming job that reads from a Kafka topic.
-This exercise requires to have a Kafka producer which produces records for a topic. For convenience, we recommend revisiting [exercise 3](./../03/exercises.md#exercise-3---produce-messages-to-kafka-using-python) from the last lecture. TODO: ANBAE validate this link is correct.
+### Exercise 4 - Average sample values from JSON files stored in HDFS
 
-**Task**: Create a streaming query that calculates the running mean of the six different stations produced to the Kafka topic called `INGESTION`.
+Let us assume that you have a dataset of sample records stored in HDFS. The dataset is stored in JSON format and contains defined by the [exercise 9 from lecture 02](../02/exercises.md#exercise-9---create-six-fictive-data-sources).
+
+In this exercise you will run a Spark job that will read all the JSON files and computes the average value of the `payload.modality` field for each station.
+
+**Task**: Inspect the [avg-modalities.py](./avg-modalities.py). 
+
+**Task**: Ensure you have records stored in HDFS on the proper location. If not upload the records to HDFS.
+**Task**: Run the your Spark application on the cluster. What is the `payload.modality` average value for each station?
+
+
+### Exercise 5 - Running Spark Streaming Jobs - Kafka
+The objectives of this exercise are to run a Spark streaming job that reads from a Kafka topic. This exercise requires to have a Kafka producer which produces records for the same topic. For convenience, we recommend revisiting the [exercise 4 from lecture 03](./../03/exercises.md#exercise-4---produce-messages-to-kafka-using-python).
+
+**Task**: Create a streaming query that calculates the running mean of the six different stations (`payload.sensor_id`) produced to the Kafka topic `INGESTION`.
 
 **Help**: You need to complete the query inside the [process-streaming.py](process-streaming.py) file.
+**Notice**: You need to append additional packages to run the Spark streaming application to read from kafka. You can run the Spark streaming interactive using `pyspark` or submitting your application using `spark-submit` as demonstrated below:
+```bash
+pyspark --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.2
+```
+```bash
+spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.2 process-streaming.py
+```
 
+
+**Task**: Run your Spark streaming application and validate that the running means of `payload.modality` field is close to the calculated values in [exercise 4](exercises.md#exercise-4---average-sample-values-from-json-files-stored-in-hdfs).
 
 **Important note**: There is no correct solution nor wrong solution for this exercise. You may find inspiration in the following links to complete the streaming query:
 - [Structured Streaming Programming Guide](https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html#structured-streaming-programming-guide)

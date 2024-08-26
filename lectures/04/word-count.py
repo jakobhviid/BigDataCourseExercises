@@ -1,44 +1,18 @@
 import sys
 from operator import add
 
-from pyspark.sql import SparkSession
-
-# import sys
-# from operator import add
-
-# from pyspark.sql import SparkSession
-
-
-# if __name__ == "__main__":
-#     if len(sys.argv) != 2:
-#         print("Usage: wordcount <file>", file=sys.stderr)
-#         sys.exit(-1)
-
-#     spark = SparkSession\
-#         .builder\
-#         .appName("PythonWordCount")\
-#         .getOrCreate()
-
-#     lines = spark.read.text(sys.argv[1]).rdd.map(lambda r: r[0])
-#     counts = lines.flatMap(lambda x: x.split(' ')) \
-#                   .map(lambda x: (x, 1)) \
-#                   .reduceByKey(add)
-#     output = counts.collect()
-#     for (word, count) in output:
-#         print("%s: %i" % (word, count))
-
-#     spark.stop()
-
+from src.utils import FS, SPARK_ENV, get_spark_context
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: wordcount <file>", file=sys.stderr)
         sys.exit(-1)
 
-    spark = SparkSession.builder.appName("PythonWordCount").getOrCreate()
+    spark = get_spark_context(app_name="Word Count", config=SPARK_ENV.K8S)
+    sc = spark.sparkContext
 
     # Read file line by line
-    lines = spark.read.text(sys.argv[1]).rdd.map(lambda r: r[0])
+    lines = sc.textFile(f"{FS}{sys.argv[1]}")  # .rdd.map(lambda r: r[0])
     # Split each line at spaces (splits it into words)
     words = lines.flatMap(lambda x: x.split(" "))
     # Map each word to a tuple (word, 1)
@@ -51,20 +25,14 @@ if __name__ == "__main__":
     # Convert the sorted data to a DataFrame
     result_df = sorted.toDF(schema=["word", "count"])
 
-    writer = result_df.write.mode("overwrite")
-
     # Save the result to a JSON file
-    writer.json("s3a://spark-data/word-count-json")
-
-    # Save the result to a CSV file
-    writer.csv("s3a://spark-data/word-count-csv")
-
-    # Save the result to a Parquet file
-    writer.parquet("s3a://spark-data/word-count-parquet")
+    writer = result_df.write.mode("overwrite")
+    writer.json(f"{FS}word-count.json")
 
     # Take the first 10 elements of the list
     top_10 = sorted.take(10)
     # Print the top 10 words and their counts
+    print(f"Top 10 words in {sys.argv[1]} are:")
     for word, count in top_10:
         print("%s: %i" % (word, count))
 
