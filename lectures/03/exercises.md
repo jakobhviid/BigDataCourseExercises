@@ -121,12 +121,8 @@ kubectl exec --tty -i kafka-client -- bash
 ``` 
 3. Run the following commands in the first terminal to produce messages to the Kafka topic `test`:
 ```bash
-# Define the namespace variable
-NAMESPACE="<your_namespace>"
-
-# Use the variable in your Kafka producer command
 kafka-console-producer.sh \
-  --broker-list kafka-controller-0.kafka-controller-headless.${NAMESPACE}.svc.cluster.local:9092,kafka-controller-1.kafka-controller-headless.${NAMESPACE}.svc.cluster.local:9092,kafka-controller-2.kafka-controller-headless.${NAMESPACE}.svc.cluster.local:9092 \
+  --broker-list kafka-controller-0.kafka-controller-headless:9092,kafka-controller-1.kafka-controller-headless:9092,kafka-controller-2.kafka-controller-headless:9092 \
   --topic test
 ```
 

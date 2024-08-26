@@ -2,9 +2,12 @@ from kafka import KafkaProducer, KafkaConsumer
 import json
 from data_model import generate_sample, PackageObj
 
-KAFKA_BROKERS: str = (
-    "strimzi-kafka-bootstrap.kafka:9092"  # <service name>.<namepsace>:<port>
-)
+# Format <pod name>.<service name>:<port>
+KAFKA_BROKERS: list[str] = [
+    "kafka-controller-0.kafka-controller-headless:9092",
+    "kafka-controller-1.kafka-controller-headless:9092",
+    "kafka-controller-2.kafka-controller-headless:9092"
+]
 
 DEFAULT_TOPIC: str = "INGESTION"
 DEFAULT_ENCODING: str = "utf-8"
@@ -12,13 +15,13 @@ DEFAULT_CONSUMER: str = "DEFAULT_CONSUMER"
 
 
 def get_producer() -> KafkaProducer:
-    return KafkaProducer(bootstrap_servers=[KAFKA_BROKERS])
+    return KafkaProducer(bootstrap_servers=KAFKA_BROKERS)
 
 
 def get_consumer(topic: str, group_id: str = None) -> KafkaConsumer:
     if group_id is None:
         group_id = DEFAULT_CONSUMER
-    return KafkaConsumer(topic, bootstrap_servers=[KAFKA_BROKERS], group_id=group_id)
+    return KafkaConsumer(topic, bootstrap_servers=KAFKA_BROKERS, group_id=group_id)
 
 
 def send_msg(value, key: str, topic: str, producer: KafkaProducer) -> None:
