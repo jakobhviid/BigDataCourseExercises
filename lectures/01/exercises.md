@@ -163,7 +163,7 @@ Now that you have deployed the application the next step is to try and connect t
 Connecting to a service can be done in different ways. The simplest way to connect to a service inside the cluster and to your localhost is by running the `kubectl port-forward` command.
 
 #### Use `kubectl port-forward`
-To use the `kubectl port-forward` command, run the following command `kubectl port-forward svc/<name of service> <localhost port>:<service port>`. The command will open a port on your localhost and forward traffic to a port on the service. In this case, use port `8080` for both your localhost and service (`kubectl port-forward svc/hello-kubernetes 8080:8080`).
+To use the `kubectl port-forward` command, run the following command `kubectl port-forward svc/<name of service> <localhost port>:<service port>`. The command will open a port on your localhost and forward traffic to a port on the service. In this case, use port `8080` for both your localhost and service (`kubectl port-forward svc/hello-kubernetes 8080`).
 Please feel free to change it to something different. Example to `9000:8080` to use port 9000 on your localhost and forward the traffic to port 8080 on the service. Open a browser and navigate to [http://localhost:8080](http://localhost:8080) to access your deployed application.
 
 

@@ -33,7 +33,7 @@ data:
     flume-agent.sinks.kafkaSink.type = org.apache.flume.sink.kafka.KafkaSink
     flume-agent.sinks.kafkaSink.kafka.topic = flume-logs
     flume-agent.sinks.kafkaSink.kafka.bootstrap.servers = kafka:9092
-    flume-agent.sinks.kafkaSink.kafka.brokerList = strimzi-kafka-bootstrap.kafka:9092
+    flume-agent.sinks.kafkaSink.kafka.brokerList = kafka-controller-0.kafka-controller-headless:9092, kafka-controller-1.kafka-controller-headless:9092, kafka-controller-2.kafka-controller-headless:9092
     flume-agent.sinks.kafkaSink.flumeBatchSize = 20
     flume-agent.sinks.kafkaSink.kafka.producer.acks = 1
     flume-agent.sinks.kafkaSink.producer.acks = 1
