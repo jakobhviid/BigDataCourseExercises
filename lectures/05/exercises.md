@@ -50,11 +50,9 @@ Everything required to create the Hive metastore service is now ready. Apply the
 
 #### Trino cluster
 
-Apply the [trino-configmap.yaml](./trino-configmap.yaml) file.
-
 ````bash
 helm repo add trino https://trinodb.github.io/charts/
-helm install trino trino/trino --set configMap=trino-config
+helm install trino trino/trino -f trino-values.yaml
 ````
 
 ### Exercise 2 - Count words in Alice in Wonderland with Hive

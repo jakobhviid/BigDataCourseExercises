@@ -1,0 +1,16 @@
+image:
+  tag: 372
+
+additionalCatalogs:
+  minio: |
+    connector.name=hive-hadoop2
+    hive.metastore.uri=thrift://hive-metastore:9083
+    hive.s3.path-style-access=true
+    hive.s3.endpoint=http://minio:9000
+    hive.s3.aws-access-key=admin
+    hive.s3.aws-secret-key=password
+    hive.non-managed-table-writes-enabled=true
+    hive.s3select-pushdown.enabled=true
+    hive.storage-format=ORC
+    hive.allow-drop-table=true
+    hive.s3.ssl.enabled=false
