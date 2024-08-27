@@ -107,7 +107,17 @@ For the next exercises you will be working with the Alice in Wonderland book. Th
 
 </details>
 
-### Exercise 4 - Interacting with HDFS cluster using Python
+### Exercise 4 (optional) - Mount HDFS config to interactive container
+
+Instead of manually specifying the URI ("hdfs://namenode:port") and making sure you connect to the correct name node you can let the HDFS client decide this for you using a HDFS config file(s) (called "core-site.xml" and "hdfs-site.xml").
+
+The `hdfs-cli.yaml` creates a Kubernetes resource called a ConfigMap. A ConfigMap is a resource that contains key-value pairs used for configuration. It can be used in various ways, but we want to mount the ConfigMap as a file to the interactive container.
+
+Before we mount it we want to take a look at the ConfigMap and try to understand it.
+
+To create the interactive container and mount the config, use the provided [hdfs-cli.yaml file](../../services/hdfs/hdfs-cli.yaml)
+
+### Exercise 5 - Interacting with HDFS cluster using Python
 
 We now want to try to interact with the HDFS cluster using Python. To do this, there are a few files provided:
 
@@ -127,7 +137,7 @@ We now want to try to interact with the HDFS cluster using Python. To do this, t
 
 **Further reading**: You can read more about the HDFS Python library [here](https://hdfscli.readthedocs.io/en/latest/quickstart.html#python-bindings).
 
-### Exercise 5 - Analyzing file and saving result in JSON format using Python
+### Exercise 6 - Analyzing file and saving result in JSON format using Python
 
 Now we know how to put files in HDFS, read files from HDFS and how to interact with HDFS. The next exercise will analyze the data and save the results to a JSON file in HDFS.
 
@@ -144,7 +154,7 @@ Now we know how to put files in HDFS, read files from HDFS and how to interact w
     1. What are the five most common words in Alice in Wonderland?
     1. How many times are they repeated?
 
-### Exercise 6 - Analyzing file and saving result in Avro format using Python
+### Exercise 7 - Analyzing file and saving result in Avro format using Python
 
 Instead of saving the result as a JSON file, we will now try to save it as an Avro file.
 
@@ -158,7 +168,7 @@ You should see that the script reads the Alice in Wonderland file similarly to [
 1. Run the [`counting-avro.py`](./counting-avro.py) file.
 1. Read and output the result of the stored files directly from HDFS using HDFS CLI.
 
-### Exercise 7 - Analyzing file and saving result in Parquet format using Python
+### Exercise 8 - Analyzing file and saving result in Parquet format using Python
 
 We will now try to save a Parquet file to HDFS.
 
@@ -172,7 +182,7 @@ We will now try to save a Parquet file to HDFS.
 1. Read and output the result of the stored files directly from HDFS using HDFS CLI.
     1. How many column do the dataframe have?
 
-### Exercise 8 - Create six fictive data sources
+### Exercise 9 - Create six fictive data sources
 
 
 The objective of this exercise is to create a fictive data source. We want to create a Python program that enables the simulation of multiple data sources. The fictive data source could be a sensor that measures the wattage of an electricity line. The sample rate of the sensor will be adjustable. However, this will default to 1Hz. The ID of the sensor must differentiate the six data streams and the valid range of the wattage for these electricity lines is between ±600MW. 
@@ -252,6 +262,7 @@ It is now up to you to take the components and gue them together in the [`data-s
 To clean up the resources created in this lecture, you can follow the steps below:
 - run the follow cmd: `kubectl delete pod <name>` created in [exercise 2](#exercise-2---interacting-with-hdfs-cluster-using-cli).
 - cd into the `services/hdfs` folder in the repository.
+  1. `kubectl delete -f hdfs-cli.yaml` (if used)
   1. `kubectl delete -f datanodes.yaml`
   1. `kubectl delete -f namenode.yaml`
   1. `kubectl delete -f configmap.yaml`
