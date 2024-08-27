@@ -24,10 +24,6 @@ Install MinIO
 helm install minio oci://registry-1.docker.io/bitnamicharts/minio --set auth.rootUser=admin --set auth.rootPassword=password
 ```
 
-Create S3Connection that will be used by Hive metastore service to connect to MinIO.
-
-Apply [s3connection.yaml](./s3connection.yaml).
-
 #### Hive metastore service
 
 The Hive metastore service will be deployed with PostgreSQL.
@@ -36,15 +32,18 @@ Deploy postgres database.
 
 ```text
 helm install postgresql \
---version=12.1.5 \
---set auth.username=hive \
---set auth.password=hive \
---set auth.database=hive \
---set primary.extendedConfiguration="password_encryption=md5" \
---repo https://charts.bitnami.com/bitnami postgresql
+  --version=12.1.5 \
+  --set auth.username=admin \
+  --set auth.password=admin \
+  --set auth.database=hive \
+  --set primary.extendedConfiguration="password_encryption=md5" \
+  --repo https://charts.bitnami.com/bitnami \
+  postgresql
 ```
 
 **Note:** You may have to delete the `\` and newlines so that it is one command.
+
+**Note:** If you encounter issues with creating a new table, please delete the existing PVC for Postgresql
 
 Everything required to create the Hive metastore service is now ready. Apply the [hive-metastore.yaml](./hive-metastore.yaml) file.
 

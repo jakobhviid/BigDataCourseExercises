@@ -8,6 +8,19 @@ data:
   metastore-site.xml: |-
     <configuration>
         <property>
+            <name>metastore.task.threads.always</name>
+            <value>org.apache.hadoop.hive.metastore.events.EventCleanerTask</value>
+        </property>
+        <property>
+            <name>metastore.expression.proxy</name>
+            <value>org.apache.hadoop.hive.metastore.DefaultPartitionExpressionProxy</value>
+        </property>
+        <property>
+            <name>metastore.storage.schema.reader.impl</name>
+            <value>org.apache.hadoop.hive.metastore.SerDeStorageSchemaReader</value>
+        </property>
+        
+        <property>
             <name>javax.jdo.option.ConnectionURL</name>
             <value>jdbc:postgresql://postgresql:5432/hive</value>
         </property>
@@ -17,11 +30,11 @@ data:
         </property>
         <property>
             <name>javax.jdo.option.ConnectionUserName</name>
-            <value>hive</value>
+            <value>root</value>
         </property>
         <property>
             <name>javax.jdo.option.ConnectionPassword</name>
-            <value>hive</value>
+            <value>pwd1234</value>
         </property>
         <property>
             <name>hive.metastore.uris</name>
@@ -29,7 +42,7 @@ data:
         </property>
         <property>
             <name>datanucleus.autoCreateSchema</name>
-            <value>false</value>
+            <value>true</value>
         </property>
         <property>
             <name>hive.metastore.schema.verification</name>
@@ -46,16 +59,25 @@ metadata:
 data:
   entrypoint.sh: |-
     #!/bin/bash
+  
     export HADOOP_VERSION=3.3.1
     export METASTORE_VERSION=3.1.2
     export AWS_SDK_VERSION=1.11.901
     export LOG4J_VERSION=2.8.2
+    
     export JAVA_HOME=/usr/local/openjdk-8
     export HADOOP_HOME=/opt/hadoop-${HADOOP_VERSION}
-    export HIVE_HOME=/opt/apache-hive-metastore-${METASTORE_VERSION}-bin
     export HADOOP_CLASSPATH=${HADOOP_HOME}/share/hadoop/tools/lib/aws-java-sdk-bundle-${AWS_SDK_VERSION}.jar:${HADOOP_HOME}/share/hadoop/tools/lib/hadoop-aws-${HADOOP_VERSION}.jar:${HIVE_HOME}/lib/log4j-core-${LOG4J_VERSION}.jar:${HIVE_HOME}/lib/log4j-api-${LOG4J_VERSION}.jar:${HIVE_HOME}/lib/log4j-1.2-api-${LOG4J_VERSION}.jar:${HIVE_HOME}/lib/log4j-slf4j-impl-${LOG4J_VERSION}.jar
-
-    ${HIVE_HOME}/bin/schematool -initSchema -dbType postgres -userName hive -passWord hive
+    export HIVE_HOME=/opt/apache-hive-metastore-${METASTORE_VERSION}-bin
+    
+    # Check if schema exists
+    ${HIVE_HOME}/bin/schematool -dbType postgres -info
+  
+    if [ $? -eq 1 ]; then
+      echo "Getting schema info failed. Probably not initialized. Initializing..."
+      ${HIVE_HOME}/bin/schematool -dbType postgres -initSchema
+    fi
+  
     ${HIVE_HOME}/bin/start-metastore
 ---
 apiVersion: apps/v1
@@ -77,7 +99,7 @@ spec:
       initContainers:
         - name: init-wait-db
           image: busybox:latest
-          command: ["/bin/sh", "-c"]
+          command: [ "/bin/sh", "-c" ]
           args:
             - |
               until nc -z -v -w90 postgresql 5432; do
@@ -87,7 +109,7 @@ spec:
       containers:
         - name: metastore
           image: rtdl/hive-metastore:3.1.2
-          command: ["bash", "/opt/entrypoint/entrypoint.sh"]
+          command: [ "bash", "entrypoint/entrypoint.sh" ]
           ports:
             - containerPort: 9083
               name: thrift
