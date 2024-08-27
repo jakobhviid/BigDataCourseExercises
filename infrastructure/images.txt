@@ -11,5 +11,5 @@ confluentinc/cp-ksqldb-server:7.3.1
 confluentinc/cp-ksqldb-cli:7.3.1
 redpandadata/console:v2.7.1
 dvoros/sqoop:latest
-bde2020/flume
+bde2020/flume:latest
 bitnami/spark:3.5.2-debian-12-r0

@@ -28,7 +28,7 @@ We will use the [Redpanda Console](https://redpanda.com/redpanda-console-kafka-u
 kubectl apply -f redpanda.yaml
 ```
 
-**Task**: Access Redpanda using the following command: `kubectl port-forward svc/redpanda 8080:8080` to open [Redpanda](http://127.0.0.1:8080) in your browser!
+**Task**: Access Redpanda using the following command: `kubectl port-forward svc/redpanda 8080` to open [Redpanda](http://127.0.0.1:8080) in your browser!
 
 **Task**: Explore the following tabs:
 - [Overview](http://127.0.0.1:8080/overview)
@@ -69,7 +69,7 @@ Besides the Redpanda console, we will also use Kafka Connect, Kafka Schema Regis
 
 The list below summarises the extra services and briefly demonstrate how to interact with them:
 - Registry (kafka-schema-registry) 
-  - `kubectl port-forward svc/kafka-schema-registry  8081:8081`. Make a `curl` cmd in a terminal using the URL [http://127.0.0.1:8081](http://127.0.0.1:8081) and get this output:
+  - `kubectl port-forward svc/kafka-schema-registry 8081`. Make a `curl` cmd in a terminal using the URL [http://127.0.0.1:8081](http://127.0.0.1:8081) and get this output:
     ```
     curl http://127.0.0.1:8081
     {}%                                  
@@ -121,12 +121,8 @@ kubectl exec --tty -i kafka-client -- bash
 ``` 
 3. Run the following commands in the first terminal to produce messages to the Kafka topic `test`:
 ```bash
-# Define the namespace variable
-NAMESPACE="<your_namespace>"
-
-# Use the variable in your Kafka producer command
 kafka-console-producer.sh \
-  --broker-list kafka-controller-0.kafka-controller-headless.${NAMESPACE}.svc.cluster.local:9092,kafka-controller-1.kafka-controller-headless.${NAMESPACE}.svc.cluster.local:9092,kafka-controller-2.kafka-controller-headless.${NAMESPACE}.svc.cluster.local:9092 \
+  --broker-list kafka-controller-0.kafka-controller-headless:9092,kafka-controller-1.kafka-controller-headless:9092,kafka-controller-2.kafka-controller-headless:9092 \
   --topic test
 ```
 
