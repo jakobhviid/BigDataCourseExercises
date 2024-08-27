@@ -33,8 +33,8 @@ Deploy postgres database.
 ```text
 helm install postgresql \
   --version=12.1.5 \
-  --set auth.username=admin \
-  --set auth.password=admin \
+  --set auth.username=root \
+  --set auth.password=pwd1234 \
   --set auth.database=hive \
   --set primary.extendedConfiguration="password_encryption=md5" \
   --repo https://charts.bitnami.com/bitnami \
@@ -78,7 +78,7 @@ A service has been created for the Trino cluster. Forward port 8443 of the Trino
 
 **Task:** Forward Trino coordinator service
 
-Open the forwarded service in your browser `https://localhost:8443`. Sign in to Trino using any username and no password.
+Open the forwarded service in your browser `https://localhost:8080`. Sign in to Trino using any username and no password.
 
 **Task:** Open the Trino Web UI webpage and sign in
 
@@ -94,12 +94,10 @@ Now that DBeaver is installed we will now create a new database connection with 
 
 1. Click on the "Database" tab and select "New Database Connection" from the dropdown
 2. Search for Trino and select it, then click "Next" (and install drivers if prompted to)
-3. Select "Connect by: URL" and enter the following url: `jdbc:trino://localhost:8443`
+3. Select "Connect by: URL" and enter the following url: `jdbc:trino://localhost:8080`
 4. In the authentication box enter any username and no password
-5. Click on the "Driver properties" tab, find the  `SSL` property and give it the value `true`
-6. Create a user property by click on the blue button in the bottom left that says "Add user property" and name the property `SSLVerification` and give it the value `NONE`
-7. Click on the "Test connection" button to make sure it works properly
-8. If it works, then click on the "Finish" button
+5. Click on the "Test connection" button to make sure it works properly
+6. If it works, then click on the "Finish" button
 
 Now that a connection has been made to the Trino cluster we can then begin to write SQL statements. To write SQL statements then right-click on the connection you just made, then hover over the "SQL Editor", and then click on "Open SQL script".
 
@@ -111,7 +109,7 @@ We can now begin to write SQL statements. First, we will make sure that the Hive
 
 **Hint:** Enter the text `SHOW CATALOGS;`, then select it using your mouse and then press the keys `CTRL+ENTER` to execute the SQL statement.
 
-You should see two catalogs, one called `hive` and another called `system`. You now know how to create and execute SQL statements using Trino. The name of the hive catalog comes from the name of the `TrinoCatalog` resource you applied to Kubernetes.
+You should see two catalogs, one called `hive` and another called `system`. You now know how to create and execute SQL statements using Trino. The name of the hive catalog comes from the name of the `trino-values.yaml` resource you applied to Kubernetes.
 
 We will now [create a schema](https://trino.io/docs/current/sql/create-schema.html) inside the hive catalog. The schema is used to define where data is located, which will then be used by tables that are created with the schema.
 

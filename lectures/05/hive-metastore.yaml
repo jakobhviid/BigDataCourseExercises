@@ -21,6 +21,11 @@ data:
         </property>
         
         <property>
+            <name>hive.metastore.uris</name>
+            <value>thrift://hive-metastore:9083</value>
+        </property>
+        
+        <property>
             <name>javax.jdo.option.ConnectionURL</name>
             <value>jdbc:postgresql://postgresql:5432/hive</value>
         </property>
@@ -36,10 +41,36 @@ data:
             <name>javax.jdo.option.ConnectionPassword</name>
             <value>pwd1234</value>
         </property>
+        
         <property>
-            <name>hive.metastore.uris</name>
-            <value>thrift://hive-metastore:9083</value>
+            <name>fs.defaultFS</name>
+            <value>s3a://minio:9000</value>
         </property>
+        <property>
+            <name>fs.s3a.connection.ssl.enabled</name>
+            <value>false</value>
+        </property>
+        <property>
+            <name>fs.s3a.impl</name>
+            <value>org.apache.hadoop.fs.s3a.S3AFileSystem</value>
+        </property>
+        <property>
+            <name>fs.s3a.endpoint</name>
+            <value>http://minio:9000</value>
+        </property>
+        <property>
+            <name>fs.s3a.access.key</name>
+            <value>admin</value>
+        </property>
+        <property>
+            <name>fs.s3a.secret.key</name>
+            <value>password</value>
+        </property>
+        <property>
+            <name>fs.s3a.path.style.access</name>
+            <value>true</value>
+        </property>
+        
         <property>
             <name>datanucleus.autoCreateSchema</name>
             <value>true</value>
