@@ -450,7 +450,7 @@ The objective of this exercise is to configure a Kafka Connect connector that us
 <details>
   <summary><strong>Hint:</strong> Post configuration</summary>
 
-    This example requires port-forwarding. Therefore ensure `kubectl port-forward svc/kafka-connect 8083:8083 -n kafka` is running in a terminal on your local host.
+    This example requires port-forwarding. Therefore ensure `kubectl port-forward svc/kafka-connect 8083:8083` is running in a terminal on your local host.
 
     Look into the configuration in the chunk below and execute the command in your terminal to create a Kafka Connect connector:
 
