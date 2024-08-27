@@ -9,8 +9,8 @@ ENV HIVE_HOME=/opt/hive-${HIVE_VERSION}
 # Install dependencies
 RUN apt-get update && apt-get install -y wget tar procps
 
-# Download and install Hive
-RUN wget https://downloads.apache.org/hive/hive-${HIVE_VERSION}/apache-hive-${HIVE_VERSION}-bin.tar.gz && \
+# Download and install Hive from Apache Archive
+RUN wget https://archive.apache.org/dist/hive/hive-${HIVE_VERSION}/apache-hive-${HIVE_VERSION}-bin.tar.gz && \
     tar -xzvf apache-hive-${HIVE_VERSION}-bin.tar.gz -C /opt && \
     mv /opt/apache-hive-${HIVE_VERSION}-bin /opt/hive-${HIVE_VERSION} && \
     rm apache-hive-${HIVE_VERSION}-bin.tar.gz
