@@ -581,6 +581,7 @@ To clean up the resources created in this lecture, you can follow the steps belo
 - Todays exercises.
   1. `kubectl delete -f sqoop.yaml`
   1. `helm delete postgresql`
+  1. `kubectl delete pvc data-postgresql-0`
   1. `kubectl delete pod python`
   1. `kubectl delete -f flume.yaml`
   1. `kubectl delete -f redpanda.yaml`
@@ -589,15 +590,26 @@ To clean up the resources created in this lecture, you can follow the steps belo
   1. `kubectl delete -f kafka-ksqldb.yaml`
   1. `kubectl delete pod kafka-client`
   1. `helm delete kafka`
+  1. `kubectl delete pvc data-kafka-controller-0 \
+        data-kafka-controller-1 \
+        data-kafka-controller-2
+        `
 - `cd` into the `services/hdfs` folder in the repository.
   1. `kubectl delete -f datanodes.yaml`
   1. `kubectl delete -f namenode.yaml`
   1. `kubectl delete -f configmap.yaml`
-  1. `kubectl delete -f pvc.yaml`
+  1. `kubectl delete pvc hadoop-datanode-storage-datanode-0 \ 
+      hadoop-datanode-storage-datanode-1 \
+      hadoop-datanode-storage-datanode-2 \
+      hadoop-namenode-storage-namenode-0
+      `
 - `cd` into the `services/interactive` folder in the repository.
   1. `kubectl delete -f interactive.yaml`
 
 
-You can get a list of the pods and services to verify that they are deleted.
+You can get a list of the resources to verify that they are deleted.
 - `kubectl get pods`
 - `kubectl get services`
+- `kubectl get deployments`
+- `kubectl get configmap`
+- `kubectl get pvc`

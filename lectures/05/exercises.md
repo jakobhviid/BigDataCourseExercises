@@ -315,24 +315,9 @@ We will be working with MongoDB which is great for storing JSON like records wit
 
 **Note:** We will deploying the minimum configuration for this database in order to reduce the recoruse footprint.
 
-This exercise is composed of three parts starting wiht a deployment of the MongoDB cluster. Then we would like to revist Kafka Connect similar to [Exercise 06](./../03/exercises.md#exercise-6---kafka-connect-and-hdfs) from lecture 3. And finally we will look into querying JSON records in the database.
+This exercise is composed of three parts starting with a deployment of the MongoDB cluster. Then we would like to revist Kafka Connect similar to [Exercise 06](./../03/exercises.md#exercise-6---kafka-connect-and-hdfs) from lecture 3. And finally we will look into querying JSON records in the database.
 
-
-We recommand to create a isolated namespace for the following MongoDB services.
-
-**Task:** Create a namepsace in Kubernetes called `mongodb`.
-<details>
-  <summary><strong>Hint:</strong> Create namespace</summary>
-
-  ```
-  kubectl create namespace mongodb 
-  ```
-
-</details>
-
-
-
-The [mongodb.yaml](mongodb.yaml) contains a complete manifest to compose a MongoDB cluster. The manifest includes the following recources:
+The [mongodb.yaml](./mongodb.yaml) contains a complete manifest to compose a MongoDB cluster. The manifest includes the following recources:
 - PersistentVolumeClaim: `mongodb-pvc`
 - Services
     - `mongodb`
@@ -345,8 +330,8 @@ The [mongodb.yaml](mongodb.yaml) contains a complete manifest to compose a Mongo
     - `mongodb`
     - `mongo-express`
 
-**Task:** Familize yourself with the [mongodb.yaml](mongodb.yaml) manifest.
-**Note:** Our example includes a simple authentication mecanishm. The username and password have been hardcoded into the [mongodb.yaml](mongodb.yaml) file. We do encurge you to apply a more sufisticated approach when you transfering into a production environment.
+**Task:** Familiarize yourself with the [mongodb.yaml](mongodb.yaml) manifest.
+**Note:** Our example includes a simple authentication mechanism. The username and password have been hardcoded into the [mongodb.yaml](mongodb.yaml) file. We do encurge you to apply a more sufisticated approach when you transfering into a production environment.
 
 
 **Task:** Apply the [mongodb.yaml](mongodb.yaml) manifest to compose the MongoDB cluster.
@@ -370,7 +355,7 @@ One approach for getting the current state of the deployed resources is by using
 
 
   ```
-  kubectl get all -n mongodb  
+  kubectl get all  
   ```
 You should expect a similar output like the chunk below:
 
@@ -409,7 +394,7 @@ The web-based `mongo-express` interface requires port-forwarding to access the s
   <summary><strong>Hint:</strong> Get all the resources inside the `mongodb` namespace</summary>
 
   ```
-  kubectl port-forward svc/mongo-express  8084:8084 -n mongodb
+  kubectl port-forward svc/mongo-express  8084:8084
   ```
 </details>
 
@@ -434,7 +419,7 @@ Similar to the web-based approach you need to set up port-forwarding to reach th
   <summary><strong>Hint:</strong> Get all the resources inside the `mongodb` namespace</summary>
 
   ```
-  kubectl port-forward svc/mongodb  27017:27017 -n mongodb 
+  kubectl port-forward svc/mongodb  27017:27017
   ```
 </details>
 
@@ -585,3 +570,41 @@ Because the redis cluster has replicas, then if a primary node fails, then a rep
 You should see that you are still able to get the key even though the primary node was killed. This is very cool 😎.
 
 **Task:** What tactics does Redis Cluster + Redis Sentinel use?
+
+To clean up the resources created in this lecture, you can follow the steps below:
+- Todays exercises.
+    1. `kubectl delete pod redis-cluster-client`
+    1. `helm uninstall redis`
+    1. `kubectl delete pvc redis-data-redis-redis-cluster-0 \
+        redis-data-redis-redis-cluster-1 \
+        redis-data-redis-redis-cluster-2 \
+        redis-data-redis-redis-cluster-3 \
+        redis-data-redis-redis-cluster-4 \
+        redis-data-redis-redis-cluster-5
+       `
+    1. `helm uninstall trino`
+    1. `kubectl delete -f hive-metastore.yaml`
+    1. `helm uninstall postgresql`
+    1. `helm uninstall minio`
+    1. `kubectl delete pvc data-postgresql-0 minio-data-minio-0`
+- `cd` into the `lecture/03` folder in the repository.
+    1. `kubectl delete -f redpanda.yaml`
+    1. `kubectl delete -f kafka-schema-registry.yaml`
+    1. `kubectl delete -f kafka-connect.yaml`
+    1. `kubectl delete -f kafka-ksqldb.yaml`
+    1. `kubectl delete pod kafka-client`
+    1. `helm uninstall kafka`
+    1. `kubectl delete pvc data-kafka-controller-0 \
+        data-kafka-controller-1 \
+        data-kafka-controller-2
+        `
+- `cd` into the `services/interactive` folder in the repository.
+    1. `kubectl delete -f interactive.yaml`
+
+
+You can get a list of the resources to verify that they are deleted.
+- `kubectl get pods`
+- `kubectl get services`
+- `kubectl get deployments`
+- `kubectl get configmap`
+- `kubectl get pvc`

@@ -266,6 +266,11 @@ To clean up the resources created in this lecture, you can follow the steps belo
   1. `kubectl delete -f datanodes.yaml`
   1. `kubectl delete -f namenode.yaml`
   1. `kubectl delete -f configmap.yaml`
+  1. `kubectl delete pvc hadoop-datanode-storage-datanode-0 \ 
+      hadoop-datanode-storage-datanode-1 \
+      hadoop-datanode-storage-datanode-2 \
+      hadoop-namenode-storage-namenode-0
+      `
 - cd into the `services/interactive` folder in the repository.
   1. `kubectl delete -f interactive.yaml`
 
@@ -274,6 +279,9 @@ To begin with, we will delete the first hello-kubernetes deployment that you mad
 - Next we will uninstall the hello-kubernetes release of the hello-kubernetes Helm chart: `helm uninstall hello-kubernetes-helm`
 - Delete the ubuntu container: `kubectl delete pods/ubuntu`
 
-You can get a list of the pods and services to verify that they are deleted.
+You can get a list of the resources to verify that they are deleted.
 - `kubectl get pods`
 - `kubectl get services`
+- `kubectl get deployments`
+- `kubectl get configmap`
+- `kubectl get pvc`
