@@ -19,9 +19,8 @@ FS: str = "hdfs://namenode:9000/"
 SPARK_DRIVER_HOST = (
     subprocess.check_output(["hostname", "-i"]).decode(encoding="utf-8").strip()
 )
-SPARK_DRIVER_HOST = re.sub(
-    rf"\s*127.0.0.1\s*", "", SPARK_DRIVER_HOST
-)  # Remove alias to 127.0.0.1, if present.
+
+SPARK_DRIVER_HOST = re.sub(rf"\s*127.0.0.1\s*", "", SPARK_DRIVER_HOST)
 os.environ["SPARK_LOCAL_IP"] = SPARK_DRIVER_HOST
 
 
@@ -31,7 +30,8 @@ class SPARK_ENV(Enum):
         ("spark.driver.host", SPARK_DRIVER_HOST),
     ]
     K8S = [
-        ("spark.master", "spark://spark-master-svc:7077"),
+        ("spark.master", "spark://localhost:7077"),
+        # ("spark.master", "spark://spark-master-svc:7077"),
         ("spark.driver.bindAddress", "0.0.0.0"),
         ("spark.driver.host", SPARK_DRIVER_HOST),
         ("spark.driver.port", "7077"),
