@@ -1,3 +1,17 @@
+#
+
+
+# TODO: Update to OAUTH authentication
+# Server: smtp.office365.com
+# Port: 587
+# Using: STARTTLS
+
+# current solution:
+# needs to be on SDU net.
+# Server: smtps.sdu.dk
+# Port: 465
+# Using: SSL
+
 import smtplib
 import ssl
 from dataclasses import dataclass
@@ -12,7 +26,7 @@ from pathlib import Path
 class EmailClient:
     email: str
     password: str
-    server: str = "smtp.gmail.com"
+    server: str = "smtps.sdu.dk"
     port: int = 465
 
     def create_msg(
