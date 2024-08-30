@@ -30,8 +30,7 @@ class SPARK_ENV(Enum):
         ("spark.driver.host", SPARK_DRIVER_HOST),
     ]
     K8S = [
-        ("spark.master", "spark://localhost:7077"),
-        # ("spark.master", "spark://spark-master-svc:7077"),
+        ("spark.master", "spark://spark-master-svc:7077"),
         ("spark.driver.bindAddress", "0.0.0.0"),
         ("spark.driver.host", SPARK_DRIVER_HOST),
         ("spark.driver.port", "7077"),
