@@ -1,6 +1,3 @@
-#
-
-
 # TODO: Update to OAUTH authentication
 # Server: smtp.office365.com
 # Port: 587
