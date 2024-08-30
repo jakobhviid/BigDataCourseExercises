@@ -42,6 +42,12 @@ The above-mentioned steps are automated in the script [create-user.sh](create-us
 3. The script outputs the kubeconfig files for each student in the folder `~/tmp/<namespace>-kubeconfig.yaml`
 4. Distribute the kubeconfig files to the students.
 
+## Share the kubeconfig file with the students
+The kubeconfig file is the configuration file that the students will use to connect to the Kubernetes cluster. The file is generated in the previous step and should be shared with the students in a secure manner.
+
+The current approach is to share the file through a secure messaging service directly to the students SDU email account. Please use a similar examples as this Python [sent_msg.py](./share_kubeconfigs/sent_msg.py) script to share the kubeconfig files.
+
+
 ## Add custom domain to Kubernetes API Certificates
 
 1. Update the csr.conf.template in ´certs´ folder in the ´microk8s´ cluster
