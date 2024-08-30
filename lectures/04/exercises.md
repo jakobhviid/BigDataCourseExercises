@@ -14,30 +14,36 @@ Before you get to play around with Apache Spark you need to deploy your Spark en
 **Task**: Inspect the [spark-values.yaml](./spark-values.yaml) file to see how the Spark deployment is configured.
 
 **Task**: Install the Spark Helm chart using the following command:
+
 ```bash
 helm install --values spark-values.yaml spark oci://registry-1.docker.io/bitnamicharts/spark
 ```
 
 **Task**: Inspect the UI of the Spark deployment and validate that there are two worker nodes alive.
+
 ```bash
 kubectl port-forward svc/spark-master-svc 8080:80
 ```
 
 ### Exercise 2 - Running a Spark job locally and in your deployment
+
 The first exercise is to run a Spark job that estimates pi. The program is written in Python and is located in the Spark repository. The program is an example of how to run a Spark job that both can run on localhost and in your Spark environment.
 
 **Task**: Inspect the [pi-estimation.py](./pi-estimation.py) file.
 
 **Task**: Try to visualize the [DAG](https://en.wikipedia.org/wiki/Directed_acyclic_graph) this program will create. 
 
-**Help**: 
+**Help**:
+
 - Take a look [here](https://stackoverflow.com/a/30685279/9698208) to better understand how the DAG is created for the Spark program.
 - You are able to get other examples of Spark programs [here](https://spark.apache.org/examples.html).
 
 **Task**: Run the [pi-estimation.py](./pi-estimation.py) file locally.
+
 - How will the number of partitions argument affect the result?
 
 **Task**: Update the [pi-estimation.py](./pi-estimation.py) file to be executed on the inside your Kubernetes cluster.
+
 - Does the number of partitions affect the runtime? 
 - How does the runtime compare to running the program locally?
 
@@ -51,10 +57,10 @@ In this exercise you will run a Spark job that will read a file and count the oc
 **Task**: Ensure the [alice in wonderland](https://www.gutenberg.org/files/11/11-0.txt) file is within your HDFS cluster. If not upload the file to HDFS.
 
 **Task**: Inspect the [word-count.py](./word-count.py). The program counts the occurrences of all unique "words" in the input file.
+
 - Try to run the program locally and in the cluster pointing towards different input files.
 
 **Notice**:You can also read about the word count program from Apache Spark [here](https://spark.apache.org/examples.html) and [here](https://github.com/apache/spark/blob/c1b12bd56429b98177e5405900a08dedc497e12d/examples/src/main/python/wordcount.py).
-
 
 ### Exercise 4 - Average sample values from JSON files stored in HDFS
 
@@ -69,23 +75,26 @@ In this exercise you will run a Spark job that will read all the JSON files and 
 
 
 ### Exercise 5 - Running Spark Streaming Jobs - Kafka
+
 The objectives of this exercise are to run a Spark streaming job that reads from a Kafka topic. This exercise requires to have a Kafka producer which produces records for the same topic. For convenience, we recommend revisiting the [exercise 4 from lecture 03](./../03/exercises.md#exercise-4---produce-messages-to-kafka-using-python).
 
 **Task**: Create a streaming query that calculates the running mean of the six different stations (`payload.sensor_id`) produced to the Kafka topic `INGESTION`.
 
 **Help**: You need to complete the query inside the [process-streaming.py](process-streaming.py) file.
 **Notice**: You need to append additional packages to run the Spark streaming application to read from kafka. You can run the Spark streaming interactive using `pyspark` or submitting your application using `spark-submit` as demonstrated below:
+
 ```bash
 pyspark --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.2
 ```
+
 ```bash
 spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.2 process-streaming.py
 ```
 
-
 **Task**: Run your Spark streaming application and validate that the running means of `payload.modality` field is close to the calculated values in [exercise 4](exercises.md#exercise-4---average-sample-values-from-json-files-stored-in-hdfs).
 
 **Important note**: There is no correct solution nor wrong solution for this exercise. You may find inspiration in the following links to complete the streaming query:
+
 - [Structured Streaming Programming Guide](https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html#structured-streaming-programming-guide)
 - [Operations on streaming DataFrames/Datasets](https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html#operations-on-streaming-dataframesdatasets)
-- [Structured Streaming + Kafka Integration Guide ](https://spark.apache.org/docs/latest/structured-streaming-kafka-integration.html#structured-streaming-kafka-integration-guide-kafka-broker-versio)
+- [Structured Streaming + Kafka Integration Guide](https://spark.apache.org/docs/latest/structured-streaming-kafka-integration.html#structured-streaming-kafka-integration-guide-kafka-broker-versio)
