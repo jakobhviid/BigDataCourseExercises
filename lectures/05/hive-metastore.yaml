@@ -38,6 +38,11 @@ data:
             <name>hive.metastore.schema.verification</name>
             <value>true</value>
         </property>
+        <property>
+            <name>hive.metastore.warehouse.dir</name>
+            <value>/user/hive/warehouse</value>
+            <description>Location of default database for the warehouse</description>
+        </property>
         
         <!-- PostgresSQL configuration -->
         <property>

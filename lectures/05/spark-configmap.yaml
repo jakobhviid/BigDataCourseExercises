@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: spark-config
+data:
+  spark-defaults.conf: |-
+    spark.sql.catalogImplementation=hive
+    spark.hadoop.hive.metastore.uris=thrift://hive-metastore:9083
+    spark.hadoop.fs.defaultFS=hdfs://namenode:9000
+    spark.hadoop.hive.metastore.warehouse.dir=/user/hive/warehouse
