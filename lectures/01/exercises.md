@@ -195,7 +195,7 @@ To install the chart using the default `values`, simply open a terminal inside t
 
 You should see that it created 2 pods and 1 service. This is similar to the deployment you made before, except this is installed using Helm. But now that it is installed you should try to connect to it like before, just remember that the service is now called something different. Hint: `kubectl get services`.
 
-A Helm chart can be configured using `values`. The default `values` can be found inside the Helm chart. Open the file located at `./deploy/helm/hello-kubernetes/values.yaml` in the repository and see the different values. We want to try to increase the amount of replicas using the `deployment.replicaCount` value. Because we want to modify an existing release, we need to use the `helm upgrade` command. Use `helm upgrade hello-kubernetes ./deploy/helm/hello-kubernetes --set deployment.replicaCount=5` to set the replica count to 5. Now get a list of the pods and notice how the amount of pods changed.
+A Helm chart can be configured using `values`. The default `values` can be found inside the Helm chart. Open the file located at `./deploy/helm/hello-kubernetes/values.yaml` in the repository and see the different values. We want to try to increase the amount of replicas using the `deployment.replicaCount` value. Because we want to modify an existing release, we need to use the `helm upgrade` command. Use `helm upgrade hello-kubernetes-helm ./deploy/helm/hello-kubernetes --set deployment.replicaCount=5` to set the replica count to 5. Now get a list of the pods and notice how the amount of pods changed.
 
 You can get a list of all Helm releases in the default namespace using the following command `helm list`.
 
