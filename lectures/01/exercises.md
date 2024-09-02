@@ -17,7 +17,8 @@
 ![Anders Launer Bæk-Petersen](https://avatars.githubusercontent.com/u/28479232?v=4)
 
 - PhD Fellow ~ SDU Software Engineering
-    - Architect a machine learning system from a software perspective
+    - Understanding the Reliability of Machine Learning
+Systems from a Software Engineering Perspective
 - PhD Fellow ~ SDU Center for Energy Informatics
     - Transferable AI Model Development Framework for Smart Energy Systems
 - Industry for 4,5 years
