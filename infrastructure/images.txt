@@ -12,4 +12,5 @@ confluentinc/cp-ksqldb-cli:7.3.1
 redpandadata/console:v2.7.1
 dvoros/sqoop:latest
 bde2020/flume:latest
+rtdl/hive-metastore:3.1.2
 apache/hive:3.1.3
