@@ -1,13 +1,13 @@
-# Big Data and Data Science Technologies course exercises
-This repository contains the exercises related to the course [Big Data and Data Science Technologies](https://odin.sdu.dk/sitecore/index.php?a=fagbesk&id=138236&listid=18888&lang=en) at University of Southern Denmark.
+# Big Data and Data Science Technology, E24 course exercises
+This repository contains the exercises related to the course [Big Data and Data Science Technology, E24](https://odin.sdu.dk/sitecore/index.php?a=fagbesk&id=138236&listid=18888&lang=en) at University of Southern Denmark.
 
 ## Instructors
 This year's instructors are Kasper Svane and Anders Launer Bæk-Petersen who completed the course in E23 and E22 respectively. We will facilitate the exercise hours and are available on the announced Discord channel for this course.
-We encourage you to provide open and direct feedback along the semester. Please feel free to open new GitHub issues for bugs, etc..
+We encourage you to provide open and direct feedback along the semester. Please feel free to open new GitHub issues for bugs, etc. [here](https://github.com/jakobhviid/BigDataCourseExercises/issues) if you encounter unclear information or experience bugs in our examples!
 
 ## Objective
-The objective of the exercises is to navigate you through the practical aspects of the curriculum. 
-We chose to transition from the docker-compose orchestrator to Kubernetes to minimize the gap between a single host system to a multi-node system last semester (E23). Therfore our focus is to provide exercises whcih gives you hands-on experience with Kubernetes and the tools that are commonly used in the Big Data and Data Science field.
+The objective of the exercises is to navigate you through the practical aspects of the curriculum.
+Last semester, we transitioned from the docker-compose orchestrator to Kubernetes to minimize the gap between a single host system and a multi-node system (E23). Therefore our focus is to provide exercises that give you hands-on experience with Kubernetes and the tools that are commonly used in the Big Data and Data Science field.
 
 Our primary focus this semester is twofold:
 - Fill in the missing gaps with extra exercises to match the curriculum for this course.  
@@ -32,8 +32,17 @@ The root of this repository will be related to the content of the current semest
 │   └── E23
 ├── infrastructure
 │   ├── README.md
+│   ├── create-admin-kubeconfig.sh
 │   ├── create-user.sh
 │   ├── create-users.sh
+│   ├── images.txt
+│   ├── share_kubeconfigs
+│   │   ├── sent_msg.py
+│   │   └── src
+│   │       ├── __init__.py
+│   │       ├── msg.py
+│   │       └── students.py
+│   ├── side-load.sh
 │   └── users.txt
 ├── lectures
 │   └── {01,02,03,...,07}
@@ -42,12 +51,16 @@ The root of this repository will be related to the content of the current semest
 └── services
     ├── README.md
     ├── hdfs
-    │   ├── ... 
-    │   └── README.md
+    │   ├── README.md
+    │   ├── configmap.yaml
+    │   ├── datanodes.yaml
+    │   ├── hdfs-cli.yaml
+    │   └── namenode.yaml
     ├── interactive
-    │   ├── ...
-    │   └── README.md
+    │   ├── Dockerfile
+    │   ├── README.md
+    │   └── interactive.yaml
     └── kafka-connect
-        ├── ...
+        ├── Dockerfile
         └── README.md
 ```
