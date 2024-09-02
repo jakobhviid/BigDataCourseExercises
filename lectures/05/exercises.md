@@ -1,12 +1,10 @@
 # Lecture 05 - Distributed Data Processing and Distributed Databases
 
-If your name is Tobias and you don't tell me you read this message during the exercise hours then you owe the instructors a beer.
-
 ## Exercises
 
-Please open issues [here](https://github.com/jakobhviid/BigDataCourseExercises/issues) if you encounter unclear information or experience bugs in our examples!
+Before you start working on the exercises you are strongly encouraged to clean up your Kubernetes cluster.
 
-Before you start working on the exercises you are strongly encouraged to clean up your Kubernetes cluster. The exercises will assume you use the MicroK8s cluster on the provided virtual machines and that the cluster is in a "clean" state.
+Please open issues [here](https://github.com/jakobhviid/BigDataCourseExercises/issues) if you encounter unclear information or experience bugs in our examples!
 
 ### Exercise 1 - Set up Trino, Hive and Minio
 
