@@ -7,6 +7,7 @@ metadata:
 data:
   metastore-site.xml: |-
     <configuration>
+        <!-- Hive Metastore configuration -->
         <property>
             <name>metastore.task.threads.always</name>
             <value>org.apache.hadoop.hive.metastore.events.EventCleanerTask</value>
@@ -19,12 +20,26 @@ data:
             <name>metastore.storage.schema.reader.impl</name>
             <value>org.apache.hadoop.hive.metastore.SerDeStorageSchemaReader</value>
         </property>
+        <property>
+            <name>metastore.metastore.event.db.notification.api.auth</name>
+            <value>false</value>
+        </property>    
         
+        <!-- Hive configuration -->
         <property>
             <name>hive.metastore.uris</name>
             <value>thrift://hive-metastore:9083</value>
         </property>
+        <property>
+            <name>datanucleus.autoCreateSchema</name>
+            <value>true</value>
+        </property>
+        <property>
+            <name>hive.metastore.schema.verification</name>
+            <value>true</value>
+        </property>
         
+        <!-- PostgresSQL configuration -->
         <property>
             <name>javax.jdo.option.ConnectionURL</name>
             <value>jdbc:postgresql://postgresql:5432/hive</value>
@@ -42,6 +57,37 @@ data:
             <value>pwd1234</value>
         </property>
         
+        <!-- Hadoop Configuration -->
+        <property>
+            <name>fs.defaultFS</name>
+            <value>hdfs://namenode:9000</value>
+        </property>
+        <property>
+            <name>hadoop.http.staticuser.user</name>
+            <value>root</value>
+        </property>
+        <property>
+            <name>hadoop.proxyuser.hive.hosts</name>
+            <value>*</value>
+        </property>
+        <property>
+            <name>hadoop.proxyuser.hive.groups</name>
+            <value>*</value>
+        </property>
+        <property>
+            <name>hadoop.proxyuser.hive.users</name>
+            <value>*</value>
+        </property>    
+        <property>
+            <name>dfs.client.use.datanode.hostname</name>
+            <value>true</value>
+        </property>
+        <property>
+            <name>dfs.replication</name>
+            <value>3</value>
+        </property>
+        
+        <!-- S3A Configuration
         <property>
             <name>fs.defaultFS</name>
             <value>s3a://minio:9000</value>
@@ -70,16 +116,21 @@ data:
             <name>fs.s3a.path.style.access</name>
             <value>true</value>
         </property>
-        
-        <property>
-            <name>datanucleus.autoCreateSchema</name>
-            <value>true</value>
-        </property>
-        <property>
-            <name>hive.metastore.schema.verification</name>
-            <value>true</value>
-        </property>
+        -->
     </configuration>
+
+  metastore-log4j2.properties: |
+    # Define the root logger with a console appender
+     log4j.rootLogger = INFO, console
+    
+     # Console appender configuration
+     log4j.appender.console = org.apache.log4j.ConsoleAppender
+     log4j.appender.console.target = System.out
+     log4j.appender.console.layout = org.apache.log4j.PatternLayout
+     log4j.appender.console.layout.ConversionPattern = %d{ISO8601} [%t] %-5p %c{2} - %m%n
+    
+     # Set the logging level for specific categories
+     log4j.logger.org.apache.hadoop = WARN
 ---
 apiVersion: v1
 kind: ConfigMap
