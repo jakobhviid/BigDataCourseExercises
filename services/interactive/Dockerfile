@@ -28,8 +28,9 @@ RUN pip install -r requirements.txt
 
 # Install HDFS CLI
 RUN curl -O https://archive.apache.org/dist/hadoop/common/hadoop-3.2.1/hadoop-3.2.1.tar.gz \
-    && tar xvzf hadoop-3.2.1.tar.gz \
-    && hadoopp-3.2.1 /usr/local/hadoop
+    && tar xzf hadoop-3.2.1.tar.gz \
+    && rm hadoop-3.2.1.tar.gz \
+    && mv hadoop-3.2.1 /usr/local/hadoop
 
 ENV HADOOP_HOME=/usr/local/hadoop
 ENV PATH=$PATH:$HADOOP_HOME/bin
@@ -39,4 +40,4 @@ ENV HADOOP_COMMON_HOME=$HADOOP_HOME
 ENV HADOOP_HDFS_HOME=$HADOOP_HOME
 ENV YARN_HOME=$HADOOP_HOME
 ENV HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
-ENV HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib"
+ENV HADOOP_OPTS=-Djava.library.path=$HADOOP_HOME/lib
