@@ -1,6 +1,5 @@
 # Lecture 03 - Distributed Transport and Streaming
 
-
 ## Exercises
 
 The exercises for this week's lecture is be about distributed transport and streaming. You will be creating a Kafka cluster and various publishing programs and subscribing programs to stream records.
@@ -8,22 +7,67 @@ The focus of today's lecture is to interact with Kafka, create Python producer a
 
 Please open issues [here](https://github.com/jakobhviid/BigDataCourseExercises/issues) if you encounter unclear information or experience bugs in our examples!
 
-
 ### Exercise 1 - Deploy a Kafka cluster
 
 The objective of this exercise is to deploy a Kafka cluster. This year will be using a helm chart from [Bitnami](https://artifacthub.io/packages/helm/bitnami/kafka#bitnami-package-for-apache-kafka) to deploy a Kafka cluster.
 
 **Task**: Deploy Kafka using the `helm` and the following [kafka-values.yaml](kafka-values.yaml) file.
+
 ```bash
-helm install --values kafka-values.yaml kafka oci://registry-1.docker.io/bitnamicharts/kafka`
+helm install --values kafka-values.yaml kafka oci://registry-1.docker.io/bitnamicharts/kafka --version 30.0.4
 ```
+
 **Notice**: When you need to delete the Kafka cluster, you can use the following command: `helm delete kafka`.
 
-### Exercise 2 - The Redpanda console
-We will use the [Redpanda Console](https://redpanda.com/redpanda-console-kafka-ui) to interact with Kafka. The console is a web-based user interface that allows you to interact with Kafka topics, schema registry, and Kafka connectors. 
+#### Validate the deployment of Kafka using a simple producer and consumer
 
+**Tasks**: Producing and consuming topic messages
+
+1. Create a Kafka client pod (`docker.io/bitnami/kafka:3.8.0-debian-12-r3`) using `kubectl run`.
+
+```bash
+kubectl run kafka-client --restart='Never' --image docker.io/bitnami/kafka:3.8.0-debian-12-r3  --command -- sleep infinity
+```
+
+2. Open two terminals and attach to the Kafka client pod using `kubectl exec` command.
+
+```bash
+kubectl exec --tty -i kafka-client -- bash
+```
+
+3. Run the following commands in the first terminal to produce messages to the Kafka topic `test`:
+
+```bash
+kafka-console-producer.sh --bootstrap-server kafka:9092 --topic test
+```
+
+4. Run the following commands in the second terminal to consume messages from the Kafka topic `test`:
+
+```bash
+kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic test --from-beginning
+```
+
+5. Try typing text in the first terminal and hit enter. What happens in the second terminal?
+
+**Task**: Delete the pod you just created (`kafka-client`).
+
+<details>
+  <summary><strong>Hint</strong>: Delete the pod</summary>
+
+  CTRL + C should exit the terminal and delete the pod. If not then just use the commands below.
+
+  ```bash
+  kubectl delete pod/kafka-client
+  ```
+
+</details>
+
+### Exercise 2 - The Redpanda console
+
+We will use the [Redpanda Console](https://redpanda.com/redpanda-console-kafka-ui) to interact with Kafka. The console is a web-based user interface that allows you to interact with Kafka topics, schema registry, and Kafka connectors.
 
 **Task**: Deploy Redpanda using manifest file [redpanda.yaml](./redpanda.yaml) with the following command: 
+
 ```bash
 kubectl apply -f redpanda.yaml
 ```
@@ -31,15 +75,16 @@ kubectl apply -f redpanda.yaml
 **Task**: Access Redpanda using the following command: `kubectl port-forward svc/redpanda 8080` to open [Redpanda](http://127.0.0.1:8080) in your browser!
 
 **Task**: Explore the following tabs:
+
 - [Overview](http://127.0.0.1:8080/overview)
 - [Topics](http://127.0.0.1:8080/topics)
 - [Schema Registry](http://127.0.0.1:8080/schema-registry)
 - [Kafka Connectors](http://127.0.0.1:8080/connect-clusters/Connectors)
 
- 
 **Task**: Question: What does the [Topics](http://127.0.0.1:8080/topics) view show you?
 
 **Task**: Manual interaction with Kafka using the Redpanda UI:
+
 1. Use Redpanda to create a topic called `test-redpanda`.
 1. Use Redpanda to produce record with `key=1` and `value={"id":1,"status":"it works"}` to the created topic `test-redpanda`.
 1. Use Redpanda to delete all the messages in topic `test-redpanda`.
@@ -56,34 +101,43 @@ kubectl apply -f redpanda.yaml
 ### Exercise 3 - Additional deployments of Kafka Connect, Kafka Schema Registry, and Kafka KSQL
 
 Besides the Redpanda console, we will also use Kafka Connect, Kafka Schema Registry, and Kafka KSQL to facilitate a distributed transport and streaming of records in Kafka. These services are included in the given in the manifest files:
+
 - [kafka-schema-registry.yaml](./kafka-schema-registry.yaml)
 - [kafka-connect.yaml](./kafka-connect.yaml)
 - [kafka-ksqldb.yaml](./kafka-ksqldb.yaml)
 
 **Task**: Familiarize yourself with the three mentioned files.
 **Task**: Create addional deployments of Kafka Connect, Kafka Schema Registry, and Kafka KSQL using the following commands:
+
 1. Apply the Kafka Schema Registry manifest file to your namespace. `kubectl apply -f kafka-schema-registry.yaml`
 1. Apply the Kafka Connect module to your namespace. `kubectl apply -f kafka-connect.yaml`
 1. Apply the Kafka Ksqldb server to your namespace. `kubectl apply -f kafka-ksqldb.yaml`
-
+1. Toggle the following values in the redpanda config map ([redpanda.yaml](./redpanda.yaml)) to enble Kafka modules.
+    - `KAFKA_SCHEMAREGISTRY_ENABLED`=`true`
+    - `CONNECT_ENABLED`=`true`
 
 The list below summarises the extra services and briefly demonstrate how to interact with them:
-- Registry (kafka-schema-registry) 
+
+- Registry (kafka-schema-registry)
   - `kubectl port-forward svc/kafka-schema-registry 8081`. Make a `curl` cmd in a terminal using the URL [http://127.0.0.1:8081](http://127.0.0.1:8081) and get this output:
-    ```
+    
+    ```bash
     curl http://127.0.0.1:8081
     {}%                                  
     ```
+
 - Connect (kafka-connect)
-  - `kubectl port-forward svc/kafka-connect  8083:8083`. Make a `curl` cmd in a terminal using the URL [http://127.0.0.1:8083](http://127.0.0.1:8083) and get this output:
-    ```
+  - `kubectl port-forward svc/kafka-connect  8083`. Make a `curl` cmd in a terminal using the URL [http://127.0.0.1:8083](http://127.0.0.1:8083) and get this output:
+    
+    ```bash
     curl http://127.0.0.1:8083
     {"version":"7.3.1-ce","commit":"a453cbd27246f7bb","kafka_cluster_id":"<kafka_cluster_id>"}%                                    
     ```
+
 - KsqlDB (kafka-ksqldb-server) and KsqlDB CLI (kafka-ksqldb-cli)
   - `kubectl exec --stdin --tty deployment/kafka-ksqldb-cli -- ksql http://kafka-ksqldb-server:8088` make sure you will reach a console similar to this:
 
-    ```
+    ```bash
                       
                       ===========================================
                       =       _              _ ____  ____       =
@@ -106,49 +160,6 @@ The list below summarises the extra services and briefly demonstrate how to inte
     ksql> 
     ```
 
-#### Validate the deployment of Kafka using a simple producer and consumer
-
-
-**Tasks**: Producing and consuming topic messages
-
-1. Create a Kafka client pod (`docker.io/bitnami/kafka:3.8.0-debian-12-r3`) using `kubectl run`.
-```bash
-kubectl run kafka-client --restart='Never' --image docker.io/bitnami/kafka:3.8.0-debian-12-r3  --command -- sleep infinity
-```
-2. Open two terminals and attach to the Kafka client pod using `kubectl exec` command.
-```bash
-kubectl exec --tty -i kafka-client -- bash
-``` 
-3. Run the following commands in the first terminal to produce messages to the Kafka topic `test`:
-```bash
-kafka-console-producer.sh \
-  --broker-list kafka-controller-0.kafka-controller-headless:9092,kafka-controller-1.kafka-controller-headless:9092,kafka-controller-2.kafka-controller-headless:9092 \
-  --topic test
-```
-
-4. Run the following commands in the second terminal to consume messages from the Kafka topic `test`:
-```bash
-kafka-console-consumer.sh \
-            --bootstrap-server kafka:9092 \
-            --topic test \
-            --from-beginning
-```
-5. Try typing text in the first terminal and hit enter. What happens in the second terminal?
-
-**Task**: Delete the pod you just created (`kafka-client`).
-
-<details>
-  <summary><strong>Hint</strong>: Delete the pod</summary>
-
-  CTRL + C should exit the terminal and delete the pod. If not then just use the commands below.
-
-  ```
-  kubectl delete pod/kafka-client
-  ```
-</details>
-
-
-
 ### Exercise 4 - Produce messages to Kafka using Python
 
 The objective of this exercise is to create a program which publishes records to a Kafka topic. The exercise builds on top of [exercise 8 from lecture 2](../02/exercises.md#exercise-8---create-six-fictive-data-sources), but instead of saving the data to HDFS we will publish it to a Kafka topic and use a Kafka Connector to save the records to HDFS. 
@@ -164,7 +175,7 @@ This exercise focuses on creating the topic and creating the producer. If you ha
 
 **Task**: Create the `INGESTION` topic with your chosen properties.
 
-**Hint**: Use Redpanda (ref. [exercise 02](#exercise-02---using-redpanda-to-interact-with-kafka)).
+**Hint**: Use Redpanda (ref. [exercise 02](exercises.md#exercise-02---using-redpanda-to-interact-with-kafka)).
 
 **Task**: Question: Which property will be possible if you add a key, which defines the sensor id, to each records?
 
@@ -173,7 +184,6 @@ This exercise focuses on creating the topic and creating the producer. If you ha
 **Hint**: If you did not create a program then use the scripts [./hints/*.py](./hints/).
 
 **Task**: Now that you have created the producer program it is time to run it.
-
 
 **Notice**: We recommend to use an interactive container and attach to it using [vscode](../02/exercises.md#attach-visual-studio-code-to-an-interactive-container-in-kubernetes) as we did last time in lecture 2.
 
@@ -202,56 +212,55 @@ A requirement for the program is that it must take a consumer `group_id` as an a
 **Task**: Create a consumer program and run it in the terminal in your interactive container.
 
 <details>
-  <summary><strong>Hint</strong>: A consumer program.</summary>
+<summary><strong>Hint</strong>: A consumer program.</summary>
 
-  The below mentioned files provide one solution for exercise.
+The below mentioned files provide one solution for exercise.
 
-  - [client.py](./hints/client.py)
-  - [data_model.py](./hints/data_model.py) (not used but is still required because it is imported by `client.py`)
-  - [simple-consumer.py](./hints/simple-consumer.py)
+- [hints/client.py](./hints/client.py)
+- [hints/data_model.py](./hints/data_model.py) (not used but is still required because it is imported by `hints/client.py`)
+- [hints/simple-consumer.py](./hints/simple-consumer.py)
 
-  </details>
-
-
+</details>
 
 <details>
-  <summary><strong>Verify</strong>: A consumer program</summary>
+<summary><strong>Verify</strong>: A consumer program</summary>
 
-  Run the program using `python simple-consumer.py`
+Run the program using `python simple-consumer.py`
 
-  The following should be printed to the console:
-  
-  ```bash
-  group_id=DEFAULT_CONSUMER
-  PackageObj(payload=SensorObj(sensor_id=3, modality=421, unit='MW', temporal_aspect='real_time'), correlation_id='906f764e-0f3b-4517-aed7-3b646081f6fb', created_at=1694902173.122458, schema_version=1)
-  ...
-  ...
-  ...
-  ```
+The following should be printed to the console:
 
-  </details>
+```bash
+group_id=DEFAULT_CONSUMER
+PackageObj(payload=SensorObj(sensor_id=3, modality=421, unit='MW', temporal_aspect='real_time'), correlation_id='906f764e-0f3b-4517-aed7-3b646081f6fb', created_at=1694902173.122458, schema_version=1)
+...
+...
+...
+```
+
+</details>
   
 **Task**: Start another consumer but with a different group id in your interactive container. What happens when you run the program?
 
 <details>
-  <summary><strong>Hint</strong>: Another consumer</summary>
+<summary><strong>Hint</strong>: Another consumer</summary>
 
-  Run the program using `python simple-consumer.py <GROUP_ID>`
+Run the program using `python simple-consumer.py <GROUP_ID>`
 
-  The following should be printed to the console:
+The following should be printed to the console:
 
-  ```
-  group_id=<GROUP_ID>
-  PackageObj(payload=SensorObj(sensor_id=3, modality=421, unit='MW', temporal_aspect='real_time'), correlation_id='906f764e-0f3b-4517-aed7-3b646081f6fb', created_at=1694902173.122458, schema_version=1)
-  ...
-  ...
-  ...
-  ```
- 
+```bash
+group_id=<GROUP_ID>
+PackageObj(payload=SensorObj(sensor_id=3, modality=421, unit='MW', temporal_aspect='real_time'), correlation_id='906f764e-0f3b-4517-aed7-3b646081f6fb', created_at=1694902173.122458, schema_version=1)
+...
+...
+...
+```
+
 </details>
 
 **Task**: Open [localhost:8080/topics/INGESTION](http://127.0.0.1:8080/topics/INGESTION#consumers). You should now see a table similar to the one below. What does the Lag column mean?
-```
+
+```bash
 Group               Lag
 <GROUP_ID>          3182
 DEFAULT_CONSUMER    3186
@@ -265,8 +274,7 @@ DEFAULT_CONSUMER    3186
 
 ### Exercise 6 - Kafka Ksql
 
-The objective of this exercise is use ksqlDB to split the records in the `INGESTION` topic into six separate streams ` SENSOR_ID_{1, 2, ..., 6}` based on the sensor id in the `payload` field of the JSON file.
-
+The objective of this exercise is use ksqlDB to split the records in the `INGESTION` topic into six separate streams `SENSOR_ID_{1, 2, ..., 6}` based on the sensor id in the `payload` field of the JSON file.
 
 #### Useful ksqlDB commands
 
@@ -280,8 +288,6 @@ The objective of this exercise is use ksqlDB to split the records in the `INGEST
 <details>
   <summary><strong>Hint</strong>: kubectl exec</summary>
 
-  This was already explained [here](#extra-services), but see the command below:
-
   ```
   kubectl exec --stdin --tty deployment/kafka-ksqldb-cli -- ksql http://kafka-ksqldb-server:8088
   ```
@@ -293,45 +299,41 @@ The objective of this exercise is use ksqlDB to split the records in the `INGEST
 
 
 <details>
-  <summary><strong>Hint</strong>:ksqlDB CREATE STREAM on topic</summary>
+<summary><strong>Hint</strong>:ksqlDB CREATE STREAM on topic</summary>
 
-  ```sql
-  CREATE STREAM STREAM_INGESTION (
-    payload STRING,
-    correlation_id STRING,
-    created_at DOUBLE,
-    schema_version INTEGER
+```sql
+CREATE STREAM STREAM_INGESTION (
+  payload STRING,
+  correlation_id STRING,
+  created_at DOUBLE,
+  schema_version INTEGER
 ) WITH (KAFKA_TOPIC = 'INGESTION', VALUE_FORMAT = 'JSON');
-  ```
- 
+```
+
 </details>
 
 **Task**: Create a new stream based on previously created stream `STREAM_INGESTION`. Start by writing a SQL statement which filters the records with the sensor of interest. Then populate the records into a new stream `SENSOR_ID_<sensor_id>`.
 
 <details>
-  <summary><strong>Hint</strong>: ksqlDB CREATE STREAM from SELECT</summary>
+<summary><strong>Hint</strong>: ksqlDB CREATE STREAM from SELECT</summary>
 
-  ```sql
-  CREATE STREAM SENSOR_ID_<sensor_id> AS
-  SELECT
-      *
-  FROM
-      STREAM_INGESTION
-  WHERE
-      EXTRACTJSONFIELD(PAYLOAD, '$.sensor_id') = '<sensor_id>';
-  ```
- 
+```sql
+CREATE STREAM SENSOR_ID_<sensor_id> AS
+SELECT
+    *
+FROM
+    STREAM_INGESTION
+WHERE
+    EXTRACTJSONFIELD(PAYLOAD, '$.sensor_id') = '<sensor_id>';
+```
+
 </details>
-
-
-
 
 **Task**: Validate your newly created streams using ksql commands in its CLI.
 
-
-
 ### Exercise 7 - Kafka Connect and HDFS
-The objective of this exercise is apply and configure a Kafka Connect module to write the records from the `INGESTION` topic into HDFS as mentioned in [exercise 03](#exercise-3---additional-deployments-of-kafka-connect-kafka-schema-registry-and-kafka-ksql).
+
+The objective of this exercise is apply and configure a Kafka Connect module to write the records from the `INGESTION` topic into HDFS as mentioned in [exercise 03](exercises.md#exercise-3---additional-deployments-of-kafka-connect-kafka-schema-registry-and-kafka-ksql).
 
 The module of interest is the [HDFS 2 Sink Connector](https://docs.confluent.io/kafka-connectors/hdfs/current/overview.html) created by a company called Confluent. The module will be accessible through the ready-running `kafka-connect` service. The creation of the underlying image of our `kafka-connect` service can be further explored here: [README.md](../../services/kafka-connect/README.md).
 
@@ -342,36 +344,36 @@ The module of interest is the [HDFS 2 Sink Connector](https://docs.confluent.io/
 **Task**: Setup HDFS 2 Sink Connector in our `kafka-connect` service.
 **Notice**: The Redpanda UI does not include all the necessary properties for the configuration of the HDFS 2 Sink Connector. Therefore you need to investigate how to interact with the [Connect REST Interface](https://docs.confluent.io/platform/current/connect/references/restapi.html). Then you need to post the configuration using `curl` in a terminal with port-forwarding enabled or using an interactive container in Kubernetes.
 
-  <details>
-    <summary><strong>Hint</strong>:Post the configuration using `curl`</summary>
+<details>
+<summary><strong>Hint</strong>:Post the configuration using `curl`</summary>
 
-    This example will be using port-forwarding. Therefore ensure `kubectl port-forward svc/kafka-connect 8083:8083` has been enabled.
+This example will be using port-forwarding. Therefore ensure `kubectl port-forward svc/kafka-connect 8083` has been enabled.
 
-    Look into the configuration in the chunk below and the command in your terminal:
+Look into the configuration in the chunk below and the command in your terminal:
 
-    ```sh
-    curl -X POST \
-    http://127.0.0.1:8083/connectors \
-    -H 'Content-Type: application/json' \
-    -d '{
-        "name": "hdfs-sink",
-        "config": {
-            "connector.class": "io.confluent.connect.hdfs.HdfsSinkConnector",
-            "tasks.max": "3",
-            "topics": "INGESTION",
-            "hdfs.url": "hdfs://namenode:9000",
-            "flush.size": "3",
-            "format.class": "io.confluent.connect.hdfs.json.JsonFormat",
-            "key.converter.schemas.enable":"false",
-            "key.converter": "org.apache.kafka.connect.storage.StringConverter",
-            "key.converter.schema.registry.url": "http://kafka-schema-registry.kafka:8081", 
-            "value.converter.schemas.enable":"false",
-            "value.converter.schema.registry.url": "http://kafka-schema-registry.kafka:8081", 
-            "value.converter": "org.apache.kafka.connect.json.JsonConverter"
-        }
-    }'
-    ```
-  </details>
+```bash
+curl -X POST \
+http://127.0.0.1:8083/connectors \
+-H 'Content-Type: application/json' \
+-d '{
+    "name": "hdfs-sink",
+    "config": {
+        "connector.class": "io.confluent.connect.hdfs.HdfsSinkConnector",
+        "tasks.max": "3",
+        "topics": "INGESTION",
+        "hdfs.url": "hdfs://namenode:9000",
+        "flush.size": "3",
+        "format.class": "io.confluent.connect.hdfs.json.JsonFormat",
+        "key.converter.schemas.enable":"false",
+        "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+        "key.converter.schema.registry.url": "http://kafka-schema-registry.kafka:8081", 
+        "value.converter.schemas.enable":"false",
+        "value.converter.schema.registry.url": "http://kafka-schema-registry.kafka:8081", 
+        "value.converter": "org.apache.kafka.connect.json.JsonConverter"
+    }
+}'
+```
+</details>
 
 
 **Task**: Validate the HDFS 2 Sink Connector is working as expected.
@@ -389,26 +391,26 @@ The module of interest is the [HDFS 2 Sink Connector](https://docs.confluent.io/
 
 
 ### Exercise 8 - Flume
-The objective of this exercise is to ingest data from a command-line program into Kafka using Flume. 
-This will simulate a scenario where an endpoint continuously provides new data that can be ingested using Flume.
 
-**Task**: Deploy the Flume deployment.
+The objective of this exercise is to ingest data from a command-line program into Kafka using Flume. This exercise will simulate a scenario where an endpoint continuously provides new data that can be ingested using Flume.
 
-**Task**: Create an interactive container with the python:3.11 image.
+**Task**: Deploy the Flume manifest [flume.yaml](flume.yaml).
+
+**Task**: Open an interactive container with Python 3.12.
 
 <details>
-  <summary><strong>Hint</strong>: kubectl run</summary>
+<summary><strong>Hint</strong>: kubectl run</summary>
 
-  ```
-  kubectl run python -i --tty --image python:3.11 -- bash
-  ```
+```bash
+kubectl run python -i --tty --image python:3.12 -- bash
+```
 
 </details>
 
-**Task**: Create a command-line program and run it in the terminal in your interactive container.
+**Task**: Create a command-line program which simulates new inputs from the command-line. Run the program in your interactive container.
 
 <details>
-  <summary><strong>Hint</strong>: A text input program.</summary>
+<summary><strong>Hint</strong>: A text input program.</summary>
 
 The below-mentioned file provide one solution for exercise.
 
@@ -416,11 +418,12 @@ The below-mentioned file provide one solution for exercise.
 
   </details>
 
-**Task**: Open [localhost:8080/topics/flume-logs](http://localhost:8080/topics/flume-logs). You should now see the streamed data.
+**Task**: Open [localhost:8080/topics/flume-logs](http://localhost:8080/topics/flume-logs). You should now see the streamed data from the command-line into a kafka topic.
 
 **Optional task**: Set up a new HDFS 2 Sink Connector to ingest the data into HDFS from the `flume-logs` Kafka topic.
 
 ### Exercise 9 - Sqoop
+
 The objective of this exercise is to ingest a database table into HDFS utilizing Sqoop.
 
 #### Useful Sqoop commands
@@ -429,7 +432,8 @@ The objective of this exercise is to ingest a database table into HDFS utilizing
 - `sqoop import --connect "jdbc:<DB_DRIVER>://<DB_URL>/<DB_TABLE>"`
 
 **Task**: Deploy PostgresSQL database using Helm Chart with the following command:
-````bash
+
+```bash
 helm install postgresql \
   --version=12.1.5 \
   --set auth.username=root \
@@ -438,7 +442,7 @@ helm install postgresql \
   --set primary.extendedConfiguration="password_encryption=md5" \
   --repo https://charts.bitnami.com/bitnami \
   postgresql
-````
+```
 
 **Task**: Get interactive shell with PostgresSQL.
 
@@ -457,9 +461,9 @@ helm install postgresql \
   <summary><strong>Hint</strong>: Create a new table with employees</summary>
 
   - Login to the database
-  ````bash
+  ```bash
   PGPASSWORD=pwd1234 psql -U root -d employees
-  ````
+  ```
 
   - Seed the database with employees
   ```
@@ -482,12 +486,12 @@ helm install postgresql \
 <details>
   <summary><strong>Verify</strong>: Check employees were added</summary>
 
-  ````bash
+  ```bash
   SELECT * FROM employees;
-  ````
+  ```
 
   Expected output
-  ````
+  ```
     id |     name      | department  |  salary
   ----+---------------+-------------+----------
     1 | John Doe      | Engineering | 75000.00
@@ -495,13 +499,13 @@ helm install postgresql \
     3 | Alice Johnson | HR          | 60000.00
     4 | Robert Brown  | Finance     | 80000.00
   (4 rows)
-  ````
+  ```
 
 </details>
 
 Now the database have been seeded with employees and now be ingested with Apache Sqoop
 
-**Task**: Deploy the Sqoop deployment.
+**Task**: Deploy the Sqoop manifest [sqoop.yaml](sqoop.yaml).
 
 **Task**: Get interactive shell with Sqoop.
 
@@ -519,12 +523,12 @@ Now the database have been seeded with employees and now be ingested with Apache
 <details>
   <summary><strong>Hint</strong>: List databases with Sqoop</summary>
 
-  ````bash
+  ```bash
   sqoop list-databases \
     --connect "jdbc:postgresql://postgresql:5432/employees" \
     --username root \
     --password pwd1234 
-  ````
+  ```
 </details>
 
 **Task**: Ingest the database into HDFS
@@ -532,7 +536,7 @@ Now the database have been seeded with employees and now be ingested with Apache
 <details>
   <summary><strong>Hint</strong>: Use Sqoop to import database</summary>
 
-  ````bash
+  ```bash
   sqoop import \
   --connect "jdbc:postgresql://postgresql:5432/employees" \
   --username root \
@@ -541,11 +545,11 @@ Now the database have been seeded with employees and now be ingested with Apache
   --target-dir /employees \
   --direct \
   --m 1
-  ````
+  ```
 </details>
 
 The expected output should look like this:
-````
+```bash
 Warning: /usr/local/sqoop/../hbase does not exist! HBase imports will fail.
 Please set $HBASE_HOME to the root of your HBase installation.
 Warning: /usr/local/sqoop/../hcatalog does not exist! HCatalog jobs will fail.
@@ -569,35 +573,35 @@ Note: Recompile with -Xlint:deprecation for details.
 2024-08-23 09:55:48,234 INFO manager.DirectPostgresqlManager: Performing import of table employees from database employees
 2024-08-23 09:55:49,111 INFO manager.DirectPostgresqlManager: Transfer loop complete.
 2024-08-23 09:55:49,112 INFO manager.DirectPostgresqlManager: Transferred 124 bytes in 0.0836 seconds (1.4486 KB/sec)
-````
+```
 
-**Task**: Verify that the PostgresSQL table `employees` were ingested into HDFS
+**Task**: Verify that the PostgresSQL table `employees` were ingested into HDFS.
 
-  - Make sure a directory `/employees` were added to HDFS
+**Validate**: Make sure a directory `/employees` were added to HDFS.
 
-## Step by step guide to clean up:
+## Step by step guide to clean up
 
-To clean up the resources created in this lecture, you can follow the steps below:
+You will be using HDFS, Kafka, and the interactive container in next lecture. However, if you will clean up the resources created in this lecture, you can follow the steps below:
+
 - Todays exercises.
   1. `kubectl delete -f sqoop.yaml`
   1. `helm delete postgresql`
-  1. `kubectl delete pod python`
   1. `kubectl delete -f flume.yaml`
+  1. `kubectl delete pod kafka-client`
   1. `kubectl delete -f redpanda.yaml`
   1. `kubectl delete -f kafka-schema-registry.yaml`
   1. `kubectl delete -f kafka-connect.yaml`
   1. `kubectl delete -f kafka-ksqldb.yaml`
-  1. `kubectl delete pod kafka-client`
   1. `helm delete kafka`
-- `cd` into the `services/hdfs` folder in the repository.
+- run the follow cmd: `kubectl delete pod <name>` name if the interactive pod
+- cd into the `services/hdfs` folder in the repository.
+  1. `kubectl delete -f hdfs-cli.yaml` (if used)
   1. `kubectl delete -f datanodes.yaml`
   1. `kubectl delete -f namenode.yaml`
   1. `kubectl delete -f configmap.yaml`
-  1. `kubectl delete -f pvc.yaml`
-- `cd` into the `services/interactive` folder in the repository.
+- cd into the `services/interactive` folder in the repository.
   1. `kubectl delete -f interactive.yaml`
 
-
 You can get a list of the pods and services to verify that they are deleted.
-- `kubectl get pods`
-- `kubectl get services`
+
+- `kubectl get all`
