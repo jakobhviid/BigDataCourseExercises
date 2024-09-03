@@ -36,7 +36,7 @@ The format of the exercise lectures is as follows:
 - Two modules of 45 minutes each per week.
 - The first half of the first module will be used to recap and solution sharing from the previous exercises. The reminder of the first module and the second module will be used to work the exercises for the current week.
 - The exercises will be hands-on exercises where you will be working with Kubernetes and the themes of this weeks lecture.
-- The exercises will be provided in `exercises.md` file in the respective lecture folder.
+- The exercises will be provided in `README.md` file in the respective lecture folder.
 
 Please open issues [here](https://github.com/jakobhviid/BigDataCourseExercises/issues) if you encounter unclear information or experience bugs in our examples!
 
@@ -218,7 +218,7 @@ Because the service is inside the same namespace as your ubuntu container you ca
 
 Sometimes you don't want to delete the container when you exit the shell. Use the following command to create an ubuntu container that won't be deleted when you exit the shell: `kubectl run ubuntu -i --tty --image ubuntu -- bash`. To reattach the same shell again use one of the following command: `kubectl attach ubuntu -c ubuntu -i -t`. You can even open two terminals and use the attach command and the shell will be shared. Try to do this and write something in one shell and see how it is also written in the other.
 
-You can also copy files to containers. Use the file on your localhost called `exercises.md`. Open a new terminal inside same directory, and use the following command to copy the `exercises.md` file to the ubuntu container: `kubectl cp exercises.md ubuntu:/exercises.md`. Open the other terminal again and use the `ls` and `cat` commands to verify the file was copied to the container.
+You can also copy files to containers. Use the file on your localhost called `README.md`. Open a new terminal inside same directory, and use the following command to copy the `README.md` file to the ubuntu container: `kubectl cp README.md ubuntu:/README.md`. Open the other terminal again and use the `ls` and `cat` commands to verify the file was copied to the container.
 
 ### Exercise 7 - Cleaning up
 

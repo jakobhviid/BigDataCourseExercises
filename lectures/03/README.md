@@ -162,7 +162,7 @@ The list below summarises the extra services and briefly demonstrate how to inte
 
 ### Exercise 4 - Produce messages to Kafka using Python
 
-The objective of this exercise is to create a program which publishes records to a Kafka topic. The exercise builds on top of [exercise 8 from lecture 2](../02/exercises.md#exercise-8---create-six-fictive-data-sources), but instead of saving the data to HDFS we will publish it to a Kafka topic and use a Kafka Connector to save the records to HDFS. 
+The objective of this exercise is to create a program which publishes records to a Kafka topic. The exercise builds on top of [exercise 8 from lecture 2](../02/README.md#exercise-8---create-six-fictive-data-sources), but instead of saving the data to HDFS we will publish it to a Kafka topic and use a Kafka Connector to save the records to HDFS. 
 This exercise focuses on creating the topic and creating the producer. If you have not solved the exercise from last week then you can use the files provided [here](./hints/simple-producer.py).
 
 **Tasks**: Think about what properties you want for the `INGESTION` topic:
@@ -175,17 +175,17 @@ This exercise focuses on creating the topic and creating the producer. If you ha
 
 **Task**: Create the `INGESTION` topic with your chosen properties.
 
-**Hint**: Use Redpanda (ref. [exercise 02](exercises.md#exercise-02---using-redpanda-to-interact-with-kafka)).
+**Hint**: Use Redpanda (ref. [exercise 02](README.md#exercise-02---using-redpanda-to-interact-with-kafka)).
 
 **Task**: Question: Which property will be possible if you add a key, which defines the sensor id, to each records?
 
-**Task**: Update your program from [lecture 2 exercise 8](../02/exercises.md#exercise-8---create-six-fictive-data-sources) to produce sensor samples directly to Kafka.
+**Task**: Update your program from [lecture 2 exercise 8](../02/README.md#exercise-8---create-six-fictive-data-sources) to produce sensor samples directly to Kafka.
 
 **Hint**: If you did not create a program then use the scripts [./hints/*.py](./hints/).
 
 **Task**: Now that you have created the producer program it is time to run it.
 
-**Notice**: We recommend to use an interactive container and attach to it using [vscode](../02/exercises.md#attach-visual-studio-code-to-an-interactive-container-in-kubernetes) as we did last time in lecture 2.
+**Notice**: We recommend to use an interactive container and attach to it using [vscode](../02/README.md#attach-visual-studio-code-to-an-interactive-container-in-kubernetes) as we did last time in lecture 2.
 
 **Verification**: To verify that the program is producing messages to the `INGESTION` topic. Open Redpanda console: [localhost:8080/topics/INGESTION](http://127.0.0.1:8080/topics/INGESTION?p=-1&s=50&o=-1#messages).
 
@@ -333,7 +333,7 @@ WHERE
 
 ### Exercise 7 - Kafka Connect and HDFS
 
-The objective of this exercise is apply and configure a Kafka Connect module to write the records from the `INGESTION` topic into HDFS as mentioned in [exercise 03](exercises.md#exercise-3---additional-deployments-of-kafka-connect-kafka-schema-registry-and-kafka-ksql).
+The objective of this exercise is apply and configure a Kafka Connect module to write the records from the `INGESTION` topic into HDFS as mentioned in [exercise 03](README.md#exercise-3---additional-deployments-of-kafka-connect-kafka-schema-registry-and-kafka-ksql).
 
 The module of interest is the [HDFS 2 Sink Connector](https://docs.confluent.io/kafka-connectors/hdfs/current/overview.html) created by a company called Confluent. The module will be accessible through the ready-running `kafka-connect` service. The creation of the underlying image of our `kafka-connect` service can be further explored here: [README.md](../../services/kafka-connect/README.md).
 

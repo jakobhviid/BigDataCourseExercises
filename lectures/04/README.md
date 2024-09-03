@@ -49,7 +49,7 @@ The first exercise is to run a Spark job that estimates pi. The program is writt
 
 ### Exercise 3 - Analyzing files using Spark jobs
 
-The previous program you ran was estimating pi. This program only used compute resources and in this exercise you will run a Spark job that will read a file and count the occurrences of different words in the file. You will be analyzing the alice in wonderland text from [lecture 2 exercise 3](../02/exercises.md#exercise-3---uploading-alice-in-wonderland-to-hdfs).
+The previous program you ran was estimating pi. This program only used compute resources and in this exercise you will run a Spark job that will read a file and count the occurrences of different words in the file. You will be analyzing the alice in wonderland text from [lecture 2 exercise 3](../02/README.md#exercise-3---uploading-alice-in-wonderland-to-hdfs).
 
 **Task**: Ensure the [alice in wonderland](https://www.gutenberg.org/files/11/11-0.txt) file is within your HDFS cluster. If not upload the file to HDFS.
 
@@ -61,7 +61,7 @@ The previous program you ran was estimating pi. This program only used compute r
 
 ### Exercise 4 - Average sample values from JSON files stored in HDFS
 
-Let us assume that you have a dataset of sample records stored in HDFS. The dataset is stored in JSON format and contains defined by the [exercise 9 from lecture 02](../02/exercises.md#exercise-9---create-six-fictive-data-sources).
+Let us assume that you have a dataset of sample records stored in HDFS. The dataset is stored in JSON format and contains defined by the [exercise 9 from lecture 02](../02/README.md#exercise-9---create-six-fictive-data-sources).
 
 In this exercise you will run a Spark job that will read all the JSON files and computes the average value of the `payload.modality` field for each station.
 
@@ -72,7 +72,7 @@ In this exercise you will run a Spark job that will read all the JSON files and 
 
 ### Exercise 5 - Running Spark Streaming Jobs - Kafka
 
-The objective of this exercise is to create a Spark streaming job that reads from a Kafka topic. This exercise requires to have a Kafka producer which produces records in the a given topic. For convenience, we recommend revisiting the [exercise 4 from lecture 03](./../03/exercises.md#exercise-4---produce-messages-to-kafka-using-python).
+The objective of this exercise is to create a Spark streaming job that reads from a Kafka topic. This exercise requires to have a Kafka producer which produces records in the a given topic. For convenience, we recommend revisiting the [exercise 4 from lecture 03](./../03/README.md#exercise-4---produce-messages-to-kafka-using-python).
 
 **Task**: Create a streaming query that calculates the running mean of the six different stations (`payload.sensor_id`) produced to the Kafka topic `INGESTION`.
 
@@ -87,7 +87,7 @@ pyspark --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.2
 spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.2 process-streaming.py
 ```
 
-**Task**: Run your Spark streaming application and validate that the running means of `payload.modality` field is close to the calculated values in [exercise 4](exercises.md#exercise-4---average-sample-values-from-json-files-stored-in-hdfs).
+**Task**: Run your Spark streaming application and validate that the running means of `payload.modality` field is close to the calculated values in [exercise 4](README.md#exercise-4---average-sample-values-from-json-files-stored-in-hdfs).
 
 **Important note**: There is no correct solution for this exercise. You may find inspiration in the following links to complete the streaming query:
 

@@ -31,7 +31,7 @@ datanode-2                     1/1     Running   0          11s
 
 Now that we have a HDFS cluster lets now try and use it. HDFS has a CLI tool for interacting with HDFS clusters. Because the cluster is running inside of Kubernetes, we also need to access it from inside Kubernetes.
 
-You need to create an interactive container using either the `apache/hadoop:3` image or the image described in the [README](../../services/interactive/README.md) similar to how you created an interactive container with Ubuntu [last week](../01/exercises.md#exercise-6---interactive-container). The latter image contains the majority of the logic nedded for the future exercises.
+You need to create an interactive container using either the `apache/hadoop:3` image or the image described in the [README](../../services/interactive/README.md) similar to how you created an interactive container with Ubuntu [last week](../01/README.md#exercise-6---interactive-container). The latter image contains the majority of the logic nedded for the future exercises.
 
 **Task**: Create interactive container with the either `apache/hadoop:3` image or [interactive.yaml](../../services/interactive/interactive.yaml).
 
