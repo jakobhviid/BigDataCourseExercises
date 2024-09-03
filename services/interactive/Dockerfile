@@ -17,17 +17,9 @@ RUN apt-get update && apt install software-properties-common -yq tzdata \
     && apt install -y python3.12 \
     && apt install -y curl \
     && curl -sS https://bootstrap.pypa.io/get-pip.py | python3.12 \
-    && update-alternatives --install /usr/bin/python python /usr/bin/python3.12 1
-
-ENV PYSPARK_PYTHON=python
-ENV PYSPARK_DRIVER_PYTHON=python
-USER root
-WORKDIR /home/root/code
-COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt
-
-# Install HDFS CLI
-RUN curl -O https://archive.apache.org/dist/hadoop/common/hadoop-3.2.1/hadoop-3.2.1.tar.gz \
+    && update-alternatives --install /usr/bin/python python /usr/bin/python3.12 1 \
+    # Install HDFS CLI
+    && curl -O https://archive.apache.org/dist/hadoop/common/hadoop-3.2.1/hadoop-3.2.1.tar.gz \
     && tar xzf hadoop-3.2.1.tar.gz \
     && rm hadoop-3.2.1.tar.gz \
     && mv hadoop-3.2.1 /usr/local/hadoop
@@ -41,3 +33,10 @@ ENV HADOOP_HDFS_HOME=$HADOOP_HOME
 ENV YARN_HOME=$HADOOP_HOME
 ENV HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
 ENV HADOOP_OPTS=-Djava.library.path=$HADOOP_HOME/lib
+
+ENV PYSPARK_PYTHON=python
+ENV PYSPARK_DRIVER_PYTHON=python
+USER root
+WORKDIR /home/root/code
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
