@@ -1,4 +1,4 @@
-from src.utils import FS, SPARK_ENV, get_spark_context
+from src.utils import SPARK_ENV, get_spark_context
 
 if __name__ == "__main__":
     # Create a Spark session and context
@@ -11,7 +11,6 @@ if __name__ == "__main__":
         "subscribe": "INGESTION",  # Our topic name
     }
 
-    # Subscribe to Kafka topic "hello"
     df = spark.readStream.format("kafka").options(**kafka_options).load()
     deserialized_df = df.selectExpr("CAST(key AS STRING)", "CAST(value AS STRING)")
 

@@ -8,7 +8,7 @@ import re
 import subprocess
 from enum import Enum
 
-from pyspark import SparkConf, SparkContext
+from pyspark import SparkConf
 from pyspark.sql import SparkSession
 
 locale.getdefaultlocale()
@@ -39,7 +39,6 @@ class SPARK_ENV(Enum):
 
 
 def get_spark_context(app_name: str, config: SPARK_ENV) -> SparkSession:
-    # def get_spark_context(master: str, app_name: str, config: list[tuple]) -> SparkContext:
     """Get a Spark context with the given configuration."""
     spark_conf = SparkConf().setAll(config.value).setAppName(app_name)
     return SparkSession.builder.config(conf=spark_conf).getOrCreate()
