@@ -2,5 +2,5 @@ hdfs
 fastavro
 pyarrow
 pandas
-kafka-python
+kafka-python-ng
 pyspark==3.5.2
