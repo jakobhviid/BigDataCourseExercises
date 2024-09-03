@@ -31,14 +31,14 @@ The first exercise is to run a Spark job that estimates pi. The program is writt
 
 **Task**: Inspect the [pi-estimation.py](./pi-estimation.py) file.
 
-**Task**: Try to visualize the [DAG](https://en.wikipedia.org/wiki/Directed_acyclic_graph) this program will create. 
+**Task**: Try to visualize the [DAG](https://en.wikipedia.org/wiki/Directed_acyclic_graph) this program will create.
 
 **Help**:
 
 - Take a look [here](https://stackoverflow.com/a/30685279/9698208) to better understand how the DAG is created for the Spark program.
 - You are able to get other examples of Spark programs [here](https://spark.apache.org/examples.html).
 
-**Task**: Run the [pi-estimation.py](./pi-estimation.py) file locally.
+**Task**: Run the [pi-estimation.py](./pi-estimation.py) file locally using Python 3.12.
 
 - How will the number of partitions argument affect the result?
 
