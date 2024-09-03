@@ -3,6 +3,7 @@
 ## Introduction to the instructors
 
 ![Kasper Svane](https://media.licdn.com/dms/image/v2/C5603AQEpw3hdYCmKfA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1516890090769?e=1728518400&v=beta&t=KYbU3Gv4E7gx0q76cAug3-lbIPxTxQwNsogFwxAKNL0)
+
 - 9th semester Software Engineering student
 - Industry for 3 years
   - Software Engineer ~ KeyShot
@@ -14,58 +15,56 @@
 ### Anders Launer Bæk-Petersen
 
 ![Anders Launer Bæk-Petersen](https://avatars.githubusercontent.com/u/28479232?v=4)
+
 - PhD Fellow ~ SDU Software Engineering
-    - Architect a machine learning system from a software perspective
+    - Understanding the Reliability of Machine Learning
+Systems from a Software Engineering Perspective
 - PhD Fellow ~ SDU Center for Energy Informatics
     - Transferable AI Model Development Framework for Smart Energy Systems
 - Industry for 4,5 years
     - Machine Learning Engineer ~ Energinet
     - Data Scientist ~ Esoft R&D
     - Research Assistant ~ Technical University of Denmark
-- Master of Science in Mathematical Modelling and Computation ~ Technical University of Denmark 
-- Bachelor of Science in Robot Systems ~ University of Southern Denmark 
+- Master of Science in Mathematical Modelling and Computation ~ Technical University of Denmark
+- Bachelor of Science in Robot Systems ~ University of Southern Denmark
 - LinkedIn ~ [linkedin.com/in/anderslaunerbaek](https://www.linkedin.com/in/anderslaunerbaek/)
 
-
 ## Exercise lectures
+
 The format of the exercise lectures is as follows:
+
 - Two modules of 45 minutes each per week.
-- The first half of the first module will be used to recap and solution sharing from the previous exercises. The reminder of the first module and the second module will be used to work the exercises for the current week. 
+- The first half of the first module will be used to recap and solution sharing from the previous exercises. The reminder of the first module and the second module will be used to work the exercises for the current week.
 - The exercises will be hands-on exercises where you will be working with Kubernetes and the themes of this weeks lecture.
 - The exercises will be provided in `exercises.md` file in the respective lecture folder.
 
 Please open issues [here](https://github.com/jakobhviid/BigDataCourseExercises/issues) if you encounter unclear information or experience bugs in our examples!
 
-
 ## Subject and objective for these exercises
 
-The exercises for the first lecture are to introduce and refresh the necessary components and terminology of Kubernetes. The below-mentioned material has been sourced from [https://kubernetes.io/docs/tutorials/kubernetes-basics](https://kubernetes.io/docs/tutorials/kubernetes-basics/) and familiarizing with this content will be sufficient for progressing along the exercises. 
+The exercises for the first lecture are to introduce and refresh the necessary components and terminology of Kubernetes. The below-mentioned material has been sourced from [https://kubernetes.io/docs/tutorials/kubernetes-basics](https://kubernetes.io/docs/tutorials/kubernetes-basics/) and familiarizing with this content will be sufficient for progressing along the exercises.
 
 The objective of this lecture is to provide the foundation for future exercise sessions and for the semester project.
-
 
 ## Brief introduction to Kubernetes
 
 Kubernetes was one of the answers to moving from pure virtualization towards infrastructure as a service and being the convenient abstraction for decoupling applications and the underlying hardware.
 
-We recommend watching the documentary [Kubernetes: The Documentary [PART 1]](https://youtu.be/BE77h7dmoQU?si=qohxiWDd52EpPoHP) and [Kubernetes: The Documentary [PART 2]](https://youtu.be/318elIq37PE?si=_Pjgstj7w_9OlsUf) to get context and history of the preliminary enablers for Kubernetes. 
+We recommend watching the documentary [Kubernetes: The Documentary [PART 1]](https://youtu.be/BE77h7dmoQU?si=qohxiWDd52EpPoHP) and [Kubernetes: The Documentary [PART 2]](https://youtu.be/318elIq37PE?si=_Pjgstj7w_9OlsUf) to get context and history of the preliminary enablers for Kubernetes.
 
 ### [Kubernetes Basics](https://kubernetes.io/docs/tutorials/kubernetes-basics/)
 
-Kubernetes is a cluster orchestration system that enables the deployment of containerised applications on virtualised hardware or bare metal hardware. 
+Kubernetes is a cluster orchestration system that enables the deployment of containerised applications on virtualised hardware or bare metal hardware.
 
 > Kubernetes is a production-grade, open-source platform that orchestrates the placement (scheduling) and execution of application containers within and across computer clusters.
 *[kubernetes.io - Cluster Diagram. (Accessed: 04 September 2023)](https://kubernetes.io/docs/tutorials/kubernetes-basics/create-cluster/cluster-intro/)*
 
 The diagram below illustrates the core components of a Kubernetes cluster. The Kubernetes cluster consists of one or multiple nodes that execute the application processes and control plane resource that coordinates the application activities across the nodes.
 
-
 ![Kubernetes Cluster](https://d33wubrfki0l68.cloudfront.net/283cc20bb49089cb2ca54d51b4ac27720c1a7902/34424/docs/tutorials/kubernetes-basics/public/images/module_01_cluster.svg)
 *Image from [kubernetes.io - Cluster Diagram. (Accessed: 04 September 2023)](https://d33wubrfki0l68.cloudfront.net/283cc20bb49089cb2ca54d51b4ac27720c1a7902/34424/docs/tutorials/kubernetes-basics/public/images/module_01_cluster.svg)*
 
-
 ### [Using kubectl to Create a Deployment](https://kubernetes.io/docs/tutorials/kubernetes-basics/deploy-app/deploy-intro/)
-
 
 A Kubernetes deployment is the recipe for running your application. The control plane will constantly monitor the state of the application and provide self-healing actions if the current application instance is unresponsive.
 
@@ -75,6 +74,7 @@ A Kubernetes deployment is the recipe for running your application. The control 
 `kubectl` is the CLI for Kubernetes and the CLI can be used to create a deployment of containerized applications or manage already deployed applications, fetch logs from the application, and much more.
 
 ### [Viewing Pods and Nodes](https://kubernetes.io/docs/tutorials/kubernetes-basics/explore/explore-intro/)
+
 #### Pods
 
 A Kubernetes Pod is an abstraction generated by a Kubernetes deployment. The Pod behaves as a logical host and is hosting one or multiple containerized applications as illustrated in the figure below.
@@ -83,20 +83,20 @@ A Kubernetes Pod is an abstraction generated by a Kubernetes deployment. The Pod
 *Image from [kubernetes.io - Pods overview. (Accessed: 04 September 2023)](https://d33wubrfki0l68.cloudfront.net/fe03f68d8ede9815184852ca2a4fd30325e5d15a/98064/docs/tutorials/kubernetes-basics/public/images/module_03_pods.svg)*
 
 #### Nodes
+
 A Kubernetes node can be described as a worker within the Kubernetes cluster. The node is managed by the control plane and can host several different Pods as illustrated in the figure below.
 ![Node overview](https://d33wubrfki0l68.cloudfront.net/5cb72d407cbe2755e581b6de757e0d81760d5b86/a9df9/docs/tutorials/kubernetes-basics/public/images/module_03_nodes.svg)
 *Image from [kubernetes.io - Node overview. (Accessed: 04 September 2023)](https://d33wubrfki0l68.cloudfront.net/5cb72d407cbe2755e581b6de757e0d81760d5b86/a9df9/docs/tutorials/kubernetes-basics/public/images/module_03_nodes.svg)*
 
-
 ### [Using a Service to Expose Your App](https://kubernetes.io/docs/tutorials/kubernetes-basics/expose/expose-intro/)
-
 
 Each Kubernetes Pod has a different IP address as seen in the figure above. These IP addresses are local to the cluster and not accessible from outside the cluster. For some applications, we need to have an abstraction, which maps external traffic to the deployment (Pod) of interest. The Pods have a lifecycle and their IP address change due to rescheduling to another node.
 
 ![Services and Labels](https://d33wubrfki0l68.cloudfront.net/7a13fe12acc9ea0728460c482c67e0eb31ff5303/2c8a7/docs/tutorials/kubernetes-basics/public/images/module_04_labels.svg)
 *Image from [kubernetes.io - Services and Labels. (Accessed: 04 September 2023)](https://d33wubrfki0l68.cloudfront.net/7a13fe12acc9ea0728460c482c67e0eb31ff5303/2c8a7/docs/tutorials/kubernetes-basics/public/images/module_04_labels.svg)*
 
-A Kubernetes Service is the abstraction we need to provide a loosely coupling Pods and external traffic. There are multiple types of Services: 
+A Kubernetes Service is the abstraction we need to provide a loosely coupling Pods and external traffic. There are multiple types of Services:
+
 - ClusterIP
 - NodePort
 - LoadBalancer
@@ -113,20 +113,16 @@ Get full definitions here: [Overview of Kubernetes Services](https://kubernetes.
 
 #### The kubectl CLI
 
-The CLI tool used to communicate with a Kubernetes cluster from your localhost is called "kubectl". It it used though the terminal like `kubectl <command> <flags>`. 
-You read more about the CLI and how to install it here: [install kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl). 
-
+The CLI tool used to communicate with a Kubernetes cluster from your localhost is called "kubectl". It it used though the terminal like `kubectl <command> <flags>`.
+You read more about the CLI and how to install it here: [install kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl).
 
 #### The kubeconfig file
-You will recive a kubeconfig file before starting on lecture 1. Your personal config file will be shared by email and is needed to access the Kubernetes cluster. The kubeconfig file contains the necessary information to connect to the cluster and authenticate with it. The file is used by the `kubectl` CLI to connect to the cluster.
 
+You will recive a kubeconfig file before starting on lecture 1. Your personal config file will be shared by email and is needed to access the Kubernetes cluster. The kubeconfig file contains the necessary information to connect to the cluster and authenticate with it. The file is used by the `kubectl` CLI to connect to the cluster.
 
 #### Wrap up
 
 > All the following exercises assume you have access to the Kubernetes cluster and the `kubectl` CLI installed on your local host.
-
-
-
 
 ### Exercise 2 - Deploy "Hello World" application
 
@@ -159,15 +155,15 @@ Now that you understand the yaml file, run the command `kubectl apply -f hello-k
 
 Now that you have deployed the application the next step is to try and connect to it. The application is a HTTP server that listens for requests on port 8080. To connect to the application, we should do it through the service.
 
-
 Connecting to a service can be done in different ways. The simplest way to connect to a service inside the cluster and to your localhost is by running the `kubectl port-forward` command.
 
-#### Use `kubectl port-forward`
+#### Use port forwarding
+
 To use the `kubectl port-forward` command, run the following command `kubectl port-forward svc/<name of service> <localhost port>:<service port>`. The command will open a port on your localhost and forward traffic to a port on the service. In this case, use port `8080` for both your localhost and service (`kubectl port-forward svc/hello-kubernetes 8080`).
 Please feel free to change it to something different. Example to `9000:8080` to use port 9000 on your localhost and forward the traffic to port 8080 on the service. Open a browser and navigate to [http://localhost:8080](http://localhost:8080) to access your deployed application.
 
-
 #### Interact with the application
+
 Now that you can connect to the application, try and understand the web page. The webpage gives different information about the pod that was handling your request. It displays the pod name, the namespace the pod is inside, and the node that the pod is running on.
 
 Try to refresh the webpage a few times and notice how the values change. You should see that the name of the pod changes. This is because the request was routed to a different pod.
@@ -187,12 +183,11 @@ To manually scale a deployment, you would modify the `replicas` field of the dep
 
 When scaling the amount of replicas, the service will automatically start/stop routing traffic to the new/old pods without disrupting existing connections.
 
-
 ### Exercise 5 - Deploy application using Helm
 
 [Helm](https://helm.sh/) is a package manager for Kubernetes. Helm simplifies the process of deploying and managing applications on Kubernetes by providing a standardized way to package, distribute and manage Kubernetes resources. Helm packares are called "charts". A chart is a collection of files that describes a set of Kubernetes resources along with configurations. Charts can be customized to suit specific deployment requirements.
 
-To install Helm go to their [install](https://helm.sh/docs/intro/install/) guide. 
+To install Helm go to their [install](https://helm.sh/docs/intro/install/) guide.
 
 The hello-kubernetes application that you deployed earlier has a Helm chart. Go to the repository [paulbouwer/hello-kubernetes](https://github.com/paulbouwer/hello-kubernetes) on GitHub and download / clone.
 
@@ -200,7 +195,7 @@ To install the chart using the default `values`, simply open a terminal inside t
 
 You should see that it created 2 pods and 1 service. This is similar to the deployment you made before, except this is installed using Helm. But now that it is installed you should try to connect to it like before, just remember that the service is now called something different. Hint: `kubectl get services`.
 
-A Helm chart can be configured using `values`. The default `values` can be found inside the Helm chart. Open the file located at `./deploy/helm/hello-kubernetes/values.yaml` in the repository and see the different values. We want to try to increase the amount of replicas using the `deployment.replicaCount` value. Because we want to modify an existing release, we need to use the `helm upgrade` command. Use `helm upgrade hello-kubernetes ./deploy/helm/hello-kubernetes --set deployment.replicaCount=5` to set the replica count to 5. Now get a list of the pods and notice how the amount of pods changed.
+A Helm chart can be configured using `values`. The default `values` can be found inside the Helm chart. Open the file located at `./deploy/helm/hello-kubernetes/values.yaml` in the repository and see the different values. We want to try to increase the amount of replicas using the `deployment.replicaCount` value. Because we want to modify an existing release, we need to use the `helm upgrade` command. Use `helm upgrade hello-kubernetes-helm ./deploy/helm/hello-kubernetes --set deployment.replicaCount=5` to set the replica count to 5. Now get a list of the pods and notice how the amount of pods changed.
 
 You can get a list of all Helm releases in the default namespace using the following command `helm list`.
 
@@ -227,14 +222,16 @@ You can also copy files to containers. Use the file on your localhost called `ex
 
 ### Exercise 7 - Cleaning up
 
-Kubernetes resources can be deleted using the `kubectl delete` command. You can either delete individual resources, such as a the hello-kubernetes deployment using the following command `kubectl delete deployment/hello-kubernetes`, or you can delete it using the file you used to create the resources with using the command `kubectl delete -f hello-kubernetes.yaml`. 
+Kubernetes resources can be deleted using the `kubectl delete` command. You can either delete individual resources, such as a the hello-kubernetes deployment using the following command `kubectl delete deployment/hello-kubernetes`, or you can delete it using the file you used to create the resources with using the command `kubectl delete -f hello-kubernetes.yaml`.
 > If you used Helm to create the resources then you should also delete it using Helm.
 
-## Step by step guide to clean up:
+## Step by step guide to clean up
+
 - To begin with, we will delete the first hello-kubernetes deployment that you made using the yaml manifest file: `kubectl delete -f hello-kubernetes.yaml`
 - Next we will uninstall the hello-kubernetes release of the hello-kubernetes Helm chart: `helm uninstall hello-kubernetes-helm`
 - Delete the ubuntu container: `kubectl delete pods/ubuntu`
 
 You can get a list of the pods and services to verify that they are deleted.
+
 - `kubectl get pods`
 - `kubectl get services`
