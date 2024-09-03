@@ -94,3 +94,14 @@ spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.2 process
 - [Structured Streaming Programming Guide](https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html#structured-streaming-programming-guide)
 - [Operations on streaming DataFrames/Datasets](https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html#operations-on-streaming-dataframesdatasets)
 - [Structured Streaming + Kafka Integration Guide](https://spark.apache.org/docs/latest/structured-streaming-kafka-integration.html#structured-streaming-kafka-integration-guide-kafka-broker-versio)
+
+## Step by step guide to clean up
+
+You will be using HDFS, Kafka, Spark and the interactive container in next lecture. However, if you will clean up the resources created in this lecture, you can follow the steps below:
+
+- Todays exercises.
+  1. `helm delete spark`
+  
+You can get a list of the pods and services to verify that they are deleted.
+
+- `kubectl get all`

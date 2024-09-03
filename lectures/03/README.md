@@ -594,11 +594,6 @@ You will be using HDFS, Kafka, and the interactive container in next lecture. Ho
   1. `kubectl delete -f kafka-ksqldb.yaml`
   1. `helm delete kafka`
 - run the follow cmd: `kubectl delete pod <name>` name if the interactive pod
-- cd into the `services/hdfs` folder in the repository.
-  1. `kubectl delete -f hdfs-cli.yaml` (if used)
-  1. `kubectl delete -f datanodes.yaml`
-  1. `kubectl delete -f namenode.yaml`
-  1. `kubectl delete -f configmap.yaml`
 - cd into the `services/interactive` folder in the repository.
   1. `kubectl delete -f interactive.yaml`
 
