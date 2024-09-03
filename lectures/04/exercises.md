@@ -16,7 +16,7 @@ Before you get to play around with Apache Spark you need to deploy your Spark en
 **Task**: Install the Spark Helm chart using the following command:
 
 ```bash
-helm install --values spark-values.yaml spark oci://registry-1.docker.io/bitnamicharts/spark
+helm install --values spark-values.yaml spark oci://registry-1.docker.io/bitnamicharts/spark --version 9.2.9
 ```
 
 **Task**: Inspect the UI of the Spark deployment and validate that there are two worker nodes alive.
