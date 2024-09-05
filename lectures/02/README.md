@@ -128,7 +128,7 @@ Here you can gain information about the HDFS cluster.
 
 Additionally, you can also perform CRUD operations on HDFS by going to this URL [Browse Directory](http://localhost:9870/explorer.html#/)
 
-From here you can create new folder, upload files or see the existing content of each of the folders in HDFS
+From here you can create new folders, upload files or see the existing content of each of the folders in HDFS
 
 ### Exercise 6 - Interacting with HDFS cluster using Python
 
