@@ -1,4 +1,4 @@
-from client import get_hdfs_client
+from src.client import get_hdfs_client
 
 
 def main():

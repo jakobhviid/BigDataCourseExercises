@@ -1,7 +1,7 @@
 from collections import Counter
-import pandas as pd
 
-from client import get_hdfs_client
+import pandas as pd
+from src.client import get_hdfs_client
 
 
 def main():

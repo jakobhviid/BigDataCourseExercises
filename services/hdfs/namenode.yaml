@@ -3,6 +3,8 @@ kind: StatefulSet
 metadata:
   name: namenode
 spec:
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: Delete
   serviceName: "namenode"
   replicas: 1
   selector:
