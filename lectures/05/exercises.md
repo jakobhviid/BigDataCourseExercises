@@ -6,9 +6,9 @@ Before you start working on the exercises you are strongly encouraged to clean u
 
 Please open issues [here](https://github.com/jakobhviid/BigDataCourseExercises/issues) if you encounter unclear information or experience bugs in our examples!
 
-### Exercise 1 - Hive Metastore & HiveServer2
+### Exercise 1 - Hive
 
-You will be setting up [Hive Metastore](https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=27362072#Design-Metastore) and [HiveServer2](https://cwiki.apache.org/confluence/display/Hive/HiveServer2+Overview) to read files from HDFS. An [Apache Hive metastore](https://cwiki.apache.org/confluence/display/hive/design#Design-Metastore) service is required in order to use the Hive connector. Hive metastore requires an SQL database to store data, so for this you will also set up a [PostgreSQL database](https://www.postgresql.org/).
+You will be setting up [Hive](https://hive.apache.org/) to read files from HDFS. An [Apache Hive metastore](https://cwiki.apache.org/confluence/display/hive/design#Design-Metastore) service is required in order to use the Hive connector. Hive metastore requires an SQL database to store data, so for this you will also set up a [PostgreSQL database](https://www.postgresql.org/).
 
 ### HDFS
 
@@ -51,45 +51,39 @@ Create a folder inside the HDFS (You can call it whatever you want).
 
 **Task:** Upload Alice in Wonderland file to HDFS
 
+Everything is now prepared for us to use HiveServer2.
 
+#### Connect to Hive
 
+A service has been created for HiveServer2. Forward port 10002 of the HiveServer2 service.
 
-Now upload the Alice in Wonderland file to a folder inside the bucket.
+**Task:** Port-forward Web UI HiveServer2
 
-**Task:** Upload the Alice in Wonderland text to the bucket
+Open the forwarded service in your browser `http://localhost:10002/`.
 
-**Note:** The file should be uploaded inside a folder, you can name the folder whatever you want you just need to remember it for later.
+**Task:** Open the HiveServer2 Web UI webpage
 
-Everything is now prepared for us to use Trino.
+You should see at least one active session and zero open queries.
 
-#### Connect to Trino
+To connect to HiveServer2's thrift API we have to port-forward the service as well. Forward port 10000 of the HiveServer2 service.
 
-A service has been created for the Trino cluster. Forward port 8443 of the Trino coordinator service.
+**Task:** Port-forward thrift HiveServer2 service
 
-**Task:** Forward Trino coordinator service
-
-Open the forwarded service in your browser `https://localhost:8080`. Sign in to Trino using any username and no password.
-
-**Task:** Open the Trino Web UI webpage and sign in
-
-You should see that there is one active worker and no queries.
-
-To connect to Trino we will use [DBeaver](https://dbeaver.io/). DBeaver is a cross-platform database tool that supports many different SQL databases.
+To connect to HiveServer2 we will use [DBeaver](https://dbeaver.io/). DBeaver is a cross-platform database tool that supports many different SQL databases.
 
 **Task:** Download and install DBeaver
 
-Now that DBeaver is installed we will now create a new database connection with the Trino cluster.
+Now that DBeaver is installed we will now create a new database connection with HiveServer2.
 
 **Tasks:** Open DBeaver and create a new connection database connection using the following steps
 
 1. Click on the "Database" tab and select "New Database Connection" from the dropdown
-2. Search for Trino and select it, then click "Next" (and install drivers if prompted to)
-3. Select "Connect by: URL" and enter the following url: `jdbc:trino://localhost:8080`
-4. In the authentication box enter any username and no password
-5. Click on the "Test connection" button to make sure it works properly
-6. If it works, then click on the "Finish" button
+2. Search for Hive and select it, then click "Next" (and install drivers if prompted to)
+3. Select "Connect by: URL" and enter the following url: `jdbc:hive2://localhost:10000`
+4. Click on the "Test connection" button to make sure it works properly 
+5. If it works, then click on the "Finish" button
 
-Now that a connection has been made to the Trino cluster we can then begin to write SQL statements. To write SQL statements then right-click on the connection you just made, then hover over the "SQL Editor", and then click on "Open SQL script".
+Now that a connection has been made to the HiveServer2 we can then begin to write SQL statements. To write SQL statements then right-click on the connection you just made, then hover over the "SQL Editor", and then click on "Open SQL script".
 
 **Task:** Create SQL editor
 
@@ -97,38 +91,40 @@ We can now begin to write SQL statements. First, we will make sure that the Hive
 
 **Task:** Show all catalogs
 
-**Hint:** Enter the text `SHOW CATALOGS;`, then select it using your mouse and then press the keys `CTRL+ENTER` to execute the SQL statement.
+**Hint:** Enter the text `SHOW TABLES;`, then select it using your mouse and then press the keys `CTRL+ENTER` to execute the SQL statement.
 
-You should see two catalogs, one called `hive` and another called `system`. You now know how to create and execute SQL statements using Trino. The name of the hive catalog comes from the name of the `trino-values.yaml` resource you applied to Kubernetes.
+You should see zero tables. You now know how to create and execute SQL statements using HiveServer2.
 
-We will now [create a schema](https://trino.io/docs/current/sql/create-schema.html) inside the hive catalog. The schema is used to define where data is located, which will then be used by tables that are created with the schema.
+We will now create a new database. Then creating the database we define the name of the table and  where data should be stored.
 
-**Task:** Create a schema
+If the location is not defined it will use the default location `/user/hive/warehouse/`
+
+**Task:** Create a database
 
 <details>
-<summary><strong>Hint:</strong> Create schema</summary>
+<summary><strong>Hint:</strong> Create database</summary>
 
 ```SQL
-CREATE SCHEMA IF NOT EXISTS hive.bucket
-WITH (location = 's3a://<name of bucket>/');
+CREATE DATABASE IF NOT EXISTS bucket
+LOCATION 'hdfs://namenode:9000/user/hive/warehouse/'
 ```
 
-Remember to enter the name of your bucket.
+Remember to enter the name of your database.
 </details>
 
-Now that a schema has been created, we will [create a table](https://trino.io/docs/current/sql/create-table.html) using the schema. The table needs to use the format `TextFile` and the location of the files that will be associated with the table. You can find more information about the formats supported by the Hive connector [here](https://trino.io/docs/current/connector/hive.html).
+Now that a database has been created, we will create a table using the database. The table needs to use the format `TextFile` and the directory of the files that will be associated with the table. You can find more information about the formats supported by the Hive connector [here](https://trino.io/docs/current/connector/hive.html).
 
-**Task:** Create a table using the schema you just made
+**Task:** Create a table using the database you just made
 
 <details>
 <summary><strong>Hint:</strong> Create table</summary>
 
 ```SQL
-CREATE TABLE hive.bucket.text (line VARCHAR)
-WITH (
-    format = 'TextFile',
-    external_location = 's3a://<name of bucket>/<name of folder>/'
+CREATE TABLE bucket.text (
+    line STRING
 )
+STORED AS TEXTFILE
+LOCATION 'hdfs://namenode:9000/<hdfs-directory-location>';
 ```
 
 Remember to enter the name of your bucket and the name of the folder that Alice in Wonderland resides in.
@@ -136,9 +132,9 @@ Remember to enter the name of your bucket and the name of the folder that Alice 
 
 We can now query the files inside the specified bucket and folder. Try to select a few lines from the table you just made.
 
-**Task:** Run the following query `SELECT * FROM hive.bucket.text limit 100;`
+**Task:** Run the following query `SELECT * FROM bucket.text limit 100;`
 
-You should see a list of the first 100 lines of the Alice in Wonderland text. Trino is very feature rich, please see the documentation about [SQL statement syntax]((https://trino.io/docs/current/sql.html)) and [functions and operators](https://trino.io/docs/current/functions.html) to get an idea of how to write SQL statements for Trino.
+You should see a list of the first 100 lines of the Alice in Wonderland text.
 
 Similarly to the other exercises, we will now count the amount of words in the file, and after that we will figure out the 10 most used words.
 
@@ -150,22 +146,21 @@ To count words, you can split each line by spaces, then count the words for each
 <summary><strong>Hint:</strong> Count total words</summary>
 
 ```SQL
-SELECT SUM(CARDINALITY(SPLIT(RTRIM(line), ' ')))
-FROM hive.bucket.text;
+SELECT SUM(SIZE(SPLIT(line, ' '))) AS word_count
+FROM bucket.text;
 ```
 
 Below is an explanation of the different functions:
 
-- RTRIM removes trailing whitespaces
-- SPLIT splits text by the specified text (in this case it is a space) and returns an array
-- CARDINALITY returns the size of an array
-- SUM returns the sum of all column values
+- SPLIT(line, ' '): Splits the string line by spaces, returning an array of words.
+- SIZE(array): Returns the size of the array, which in this case is the number of words in each line.
+- SUM(): Adds up the total number of words across all rows in the table.
 
 </details>
 
 Depending on how you count the words, you should see around 31000 words.
 
-We will now find the 10 most used words. This is somewhat complex because if you use the `SPLIT` function then it returns an array, and you need to then use the [`UNNEST` function](https://trino.io/docs/current/sql/select.html#unnest).
+We will now find the 10 most used words. This is somewhat complex because if you use the `SPLIT` function then it returns an array, and you need to then use the [`EXPLODE` function](https://tsaiprabhanj.medium.com/hive-explode-function-297b999e37dd).
 
 **Task:** Find the 10 most used words in the Alice in Wonderland text
 
@@ -173,36 +168,35 @@ We will now find the 10 most used words. This is somewhat complex because if you
 <summary><strong>Hint:</strong> Top 10 most used words</summary>
 
 ```SQL
-SELECT DISTINCT word, COUNT(*) as count -- 4
+SELECT word, COUNT(*) AS count
 FROM (
-SELECT SPLIT(RTRIM(line), ' ') AS words -- 1
-  FROM hive.bucket.text
-)
-CROSS JOIN UNNEST(words) AS T(word) -- 2
-GROUP BY word -- 3
-ORDER BY count DESC -- 5
-LIMIT 10; -- 6
+    SELECT EXPLODE(SPLIT(line, ' ')) AS word
+    FROM bucket.text
+) temp
+GROUP BY word
+ORDER BY count DESC
+LIMIT 10;
 ```
 
 Each part of the SQL statement is explained below:
 
-1. We first split the lines into words.
-2. Then we unnest the words and cross join it, this results in all the elements inside the arrays to have their own row.
-3. We then group by the word to find unique words.
-4. We select the unique words, and the count of the words
-5. Order the result by the count descending to have the most used words first
-6. Limit to 10 to have get the 10 most used words.
+1. SPLIT(line, ' '): splits each line into words based on spaces, returning an array of words.
+2. EXPLODE(): takes an array (in this case, the array of words from SPLIT) and turns each element into a separate row. This way, each word from the line is now treated as a row.
+3. GROUP BY word: After exploding the array of words, we group by each unique word.
+4. COUNT(*): This counts how many times each word appears in the dataset.
+5. ORDER BY count DESC: Orders the words by their count in descending order, so the most frequent words appear first.
+6. LIMIT 10: Limits the result to the 10 most frequent words.
 
 </details>
 
 The most used word is "the". This is not very surprising, both because it is a common word, but mostly because you should already know this from exercises from previous lectures.
 
-Just as an added bonus, you can actually get the name of files using `"$path"`. For example, try executing the following SQL statement:
+Just as an added bonus, you can actually get the name of files using `input__file__name`. For example, try executing the following SQL statement:
 
 ```SQL
-SELECT "$path" AS path, SUM(CARDINALITY(SPLIT(RTRIM(line), ' ')))
-FROM hive.bucket.text
-GROUP BY "$path"
+SELECT input__file__name AS path, SUM(SIZE(SPLIT(line, ' '))) AS word_count
+FROM bucket.text
+GROUP BY input__file__name;
 ```
 
 Note that you need to use the `GROUP BY` clause in order to use `SELECT` on the path. This makes sense, because if you don't do it, then the word count would just be of all files instead and have no knowledge of which files has what amount of words.
@@ -210,16 +204,16 @@ Note that you need to use the `GROUP BY` clause in order to use `SELECT` on the 
 You can also filter by the path:
 
 ```SQL
-SELECT SUM(CARDINALITY(SPLIT(RTRIM(line), ' ')))
-FROM hive.bucket.text
-WHERE "$path" = 's3a://<name of bucket>/<name of folder>/<name of file>'
+SELECT SUM(SIZE(SPLIT(line, ' '))) AS word_count
+FROM bucket.text
+WHERE input__file__name = 'hdfs://namenode:9000/<hdfs-path>/<file>';
 ```
 
 The SQL statement above will only count the amount of words for files that match a specific path.
 
 ### Exercise 3 - Backblaze Hard Drive Data
 
-[Backblaze](https://www.backblaze.com/) is a cloud backup and storage service. They have a lot of hard drives and collect a lot of information about these drives in order to monitor health and figure out what drives are the most reliable. We will be analyzing the Backblaze Hard Drive Data using Trino.
+[Backblaze](https://www.backblaze.com/) is a cloud backup and storage service. They have a lot of hard drives and collect a lot of information about these drives in order to monitor health and figure out what drives are the most reliable. We will be analyzing the Backblaze Hard Drive Data using Hive.
 
 The data can be found [here](https://www.backblaze.com/cloud-storage/resources/hard-drive-test-data). Download the drive data for 2023 Q2. You can find this at the bottom of the page.
 
@@ -229,13 +223,11 @@ The data can be found [here](https://www.backblaze.com/cloud-storage/resources/h
 
 Once the file is downloaded, then unzip it and find the file called `2023-06-30.csv` and open it using a text editor. The first line of the file contains information the names of each of the different columns in the CSV file. Look at the first few rows, these are the ones we will be using for this exercise.
 
-Create a new folder inside the MinIO bucket you previously made and upload the `2023-06-30.csv` file to it.
+Create a new folder inside the HDFS and upload the `2023-06-30.csv` file to it.
 
-**Task:** Upload drive data for 30/6/2023 into an empty folder inside a MinIO bucket
+**Task:** Upload drive data for 30/6/2023 into the new folder inside HDFS
 
 **Note:** It is important that the folder is empty. If it is not, then we will read the other files, which might result in errors because the files are not of the same format.
-
-In Trino, all columns of a CSV file are treated as text. We can cast the text to other types, you can see all types [here](https://trino.io/docs/current/language/types.html).
 
 We will now create a table for the Backblaze drive data.
 
@@ -245,17 +237,19 @@ We will now create a table for the Backblaze drive data.
 <summary><strong>Hint:</strong> Create CSV table</summary>
 
 ```SQL
-CREATE TABLE hive.bucket.backblaze (
-  date VARCHAR,
-  serial_number VARCHAR,
-  model VARCHAR,
-  capacity_bytes VARCHAR
+CREATE EXTERNAL TABLE IF NOT EXISTS bucket.backblaze (
+  `date` STRING,
+  serial_number STRING,
+  model STRING,
+  capacity_bytes STRING
 )
-WITH (
-  skip_header_line_count = 1,
-  format = 'CSV',
-  external_location = 's3a://<name of bucket>/<name of folder>'
-)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+LOCATION 'hdfs://namenode:9000/<path-to-folder>/'
+TBLPROPERTIES (
+  'skip.header.line.count'='1'
+);
 ```
 
 The format is CSV. We skip 1 header line because we don't want to include the header with column names as part of the dataset.
@@ -270,9 +264,9 @@ Now that a table has been created, we will now query it.
 
 You should see 100 different disks and some information about them, such as the serial number, model and the capacity of them. The dataset contains a lot of columns, such as [S.M.A.R.T data](https://en.wikipedia.org/wiki/Self-Monitoring,_Analysis_and_Reporting_Technology) that contains information about the disks.
 
-We can now try to summarize the data. For example, what is the total count of each model of hard drive, and what is the capacity of the hard drives in GB? Below is a task and a couple of questions that you could try to answer using Trino.
+We can now try to summarize the data. For example, what is the total count of each model of hard drive, and what is the capacity of the hard drives in GB? Below is a task and a couple of questions that you could try to answer using Hive.
 
-**Tasks:** Answer the following questions using Trino
+**Tasks:** Answer the following questions using Hive
 
 - What is the total count of each model of hard drive?
 - What is the capacity of the different hard drive models?
@@ -286,12 +280,12 @@ We can now try to summarize the data. For example, what is the total count of ea
 ```SQL
 SELECT
   model,
-  FLOOR(CAST(capacity_bytes as BIGINT) / POWER(10, 9)) AS capacity_gigabytes,
-  FLOOR(CAST(capacity_bytes as BIGINT) / POWER(10, 9)) * COUNT(*) AS total_capacity_terabytes,
+  FLOOR(CAST(capacity_bytes AS BIGINT) / POWER(10, 9)) AS capacity_gigabytes,
+  FLOOR(CAST(capacity_bytes AS BIGINT) / POWER(10, 9)) * COUNT(*) / 1000 AS total_capacity_terabytes,
   COUNT(*) AS count
-FROM hive.bucket.backblaze
-WHERE "$path" = 's3a://<name of bucket>/<name of folder>/2023-06-30.csv'
-GROUP BY model,capacity_bytes
+FROM bucket.backblaze
+WHERE input__file__name = 'hdfs://namenode:9000/<path-to-folder>/2023-06-30.csv'
+GROUP BY model, capacity_bytes
 ORDER BY count DESC;
 ```
 </details>
@@ -572,11 +566,11 @@ To clean up the resources created in this lecture, you can follow the steps belo
         redis-data-redis-redis-cluster-4 \
         redis-data-redis-redis-cluster-5
        `
-    1. `helm uninstall trino`
+    1. `kubectl delete -f mongodb.yaml`
+    1. `kubectl delete -f hive-server-2.yaml`
     1. `kubectl delete -f hive-metastore.yaml`
     1. `helm uninstall postgresql`
-    1. `helm uninstall minio`
-    1. `kubectl delete pvc data-postgresql-0 minio-data-minio-0`
+    1. `kubectl delete pvc data-postgresql-0`
 - `cd` into the `lecture/03` folder in the repository.
     1. `kubectl delete -f redpanda.yaml`
     1. `kubectl delete -f kafka-schema-registry.yaml`
@@ -590,6 +584,12 @@ To clean up the resources created in this lecture, you can follow the steps belo
         `
 - `cd` into the `services/interactive` folder in the repository.
     1. `kubectl delete -f interactive.yaml`
+
+- cd into the `services/hdfs` folder in the repository.
+1. `kubectl delete -f hdfs-cli.yaml` (if used)
+1. `kubectl delete -f datanodes.yaml`
+1. `kubectl delete -f namenode.yaml`
+1. `kubectl delete -f configmap.yaml`
 
 
 You can get a list of the resources to verify that they are deleted.
