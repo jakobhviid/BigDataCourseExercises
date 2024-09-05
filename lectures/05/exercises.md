@@ -6,23 +6,15 @@ Before you start working on the exercises you are strongly encouraged to clean u
 
 Please open issues [here](https://github.com/jakobhviid/BigDataCourseExercises/issues) if you encounter unclear information or experience bugs in our examples!
 
-### Exercise 1 - Set up Trino, Hive and Minio
+### Exercise 1 - Hive Metastore & HiveServer2
 
-[Trino](https://trino.io/) (formerly known as Presto) is a distributed SQL query engine for big data analytics. Trino is comparable to Apache Hive, but Trino can connect to many different data sources with [connectors](https://trino.io/docs/current/connector.html). Hive is also meant to run using YARN and it does not make sense to run YARN inside of Kubernetes. For that reason, the exercises will be about Trino.
+You will be setting up [Hive Metastore](https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=27362072#Design-Metastore) and [HiveServer2](https://cwiki.apache.org/confluence/display/Hive/HiveServer2+Overview) to read files from HDFS. An [Apache Hive metastore](https://cwiki.apache.org/confluence/display/hive/design#Design-Metastore) service is required in order to use the Hive connector. Hive metastore requires an SQL database to store data, so for this you will also set up a [PostgreSQL database](https://www.postgresql.org/).
 
-You will be setting up a [Trino cluster](https://trino.io/docs/current/overview/concepts.html#cluster) and use the [Hive connector](https://trino.io/docs/current/connector/hive.html) to read files from an S3 bucket. An [Apache Hive metastore](https://cwiki.apache.org/confluence/display/hive/design#Design-Metastore) service is required in order to use the Hive connector. Hive metastore requires an SQL database to store data, so for this you will also set up a [PostgreSQL database](https://www.postgresql.org/).
+### HDFS
 
-You are also strongly encouraged to read [this](https://trino.io/Presto_SQL_on_Everything.pdf) paper about Trino, but it is not a requirement for the exercises.
+HDFS is a requirement for this exercise, if you do not have it in your namespace, please set it up before you continue
 
-#### MinIO
-
-Install MinIO
-
-```text
-helm install minio oci://registry-1.docker.io/bitnamicharts/minio --set auth.rootUser=admin --set auth.rootPassword=password
-```
-
-#### Hive metastore service
+### Hive metastore service
 
 The Hive metastore service will be deployed with PostgreSQL.
 
@@ -45,22 +37,22 @@ helm install postgresql \
 
 Everything required to create the Hive metastore service is now ready. Apply the [hive-metastore.yaml](./hive-metastore.yaml) file.
 
-#### Trino cluster
+#### HiveServer2
 
-````bash
-helm repo add trino https://trinodb.github.io/charts/
-helm install trino trino/trino -f trino-values.yaml
-````
+Apply the [hive-server-2.yaml](./hive-server-2.yaml) file
 
 ### Exercise 2 - Count words in Alice in Wonderland with Hive
 
-We will now analyze the Alice in Wonderland text similarly to what we did in [lecture 2 exercse 6-8](../02/exercises.md#exercise-6---analyzing-file-and-saving-result-in-json-format-using-python) where we read a file from HDFS and counted words, and [lecture 4 exercise 3](../04/exercises.md#exercise-3---analyzing-files-using-spark-jobs) where we read a file from S3 and counted words using Spark. But this time we will analyze it using Trino.
+We will now analyze the Alice in Wonderland text similarly to what we did in [lecture 2 exercse 6-8](../02/exercises.md#exercise-6---analyzing-file-and-saving-result-in-json-format-using-python) where we read a file from HDFS and counted words, and [lecture 4 exercise 3](../04/exercises.md#exercise-3---analyzing-files-using-spark-jobs) where we read a file from S3 and counted words using Spark. But this time we will analyze it using HiveServer2.
 
-#### Upload file to MinIO
+#### Upload file to HDFS
 
-Create a bucket inside the MinIO cluster and call it whatever you want.
+Create a folder inside the HDFS (You can call it whatever you want).
 
-**Task:** Create a bucket inside MinIO
+**Task:** Upload Alice in Wonderland file to HDFS
+
+
+
 
 Now upload the Alice in Wonderland file to a folder inside the bucket.
 
