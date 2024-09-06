@@ -586,6 +586,8 @@ You will be using HDFS, Kafka, and the interactive container in next lecture. Ho
 - Todays exercises.
   1. `kubectl delete -f sqoop.yaml`
   1. `helm delete postgresql`
+  1. `kubectl delete pvc data-postgresql-0`
+  1. `kubectl delete pod python`
   1. `kubectl delete -f flume.yaml`
   1. `kubectl delete pod kafka-client`
   1. `kubectl delete -f redpanda.yaml`
