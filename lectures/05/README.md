@@ -8,11 +8,9 @@ Please open issues [here](https://github.com/jakobhviid/BigDataCourseExercises/i
 
 You will be setting up [Hive](https://hive.apache.org/) to read files from HDFS. An [Apache Hive metastore](https://cwiki.apache.org/confluence/display/hive/design#Design-Metastore) service is required in order to use the Hive connector. Hive metastore requires an SQL database to store data, so for this you will also set up a [PostgreSQL database](https://www.postgresql.org/).
 
-### HDFS
+**Notice**: HDFS is a requirement for this exercise, if you do not have it in your namespace, please set it up before you continue.
 
-HDFS is a requirement for this exercise, if you do not have it in your namespace, please set it up before you continue.
-
-### Hive metastore service
+#### Hive metastore service
 
 The Hive metastore service will be deployed with PostgreSQL.
 
@@ -33,11 +31,11 @@ helm install postgresql \
 
 **Note**: If you encounter issues with creating a new table, please delete the existing PVC for Postgresql.
 
-Everything required to create the Hive metastore service is now ready. Apply the [hive-metastore.yaml](./hive-metastore.yaml) file.
+**Task**: Everything required to create the Hive metastore service is now ready. Apply the [hive-metastore.yaml](./hive-metastore.yaml) file.
 
 #### Hive
 
-Apply the [hive-server-2.yaml](./hive-server-2.yaml) file
+**Task**: Apply the [hive.yaml](./hive.yaml) file.
 
 ### Exercise 2 - Count words in Alice in Wonderland with Hive
 
@@ -49,15 +47,11 @@ Create a folder inside the HDFS (You can call it whatever you want).
 
 **Task**: Upload Alice in Wonderland file to HDFS if not already done.
 
-Everything is now prepared for us to use Hive.
-
 #### Connect to Hive
 
 A service has been created for Hive. Forward port 10002 of the Hive service.
 
-**Task**: Port-forward Web UI Hive.
-
-**Task**: Open the Hive Web UI webpage in your browser [localhost:10002](http://localhost:10002/).
+**Task**: Port-forward Web UI Hive and open the Hive Web UI webpage in your browser [localhost:10002](http://localhost:10002/).
 
 You should see at least one active session and zero open queries.
 
@@ -105,7 +99,7 @@ CREATE DATABASE IF NOT EXISTS bucket
 LOCATION 'hdfs://namenode:9000/user/hive/warehouse/'
 ```
 
-Remember to enter the name of your database.
+Remember to enter the name of your database (`bucket`).
 </details>
 
 Now that a database has been created, we will create a table using the database. The table needs to use the format `TextFile` and the directory of the files that will be associated with the table. You can find more information about the formats supported by the Hive connector [here](https://trino.io/docs/current/connector/hive.html).
@@ -256,7 +250,7 @@ Now that a table has been created, we will now query it.
 
 **Task**: Get the first 100 rows of the CSV file.
 
-**Hint:** See [exercise 2](./exercises.md#exercise-2---count-words-in-alice-in-wonderland-with-hive)
+**Hint:** See [exercise 2](./exercises.md#exercise-2---count-words-in-alice-in-wonderland-with-hive).
 
 You should see 100 different disks and some information about them, such as the serial number, model and the capacity of them. The dataset contains a lot of columns, such as [S.M.A.R.T data](https://en.wikipedia.org/wiki/Self-Monitoring,_Analysis_and_Reporting_Technology) that contains information about the disks.
 
@@ -308,7 +302,7 @@ The [mongodb.yaml](./mongodb.yaml) contains a complete manifest to compose a Mon
         - port: 27017 <-> 27017
     - `mongo-express`
         - type: NodePort
-        - port: 8084 <-> 8084
+        - port: 8081 <-> 8081
 - Deployments
     - `mongodb`
     - `mongo-express`
@@ -318,6 +312,7 @@ The [mongodb.yaml](./mongodb.yaml) contains a complete manifest to compose a Mon
 **Note**: Our example includes a simple authentication mechanism. The username and password have been hardcoded into the [mongodb.yaml](mongodb.yaml) file. We do encurge you to apply a more sufisticated approach when you transfering into a production environment.
 
 **Task**: Apply the [mongodb.yaml](mongodb.yaml) manifest to compose the MongoDB cluster.
+
 <details>
   <summary><strong>Hint:</strong> Apply the deployment manifest</summary>
 
@@ -327,37 +322,36 @@ The [mongodb.yaml](./mongodb.yaml) contains a complete manifest to compose a Mon
 
 </details>
 
-
 **Task**: Validate your deployment of MongoDB.
 
 <details>
-  <summary><strong>Hint:</strong> Get all the resources inside the `mongodb` namespace</summary>
+<summary><strong>Hint:</strong> Get all the resources inside the `mongodb` namespace</summary>
 
 One approach for getting the current state of the deployed resources is by using the command below:
 
-  ```bash
-  kubectl get all  
-  ```
+```bash
+kubectl get all  
+```
 
 You should expect a similar output like the chunk below:
 
-  ```bash
-  NAME                               READY   STATUS    RESTARTS   AGE
-  pod/mongodb-f585b897b-f7bn6        1/1     Running   0          7m31s
-  pod/mongo-express-f896d549-5gbz7   1/1     Running   0          2m51s
+```bash
+NAME                               READY   STATUS    RESTARTS   AGE
+pod/mongodb-f585b897b-f7bn6        1/1     Running   0          7m31s
+pod/mongo-express-f896d549-5gbz7   1/1     Running   0          2m51s
 
-  NAME                               TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)           AGE
-  service/mongodb                    NodePort   10.152.183.106   <none>        27017:32346/TCP   7m32s
-  service/mongo-express              NodePort   10.152.183.163   <none>        8084:31280/TCP    7m32s
+NAME                               TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)           AGE
+service/mongodb                    NodePort   10.152.183.106   <none>        27017:32346/TCP   7m32s
+service/mongo-express              NodePort   10.152.183.163   <none>        8081:31280/TCP    7m32s
 
-  NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
-  deployment.apps/mongodb            1/1     1            1           7m32s
-  deployment.apps/mongo-express      1/1     1            1           7m31s
+NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/mongodb            1/1     1            1           7m32s
+deployment.apps/mongo-express      1/1     1            1           7m31s
 
-  NAME                                     DESIRED   CURRENT   READY   AGE
-  replicaset.apps/mongodb-f585b897b        1         1         1       7m31s
-  replicaset.apps/mongo-express-f896d549   1         1         1       2m51s
-  ```
+NAME                                     DESIRED   CURRENT   READY   AGE
+replicaset.apps/mongodb-f585b897b        1         1         1       7m31s
+replicaset.apps/mongo-express-f896d549   1         1         1       2m51s
+```
 
 </details>
 
@@ -370,23 +364,24 @@ The other approach is to install an extension for Visual Studio Code. Get furthe
 
 The web-based `mongo-express` interface requires port-forwarding to access the site from your local host.
 
-**Task**: Forward port `8084` from the `mongo-express` service to your local host.
-<details>
-  <summary><strong>Hint:</strong> Get all the resources inside the `mongodb` namespace</summary>
+**Task**: Forward port `8081` from the `mongo-express` service to your local host.
 
-  ```bash
-  kubectl port-forward svc/mongo-express  8084:8084
-  ```
+<details>
+<summary><strong>Hint:</strong> Get all the resources inside the `mongodb` namespace</summary>
+
+```bash
+kubectl port-forward svc/mongo-express 8081
+```
 
 </details>
 
-**Task**: Open [127.0.0.1:8084](http://127.0.0.1:8084) and validate the hostname of the mongodb server. Does the server name match the name of the `mongodb` Kubernetes pod?
+**Task**: Open [127.0.0.1:8081](http://127.0.0.1:8081) and validate the hostname of the mongodb server. Does the server name match the name of the `mongodb` Kubernetes pod?
 
 **Note**: You will be prompted for a username and password. Please use `admin` and `pass` as log-in credentials respectively.
 
 **Task**: Explore the `mongodb` documentation [here](https://www.mongodb.com/docs/manual/core/databases-and-collections/) and be confident in the MongoDB terminology, e.g. document, collection, and databases.
 
-**Task**: Explore the `mongo-express` documentation [here](https://github.com/mongo-express/mongo-express) and be curious about the web-based interface [127.0.0.1:8084](http://127.0.0.1:8084).
+**Task**: Explore the `mongo-express` documentation [here](https://github.com/mongo-express/mongo-express) and be curious about the web-based interface [127.0.0.1:8081](http://127.0.0.1:8081).
 
 ##### MongoDB extension for Visual Studio Code
 
@@ -395,12 +390,13 @@ Another convenient approach for interacting with MongoDB is by using Visual Stud
 Similar to the web-based approach you need to set up port-forwarding to reach the `mongodb` pod from your local host.
 
 **Task**: Forward port `27017` from the `mongodb` service to your local host.
-<details>
-  <summary><strong>Hint:</strong> Get all the resources inside the `mongodb` namespace</summary>
 
-  ```bash
-  kubectl port-forward svc/mongodb  27017:27017
-  ```
+<details>
+<summary><strong>Hint:</strong> Get all the resources inside the `mongodb` namespace</summary>
+
+```bash
+kubectl port-forward svc/mongodb  27017
+```
 
 </details>
 
@@ -410,7 +406,7 @@ After the completion of the port-forwarding, you are able to insert the followin
 
 **Task**: Explore the playgrounds tab inside the extension. Click "Create New Playground" and execute the new playground.
 
-**Task**: Explore the newly created database called `mongodbVSCodePlaygroundDB` and the inserted documents inside the `sales` collections. You should find the identical documents inside the web interface [here](http://127.0.0.1:8084/db/mongodbVSCodePlaygroundDB/sales).
+**Task**: Explore the newly created database called `mongodbVSCodePlaygroundDB` and the inserted documents inside the `sales` collections. You should find the identical documents inside the web interface [here](http://127.0.0.1:8081/db/mongodbVSCodePlaygroundDB/sales).
 
 #### Exercise 4.2 - MongoDB and Kafka connect
 
@@ -429,11 +425,11 @@ The objective of this exercise is to configure a Kafka Connect connector that us
 **NB:** Remember to setup port-forwarding for the Kafka Connect REST API.
 
 <details>
-  <summary><strong>Hint:</strong> Post configuration</summary>
+<summary><strong>Hint:</strong> Post configuration</summary>
 
-    This example requires port-forwarding. Therefore ensure `kubectl port-forward svc/kafka-connect 8083:8083` is running in a terminal on your local host.
+This example requires port-forwarding. Therefore ensure `kubectl port-forward svc/kafka-connect 8083` is running in a terminal on your local host.
 
-    Look into the configuration in the chunk below and execute the command in your terminal to create a Kafka Connect connector:
+Look into the configuration in the chunk below and execute the command in your terminal to create a Kafka Connect connector:
 
 ```bash
 curl -X POST \
@@ -469,6 +465,7 @@ http://127.0.0.1:8083/connectors \
 
 <details>
 <summary><strong>Hint:</strong> Count number of documents</summary>
+
 You need to open a new playground in MongoDB for the VS Code extension to reproduce this hint.
 
 The playground result of the chuck below will return the number of documents inside the `INGESTION` collection.
@@ -492,7 +489,8 @@ You may find this documentation helpful to complete this exercise.
 **Task**: Count the number of documents inside the `INGESTION` collection where the `sensor_id=6`.
 
 <details>
-<summary><strong>Hint:</strong> Count number of documents for sensor_id six </summary>
+<summary><strong>Hint:</strong> Count number of documents for sensor_id six</summary>
+
 You need to open a new playground in MongoDB for the VS Code extension to reproduce this hint.
 
 The playground result of the chuck below will return the number of documents inside the `INGESTION` collection.
@@ -567,7 +565,7 @@ To clean up the resources created in this lecture, you can follow the steps belo
       redis-data-redis-redis-cluster-5
       `
   1. `kubectl delete -f mongodb.yaml`
-  1. `kubectl delete -f hive-server-2.yaml`
+  1. `kubectl delete -f hive.yaml`
   1. `kubectl delete -f hive-metastore.yaml`
   1. `helm uninstall postgresql`
   1. `kubectl delete pvc data-postgresql-0`
