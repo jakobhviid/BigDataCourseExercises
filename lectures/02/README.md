@@ -114,7 +114,23 @@ The [hdfs-cli.yaml](../../services/hdfs/hdfs-cli.yaml) file in the `services/hdf
 
 **Task**: To create the interactive container and mount the config, use the provided [hdfs-cli.yaml](../../services/hdfs/hdfs-cli.yaml) file.
 
-### Exercise 5 - Interacting with HDFS cluster using Python
+### Exercise 5 (optional) - Interacting with HDFS using Web UI
+
+Instead of using the HDFS CLI, you can use the Web UI by port-forwarding the `namenode` service:
+
+````bash
+kubectl port-forward service/namenode 9870:9870
+````
+
+Then you can visit the [localhost:9870](http://localhost:9870)
+
+Here you can gain information about the HDFS cluster.
+
+Additionally, you can also perform CRUD operations on HDFS by going to this URL [Browse Directory](http://localhost:9870/explorer.html#/)
+
+From here you can create new folders, upload files or see the existing content of each of the folders in HDFS
+
+### Exercise 6 - Interacting with HDFS cluster using Python
 
 We now want to try to interact with the HDFS cluster using Python. To do this, there are a few files provided:
 
@@ -135,7 +151,7 @@ We now want to try to interact with the HDFS cluster using Python. To do this, t
 
 **Further reading**: You can read more about the HDFS Python library [here](https://hdfscli.readthedocs.io/en/latest/quickstart.html#python-bindings).
 
-### Exercise 6 - Analyzing file and saving result in JSON format using Python
+### Exercise 7 - Analyzing file and saving result in JSON format using Python
 
 Now we know how to put files in HDFS, read files from HDFS and how to interact with HDFS. The next exercise will analyze the data and save the results to a JSON file in HDFS.
 
@@ -152,7 +168,7 @@ Now we know how to put files in HDFS, read files from HDFS and how to interact w
     1. What are the five most common words in Alice in Wonderland?
     1. How many times are they repeated?
 
-### Exercise 7 - Analyzing file and saving result in Avro format using Python
+### Exercise 8 - Analyzing file and saving result in Avro format using Python
 
 Instead of saving the result as a JSON file, we will now try to save it as an Avro file.
 
@@ -167,7 +183,7 @@ You should see that the script reads the Alice in Wonderland file similarly to [
 1. Run the [`counting-avro.py`](./counting-avro.py) file.
 1. Read and output the result of the stored files directly from HDFS using HDFS CLI.
 
-### Exercise 8 - Analyzing file and saving result in Parquet format using Python
+### Exercise 9 - Analyzing file and saving result in Parquet format using Python
 
 We will now try to save a Parquet file to HDFS.
 
@@ -181,7 +197,7 @@ We will now try to save a Parquet file to HDFS.
 1. Read and output the result of the stored files directly from HDFS using HDFS CLI.
     1. How many column do the dataframe have?
 
-### Exercise 9 - Create six fictive data sources
+### Exercise 10 - Create six fictive data sources
 
 The objective of this exercise is to create a fictive data source. We want to create a Python program that enables the simulation of multiple data sources. The fictive data source could be a sensor that measures the wattage of an electricity line. The sample rate of the sensor will be adjustable. However, this will default to 1Hz. The ID of the sensor must differentiate the six data streams and the valid range of the wattage for these electricity lines is between ±600MW.
 
