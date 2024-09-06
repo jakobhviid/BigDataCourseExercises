@@ -1,4 +1,5 @@
 # Lecture 07 - Metadata, Data Provenance and Data Mesh
+
 ## DataHub Platform
 
 The objective of these exercises is to play with a metadata platform that enables data provenance and supports the concepts of the Data Mesh paradigm. The platform of choice for this course is called DataHub and has been built by Acryl Data and LinkedIn. They promote their platform by the following verbs:
@@ -15,6 +16,7 @@ Please open issues [here](https://github.com/jakobhviid/BigDataCourseExercises/i
 Before you start working on the exercises you are strongly encouraged to clean up your Kubernetes cluster. The exercises will assume you use the MicroK8s cluster on the provided virtual machines and that the cluster is in a "clean" state.
 
 ### Exercise 1 - Compose a DataHub Platform
+
 This exercise will compose a DataHub platform which you will use in the upcoming exercises. We recommend following the steps in this exercise and using the two included value files [preq-values.yaml](preq-values.yaml) and [values.yaml](values.yaml) for the helm installation processes. The following steps have been inspired by this guide [Deploying DataHub with Kubernetes](https://datahubproject.io/docs/deploy/kubernetes/).
 
 **Task: Add the helm repository for DataHub by running the following command.**
