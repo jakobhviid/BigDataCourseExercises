@@ -1,0 +1,6 @@
+hdfs
+fastavro
+pyarrow
+pandas
+kafka-python-ng
+pyspark==3.5.2

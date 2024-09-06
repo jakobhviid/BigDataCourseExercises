@@ -1,7 +1,7 @@
 from collections import Counter
-from hdfs.ext.avro import AvroReader, AvroWriter
 
-from client import get_hdfs_client
+from hdfs.ext.avro import AvroReader, AvroWriter
+from src.client import get_hdfs_client
 
 
 def main():

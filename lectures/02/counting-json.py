@@ -1,7 +1,7 @@
 from collections import Counter
 from json import dumps
 
-from client import get_hdfs_client
+from src.client import get_hdfs_client
 
 
 def main():
