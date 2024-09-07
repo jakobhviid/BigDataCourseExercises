@@ -283,7 +283,7 @@ This exercise is about adding a secondary ingestion source. The source is an alr
     1. Finish up: Provide a name (`MySQL`) for your ingestion source.
 1. Once you have created the ingestion source it will then run. Make sure that the run is succeeded. If not then you can check the logs to figure out the problem.
 
-**Note:** If you get the error `sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1045, "Access denied for user 'root'@'10.1.155.37' (using password: YES)")`, just have the MySQL password as plaintext
+**Note:** If you get the error `sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1045, "Access denied for user 'root'@'10.1.155.37' (using password: YES)")`, just have the password as plaintext
 
 ### Exercise 6 - Adding a custom dataset to DataHub
 The objective of this exercise is to add a custom dataset to DataHub. The exercise consists of an already complete example. However, you are more than welcome to modify the existing example to fit your selected project.
