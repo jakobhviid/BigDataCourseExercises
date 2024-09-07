@@ -35,7 +35,7 @@ The format of the exercise lectures is as follows:
 
 - Two modules of 45 minutes each per week.
 - The first half of the first module will be used to recap and solution sharing from the previous exercises. The reminder of the first module and the second module will be used to work the exercises for the current week.
-- The exercises will be hands-on exercises where you will be working with Kubernetes and the themes of this weeks lecture.
+- The exercises will be hands-on exercises where you will be working with Kubernetes and the themes of this week's lecture.
 - The exercises will be provided in `README.md` file in the respective lecture folder.
 
 Please open issues [here](https://github.com/jakobhviid/BigDataCourseExercises/issues) if you encounter unclear information or experience bugs in our examples!
@@ -54,7 +54,7 @@ We recommend watching the documentary [Kubernetes: The Documentary [PART 1]](htt
 
 ### [Kubernetes Basics](https://kubernetes.io/docs/tutorials/kubernetes-basics/)
 
-Kubernetes is a cluster orchestration system that enables the deployment of containerised applications on virtualised hardware or bare metal hardware.
+Kubernetes is a cluster orchestration system that enables the deployment of containerised applications on virtualized hardware or bare metal hardware.
 
 > Kubernetes is a production-grade, open-source platform that orchestrates the placement (scheduling) and execution of application containers within and across computer clusters.
 *[kubernetes.io - Cluster Diagram. (Accessed: 04 September 2023)](https://kubernetes.io/docs/tutorials/kubernetes-basics/create-cluster/cluster-intro/)*
@@ -113,12 +113,12 @@ Get full definitions here: [Overview of Kubernetes Services](https://kubernetes.
 
 #### The kubectl CLI
 
-The CLI tool used to communicate with a Kubernetes cluster from your localhost is called "kubectl". It it used though the terminal like `kubectl <command> <flags>`.
+The CLI tool used to communicate with a Kubernetes cluster from your localhost is called "kubectl". It is used though the terminal like `kubectl <command> <flags>`.
 You read more about the CLI and how to install it here: [install kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl).
 
 #### The kubeconfig file
 
-You will recive a kubeconfig file before starting on lecture 1. Your personal config file will be shared by email and is needed to access the Kubernetes cluster. The kubeconfig file contains the necessary information to connect to the cluster and authenticate with it. The file is used by the `kubectl` CLI to connect to the cluster.
+You will receive a kubeconfig file before starting on lecture 1. Your personal config file will be shared by email and is needed to access the Kubernetes cluster. The kubeconfig file contains the necessary information to connect to the cluster and authenticate with it. The file is used by the `kubectl` CLI to connect to the cluster.
 
 #### Wrap up
 
@@ -153,7 +153,7 @@ Now that you understand the yaml file, run the command `kubectl apply -f hello-k
 
 ### Exercise 3 - Connecting to the application
 
-Now that you have deployed the application the next step is to try and connect to it. The application is a HTTP server that listens for requests on port 8080. To connect to the application, we should do it through the service.
+Now that you have deployed the application the next step is to try and connect to it. The application is an HTTP server that listens for requests on port 8080. To connect to the application, we should do it through the service.
 
 Connecting to a service can be done in different ways. The simplest way to connect to a service inside the cluster and to your localhost is by running the `kubectl port-forward` command.
 
@@ -205,16 +205,16 @@ Similarly to Docker, you can interact and get a shell of a running container in 
 First, we will try to get a shell inside an existing container. The command to execute commands inside containers is called exec, for example `kubectl exec pods/<name of pod> -- <command>` will run a command inside a running container. 
 To get an interactive shell, you need to use the exec command: `kubectl exec --stdin --tty pods/<name of pod> -- <command>`. To get a shell for one of the hello-kubernetes pods you need to use this: `kubectl exec --stdin --tty pods/<name of pod> -- /bin/sh`.
 
-Once you have a shell you can now run commands inside of it. Try using the `ls` command to list all files and folder inside the current directory. You may notice that this is a NodeJS application. Try to list the contents of the `server.js` file using the `cat` command.
+Once you have a shell you can now run commands inside of it. Try using the `ls` command to list all files and folder inside the current directory. You may notice that this is a Node.js application. Try to list the contents of the `server.js` file using the `cat` command.
 
 To exit the interactive shell write `exit` and hit the `ENTER` key or just close the terminal window.
 
 You will now create an interactive container that is removed once you exit the shell. Run the following command: `kubectl run ubuntu --rm -i --tty --image ubuntu -- bash`. This will create a pod called "ubuntu" that will run the Ubuntu image. Once you exit the terminal the pod will be deleted.
 
 Because the container is running inside the Kubernetes cluster you can now access services without using the port-forward command. 
-To test this we first want to intall the curl package - use `apt update && apt install curl -y` to install curl. Once curl is installed, write the following command to send a HTTP request to the hello-kubernetes service: `curl hello-kubernetes:8080`. The response will be the HTML for the hello-kubernetes webpage that you have seen earlier. You can try using the command multiple times and see how the response changes.
+To test this we first want to install the curl package - use `apt update && apt install curl -y` to install curl. Once curl is installed, write the following command to send an HTTP request to the hello-kubernetes service: `curl hello-kubernetes:8080`. The response will be the HTML for the hello-kubernetes webpage that you have seen earlier. You can try using the command multiple times and see how the response changes.
 
-Because the service is inside the same namespace as your ubuntu container you can use the DNS entry `hello-kubernetes`. If you want to accesss a service in a different `namespace` you need to use a different `hostname`. Use the following command `curl hello-kubernetes.default:8080` where `default` is another namespace. NB: You will notice that you are not able to `curl` other namespaces.
+Because the service is inside the same namespace as your ubuntu container you can use the DNS entry `hello-kubernetes`. If you want to access a service in a different `namespace` you need to use a different `hostname`. Use the following command `curl hello-kubernetes.default:8080` where `default` is another namespace. NB: You will notice that you are not able to `curl` other namespaces.
 
 Sometimes you don't want to delete the container when you exit the shell. Use the following command to create an ubuntu container that won't be deleted when you exit the shell: `kubectl run ubuntu -i --tty --image ubuntu -- bash`. To reattach the same shell again use one of the following command: `kubectl attach ubuntu -c ubuntu -i -t`. You can even open two terminals and use the attach command and the shell will be shared. Try to do this and write something in one shell and see how it is also written in the other.
 
@@ -222,10 +222,10 @@ You can also copy files to containers. Use the file on your localhost called `RE
 
 ### Exercise 7 - Cleaning up
 
-Kubernetes resources can be deleted using the `kubectl delete` command. You can either delete individual resources, such as a the hello-kubernetes deployment using the following command `kubectl delete deployment/hello-kubernetes`, or you can delete it using the file you used to create the resources with using the command `kubectl delete -f hello-kubernetes.yaml`.
+Kubernetes resources can be deleted using the `kubectl delete` command. You can either delete individual resources, such as a hello-kubernetes deployment using the following command `kubectl delete deployment/hello-kubernetes`, or you can delete it using the file you used to create the resources with using the command `kubectl delete -f hello-kubernetes.yaml`.
 > If you used Helm to create the resources then you should also delete it using Helm.
 
-## Step by step guide to clean up
+## Step-by-step guide to clean up
 
 - To begin with, we will delete the first hello-kubernetes deployment that you made using the yaml manifest file: `kubectl delete -f hello-kubernetes.yaml`
 - Next we will uninstall the hello-kubernetes release of the hello-kubernetes Helm chart: `helm uninstall hello-kubernetes-helm`

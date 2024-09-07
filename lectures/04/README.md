@@ -61,23 +61,23 @@ The previous program you ran was estimating pi. This program only used compute r
 
 ### Exercise 4 - Average sample values from JSON files stored in HDFS
 
-Let us assume that you have a dataset of sample records stored in HDFS. The dataset is stored in JSON format and contains defined by the [exercise 9 from lecture 02](../02/README.md#exercise-9---create-six-fictive-data-sources).
+Let us assume that you have a dataset of sample records stored in HDFS. The dataset is stored in JSON format and contains defined by the [exercise 9 from lecture 02](../02/README.md#exercise-10---create-six-fictive-data-sources).
 
 In this exercise you will run a Spark job that will read all the JSON files and computes the average value of the `payload.modality` field for each station.
 
 **Task**: Inspect the [avg-modalities.py](./avg-modalities.py).
 
 **Task**: Ensure you have records stored in HDFS on the proper location. If not upload the records to HDFS.
-**Task**: Run the your Spark application on the cluster. What is the `payload.modality` average value for each station?
+**Task**: Run the Spark application on the cluster. What is the `payload.modality` average value for each station?
 
 ### Exercise 5 - Running Spark Streaming Jobs - Kafka
 
-The objective of this exercise is to create a Spark streaming job that reads from a Kafka topic. This exercise requires to have a Kafka producer which produces records in the a given topic. For convenience, we recommend revisiting the [exercise 4 from lecture 03](./../03/README.md#exercise-4---produce-messages-to-kafka-using-python).
+The objective of this exercise is to create a Spark streaming job that reads from a Kafka topic. This exercise requires to have a Kafka producer which produces records in the given topic. For convenience, we recommend revisiting the [exercise 4 from lecture 03](./../03/README.md#exercise-4---produce-messages-to-kafka-using-python).
 
 **Task**: Create a streaming query that calculates the running mean of the six different stations (`payload.sensor_id`) produced to the Kafka topic `INGESTION`.
 
 **Help**: You need to complete the query inside the [process-streaming.py](process-streaming.py) file.
-**Notice**: You need to append additional packages as arguments to run the Spark streaming application to read from kafka. You can enable an interactive Spark streaming promt using `pyspark` or submitting your final Spark application using `spark-submit` as demonstrated below:
+**Notice**: You need to append additional packages as arguments to run the Spark streaming application to read from kafka. You can enable an interactive Spark streaming prompt using `pyspark` or submitting your final Spark application using `spark-submit` as demonstrated below:
 
 ```bash
 pyspark --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.2
@@ -95,11 +95,11 @@ spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.2 process
 - [Operations on streaming DataFrames/Datasets](https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html#operations-on-streaming-dataframesdatasets)
 - [Structured Streaming + Kafka Integration Guide](https://spark.apache.org/docs/latest/structured-streaming-kafka-integration.html#structured-streaming-kafka-integration-guide-kafka-broker-versio)
 
-## Step by step guide to clean up
+## Step-by-step guide to clean up
 
 You will be using HDFS, Kafka, Spark and the interactive container in next lecture. However, if you will clean up the resources created in this lecture, you can follow the steps below:
 
-- Todays exercises.
+- Today's exercises.
   1. `helm delete spark`
   
 You can get a list of the pods and services to verify that they are deleted.

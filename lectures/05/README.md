@@ -39,7 +39,7 @@ helm install postgresql \
 
 ### Exercise 2 - Count words in Alice in Wonderland with Hive
 
-We will now analyze the Alice in Wonderland text similarly to what we did in [lecture 2 exercse 6-8](../02/exercises.md#exercise-6---analyzing-file-and-saving-result-in-json-format-using-python) and [lecture 4 exercise 3](../04/exercises.md#exercise-3---analyzing-files-using-spark-jobs) where we read the file from HDFS and counted words using Python and Spark respectively. But this time we will analyze the text using Hive.
+We will now analyze the Alice in Wonderland text similarly to what we did in [lecture 2 exercise 6-8](../02/README.md#exercise-7---analyzing-file-and-saving-result-in-json-format-using-python) and [lecture 4 exercise 3](../04/README.md#exercise-3---analyzing-files-using-spark-jobs) where we read the file from HDFS and counted words using Python and Spark respectively. But this time we will analyze the text using Hive.
 
 #### Upload file to HDFS
 
@@ -250,7 +250,7 @@ Now that a table has been created, we will now query it.
 
 **Task**: Get the first 100 rows of the CSV file.
 
-**Hint:** See [exercise 2](./exercises.md#exercise-2---count-words-in-alice-in-wonderland-with-hive).
+**Hint:** See [exercise 2](./README.md#exercise-2---count-words-in-alice-in-wonderland-with-hive).
 
 You should see 100 different disks and some information about them, such as the serial number, model and the capacity of them. The dataset contains a lot of columns, such as [S.M.A.R.T data](https://en.wikipedia.org/wiki/Self-Monitoring,_Analysis_and_Reporting_Technology) that contains information about the disks.
 
@@ -288,11 +288,11 @@ ORDER BY count DESC;
 The objective of this exercise is to interact with a NoSQL document-oriented database.
 We will be working with MongoDB which is great for storing JSON like records with or without schemas and the database is horizontal scalable.
 
-**Note**: We will deploying the minimum configuration for this database in order to reduce the recoruse footprint.
+**Note**: We will deploy the minimum configuration for this database in order to reduce the resource footprint.
 
-This exercise is composed of three parts starting with a deployment of the MongoDB cluster. Then we would like to revist Kafka Connect similar to [Exercise 06](./../03/exercises.md#exercise-6---kafka-connect-and-hdfs) from lecture 3. And finally we will look into querying JSON records in the database.
+This exercise is composed of three parts starting with a deployment of the MongoDB cluster. Then we would like to revisit Kafka Connect similar to [Exercise 06](./../03/README.md#exercise-7---kafka-connect-and-hdfs) from lecture 3. And finally we will look into querying JSON records in the database.
 
-The [mongodb.yaml](./mongodb.yaml) contains a complete manifest to compose a MongoDB cluster. The manifest includes the following recources:
+The [mongodb.yaml](./mongodb.yaml) contains a complete manifest to compose a MongoDB cluster. The manifest includes the following resources:
 
 ```yml
 - PersistentVolumeClaim: `mongodb-pvc`
@@ -309,7 +309,7 @@ The [mongodb.yaml](./mongodb.yaml) contains a complete manifest to compose a Mon
 ```
 
 **Task**: Familiarize yourself with the [mongodb.yaml](mongodb.yaml) manifest.
-**Note**: Our example includes a simple authentication mechanism. The username and password have been hardcoded into the [mongodb.yaml](mongodb.yaml) file. We do encurge you to apply a more sufisticated approach when you transfering into a production environment.
+**Note**: Our example includes a simple authentication mechanism. The username and password have been hardcoded into the [mongodb.yaml](mongodb.yaml) file. We do encourage you to apply a more sophisticated approach when you're transferring into a production environment.
 
 **Task**: Apply the [mongodb.yaml](mongodb.yaml) manifest to compose the MongoDB cluster.
 
@@ -412,22 +412,22 @@ After the completion of the port-forwarding, you are able to insert the followin
 
 Multiple approaches for interfacing with MongoDB have been covered in the previous section. Now you need to fill documents into the database before writing queries on the documents.
 
-The objective of this exercise is to configure a Kafka Connect connector that uses the `INGESTION` topic as a source and MongoDB as a sink. Therefore the exercise assumes you have records inside the `INGESTION` topic.
+The objective of this exercise is to configure a Kafka Connect connector that uses the `INGESTION` topic as a source and MongoDB as a sink. Therefore, the exercise assumes you have records inside the `INGESTION` topic.
 
-**Task**: If the `INGESTION` topic is empty we recommend revisiting [Exercise 03](./../03/exercises.md#exercise-3---produce-messages-to-kafka-using-python) from lecture 3 and re-establish the Kafka produce to create new records.
+**Task**: If the `INGESTION` topic is empty we recommend revisiting [Exercise 03](./../03/README.md#exercise-4---produce-messages-to-kafka-using-python) from lecture 3 and re-establish the Kafka produce to create new records.
 
 **Task**: Configure a Kafka Connect connector to move records from Kafka to MongoDB.
 
-**Hint:** This task can be solved with multiple approaches. Please start by revisiting the concept in [Exercise 06](./../03/exercises.md#exercise-6---kafka-connect-and-hdfs) from lecture 3.
+**Hint:** This task can be solved with multiple approaches. Please start by revisiting the concept in [Exercise 06](./../03/README.md#exercise-7---kafka-connect-and-hdfs) from lecture 3.
 
-**Hint:** Then read the documentation here: [Configure the Sink Connector](https://www.mongodb.com/docs/kafka-connector/current/tutorials/sink-connector/#configure-the-sink-connector). The documentation suggests to post the configuration to the Kafka Connect REST API, which is similar to the approach in [Exercise 06](./../03/exercises.md#exercise-6---kafka-connect-and-hdfs).
+**Hint:** Then read the documentation here: [Configure the Sink Connector](https://www.mongodb.com/docs/kafka-connector/current/tutorials/sink-connector/#configure-the-sink-connector). The documentation suggests to post the configuration to the Kafka Connect REST API, which is similar to the approach in [Exercise 06](./../03/README.md#exercise-7---kafka-connect-and-hdfs).
 
-**NB:** Remember to setup port-forwarding for the Kafka Connect REST API.
+**NB:** Remember to set up port-forwarding for the Kafka Connect REST API.
 
 <details>
 <summary><strong>Hint:</strong> Post configuration</summary>
 
-This example requires port-forwarding. Therefore ensure `kubectl port-forward svc/kafka-connect 8083` is running in a terminal on your local host.
+This example requires port-forwarding. Therefore, ensure `kubectl port-forward svc/kafka-connect 8083` is running in a terminal on your local host.
 
 Look into the configuration in the chunk below and execute the command in your terminal to create a Kafka Connect connector:
 
@@ -502,13 +502,13 @@ db.getCollection('INGESTION').find({ "payload": { $regex: /^{\"sensor_id\": 6/ }
 
 </details>
 
-**Task**: Formulize a question to answer about the documents in MongoDB and create a proper query to answer this question. Post the question and your solution in our Discord channel called "exercises".
+**Task**: Formalize a question to answer about the documents in MongoDB and create a proper query to answer this question. Post the question and your solution in our Discord channel called "exercises".
 
 ### Exercise 5 - Highly available and scalable Redis cluster
 
 We will now set up a highly available and scalable [Redis](https://redis.io/) cluster using [Redis Cluster](https://redis.io/docs/management/scaling/) and [Redis Sentinel](https://redis.io/docs/management/sentinel/). Redis is an open source, in-memory data structure store (key values), used as a database, cache, and message broker. Redis cluster is horizontally scalable and uses horizontal partitioning / sharding to store the different keys and values on different nodes.
 
-The cluster will consist of 6 nodes, 3 are the primary nodes, and the 3 other ones are replica nodes. The replicas will use [replication](https://redis.io/docs/management/replication/) and failover strategies in order to ensure data is available with minimal downtime. You can only write to primary nodes, no the replicas, but you can read from primary and replicas. This can also be used make the primary nodes focus on only writing data, and then move all reads to the replicas for maximum performance.
+The cluster will consist of 6 nodes, 3 are the primary nodes, and the 3 other ones are replica nodes. The replicas will use [replication](https://redis.io/docs/management/replication/) and fail over strategies in order to ensure data is available with minimal downtime. You can only write to primary nodes, no the replicas, but you can read from primary and replicas. This can also be used make the primary nodes focus on only writing data, and then move all reads to the replicas for maximum performance.
 
 We will use the [Bitnami Redis Cluster helm chart](https://artifacthub.io/packages/helm/bitnami/redis-cluster). To install the cluster, use the following command:
 
@@ -534,7 +534,7 @@ We will now create an interactive container that will be used to connect to the 
 kubectl run redis-cluster-client --rm --tty -i --env REDIS_PASSWORD=<password> --image docker.io/bitnami/redis-cluster:7.2.1-debian-11-r0 -- bash
 ```
 
-You can then use the following command inside of the interactive container to connect to the redis cluster using redis-cli:
+You can then use the following command inside the interactive container to connect to the redis cluster using redis-cli:
 
 ```bash
 redis-cli -c -h redis-redis-cluster -a $REDIS_PASSWORD
@@ -542,7 +542,7 @@ redis-cli -c -h redis-redis-cluster -a $REDIS_PASSWORD
 
 You are now connected to the redis cluster! Try to create a key using the [`SET` command](https://redis.io/commands/set/). For example, `SET foo "bar"`. This will create / overwrite a key with the name "foo" and give it the value "bar".
 
-When you write commands to Redis you should see that it tells you what host it ran the command on. This is because the keys are sharded accross the redis nodes based on the key used. So if you write using the key `foo` and then get the key again, it should redirect you to the same node.
+When you write commands to Redis you should see that it tells you what host it ran the command on. This is because the keys are sharded across the redis nodes based on the key used. So if you write using the key `foo` and then get the key again, it should redirect you to the same node.
 
 Try to compare the IP address to the IPs of the pods inside the Kubernetes cluster. Use the command `kubectl get pods -l app.kubernetes.io/instance=redis -o wide`. You should then be able to see what pod the value was written to by comparing the IPs.
 
@@ -554,7 +554,7 @@ You should see that you are still able to get the key even though the primary no
 
 To clean up the resources created in this lecture, you can follow the steps below:
 
-- Todays exercises.
+- Today's exercises.
   1. `kubectl delete pod redis-cluster-client`
   1. `helm uninstall redis`
   1. `kubectl delete pvc redis-data-redis-redis-cluster-0 \
