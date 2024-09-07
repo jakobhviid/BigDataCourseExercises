@@ -2,6 +2,7 @@ datahub-gms:
   enabled: true
   image:
     repository: linkedin/datahub-gms
+    tag: v0.11.0
   service:
     type: ClusterIP
   resources:
@@ -23,6 +24,7 @@ datahub-frontend:
   enabled: true
   image:
     repository: linkedin/datahub-frontend-react
+    tag: v0.11.0
   service:
     type: ClusterIP
   resources:
@@ -52,6 +54,7 @@ datahub-mae-consumer:
   enabled: true
   image:
     repository: linkedin/datahub-mae-consumer
+    tag: v0.11.0
   resources:
     limits:
       memory: 1536Mi
@@ -63,6 +66,7 @@ datahub-mce-consumer:
   enabled: true
   image:
     repository: linkedin/datahub-mce-consumer
+    tag: v0.11.0
   resources:
     limits:
       memory: 1536Mi
@@ -74,11 +78,13 @@ datahub-ingestion-cron:
   enabled: false
   image:
     repository: acryldata/datahub-ingestion
+    tag: v0.11.0
 
 elasticsearchSetupJob:
   enabled: true
   image:
     repository: linkedin/datahub-elasticsearch-setup
+    tag: v0.11.0
   resources:
     limits:
       cpu: 500m
@@ -105,6 +111,7 @@ kafkaSetupJob:
   enabled: true
   image:
     repository: linkedin/datahub-kafka-setup
+    tag: v0.11.0
   resources:
     limits:
       cpu: 500m
@@ -131,6 +138,7 @@ mysqlSetupJob:
   enabled: true
   image:
     repository: acryldata/datahub-mysql-setup
+    tag: v0.11.0
   resources:
     limits:
       cpu: 500m
@@ -157,6 +165,7 @@ datahubUpgrade:
   enabled: true
   image:
     repository: acryldata/datahub-upgrade
+    tag: v0.11.0
   batchSize: 1000
   batchDelayMs: 100
   noCodeDataMigration:
@@ -199,6 +208,7 @@ datahubUpgrade:
 datahubSystemUpdate:
   image:
     repository: acryldata/datahub-upgrade
+    tag: v0.11.0
   podSecurityContext: {} # fsGroup: 1000
   securityContext: {} # runAsUser: 1000
   annotations:

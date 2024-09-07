@@ -25,19 +25,19 @@ This exercise will compose a DataHub platform which you will use in the upcoming
 helm repo add datahub https://helm.datahubproject.io/
 ```
 
-**Task: Look into the [preq-values.yaml](preq-values.yaml) file and familize yourself with the four prerequisites components.**
+**Task: Look into the [preq-values.yaml](preq-values.yaml) file and familiarize yourself with the four prerequisites components.**
 
 DataHub is composed by four main components:
 - DataHub metadata service (known as GMS). A service written in Java consisting of multiple servlets:
     - A public GraphQL API for fetching and mutating objects on the metadata graph.
-    - A general-purpose Rest.li API for ingesting the underlying storage models composing the Metadata graph.
+    - A general-purpose Rest API for ingesting the underlying storage models composing the Metadata graph.
 - Metadata audit event (known as MAE) consumer job. An optional component. Its main function is to listen to change log events emitted as a result of changes made to the Metadata Graph, converting changes in the metadata model into updates against secondary search & graph indexes (among other things).
 - Metadata Change Event (known as MCE) consumer job. An optional component. Its main function is to listen to change proposal events emitted by clients of DataHub which request changes to the Metadata Graph. It then applies these requests against DataHub's storage layer: the Metadata Service.
 - DataHub frontend is a Play service written in Java. It is served as a mid-tier between DataHub GMS which is the backend service and DataHub Web.
 
 **Note:** *Text in above bullets have been copied from [DataHub Metadata Service](https://datahubproject.io/docs/metadata-service), [Metadata Audit Event Consumer Job](https://datahubproject.io/docs/metadata-jobs/mae-consumer-job), [Metadata Change Event Consumer Job](https://datahubproject.io/docs/metadata-jobs/mce-consumer-job), [DataHub Frontend Proxy](https://datahubproject.io/docs/datahub-frontend) respectively.*
 
-The main components are power by the following technoloiges:
+The main components are power by the following technologies:
 - Kafka
 - Local relational database: **MySQL**, Postgres, MariaDB
 - Search Index: Elasticsearch
@@ -86,6 +86,8 @@ Execute the following cmd: `helm install datahub datahub/datahub --values values
 
 **Note:** This may take several minutes. To keep track of the progress you can either run `kubectl get pods -w` or an alternative cmd like `watch -n1 kubectl get pods` in a secondary terminal session.
 
+**Note:** It can happen that the datahub-nocode-migration-job-XXXXX pod(s) can run more than once because it cannot connect to `datahub-gms` so please wait for one of the pods to say `Completed` 
+
 
 **Task: Clean up completed and possible failed pods.**
 
@@ -93,13 +95,18 @@ Execute the following cmd: `helm install datahub datahub/datahub --values values
 <summary><strong>Hint:</strong> Identify pods and delete using a field selector in Kubernetes.</summary>
 
 The first chunk will list pods that state are either `Succeeded` or `Failed`.
-```
-kubectl get pod --field-selector=status.phase==Succeeded,status.phase==Failed
-```
-The secound chunk will delete pods that state are either `Succeeded` or `Failed`.
-```
-kubectl delete pod --field-selector=status.phase==Succeeded,status.phase==Failed
-```
+````bash
+kubectl get pods --field-selector=status.phase==Succeeded
+kubectl get pods --field-selector=status.phase==Failed
+kubectl get jobs --field-selector=status.successful=1
+````
+The second chunk will delete pods that state are either `Succeeded` or `Failed`.
+````bash
+kubectl delete pod --field-selector=status.phase==Succeeded
+kubectl delete pod --field-selector=status.phase==Failed
+kubectl delete jobs --field-selector=status.successful=1
+````
+
 </details>
 
 **Task: Validate the MySQL database is running.**
@@ -109,8 +116,8 @@ Steps:
 1. Connect to the MySQL database with your favorite editor.
     - Host: `127.0.0.1`
     - Port: `3306`
-    - User: `mysql-username` created in the secret: `mysql-secrets`
-    - Password: `mysql-root-password` created in the secret: `mysql-secrets`
+    - User: `root` created in the secret: `mysql-secrets`
+    - Password: `datahubdatahub` created in the secret: `mysql-secrets`
     - Database: `datahub`
 1. Once you connect there should be a table called `metadata_aspect_v2` in the `datahub` MySQL database.
 
@@ -120,7 +127,7 @@ Steps:
 Steps:
 1. Set up port-forwarding: `kubectl port-forward svc/datahub-datahub-frontend 9002:9002`
 1. Connect to the fronted [localhost:9002](http://localhost:9002).
-1. Once you connect you should be able to login with:
+1. Once you connect you should be able to log in with:
     - Username: datahub
     - Password: datahub
 
@@ -142,9 +149,9 @@ The importance of organizing the metadata of the data sources has a direct impac
 1. A new domain that reflects the part of the organization you are interested in. E.g. `Engineering`.
 1. A new business glossary term group. E.g. `RD`.
 1. Append two terms in your newly created term group (`RD`) called `experiments` and `results`.
-1. Hereafter create one new term (`analysis`) that inherits from the `RD` term group. How do you expect `analysis` will fit in the hierarchy?
+1. Hereafter create one new term group (`analysis`) that inherits from the `RD` term group. How do you expect `analysis` will fit in the hierarchy?
 
-**Hint:** Watch this short session [DataHub 201: Business Glossary](https://youtu.be/pl9zx0CtdiU?si=1JLSC0C5uD7pOth2) on youtube to get a different explanation on this concept.
+**Hint:** Watch this short session [DataHub 201: Business Glossary](https://youtu.be/pl9zx0CtdiU?si=1JLSC0C5uD7pOth2) on YouTube to get a different explanation on this concept.
 
 **Task: BONUS: Create the same glossary terms in a yaml file.**
 
@@ -160,20 +167,20 @@ Here we can obtain an overview of the usage of the platform and various other st
 
 - What do see?
 
-**Task: Find metics for your newly added Domain.**
+**Task: Find metrics for your newly added Domain.**
 
 - Filter "Data Landscape Summary" to only include the `Engineering` domain and report the "Section Views across Entity Types" metrics to rest of the project group.
 
 ### Exercise 4 - Add a Kafka ingestion source
 
 We will now create an Ingestion source for a Kafka cluster.
-An ingestion source tells DataHub how to connect to a service and allows DataHub to collect metadata from the service. In the case of a given Kafka cluster, DataHub is collecting topic names. The DataHub platform can collect information about the record schema from a schema registry service. This is recommanded if you are using the Avro file format for the records in the topics.
+An ingestion source tells DataHub how to connect to a service and allows DataHub to collect metadata from the service. In the case of a given Kafka cluster, DataHub is collecting topic names. The DataHub platform can collect information about the record schema from a schema registry service. This is recommended if you are using the Avro file format for the records in the topics.
 
 **Note:** We are not using schema registry for this exercise session.
 
 **Task: Create a Kafka cluster and also deploy Redpanda.**
 
-**Hint:** Go back to [lecture 3 exercise 1](../03/exercises.md#exercise-1---composing-a-kafka-cluster) and deploy a Kafka cluster.
+**Hint:** Go back to [lecture 3 exercise 1](../03/README.md#exercise-1---deploy-a-kafka-cluster) and deploy a Kafka cluster.
 
 Once your Kafka cluster has been deployed, you can then add the cluster as an ingestion source in the DataHub platform.
 
@@ -185,10 +192,10 @@ Once your Kafka cluster has been deployed, you can then add the cluster as an in
 1. Click on "Create new source"
     1. Choose type: `Kafka`.
     1. Configure recipe:
-        1. Fill the field of Bootstrap Servers:
-            - `preq-kafka:9092` using the internal Kafka cluster in the DataHub plarform
-            - `strimzi-kafka-bootstrap.kafka:9092` if you will you the approach from [lecture 3 exercise 1](../03/exercises.md#exercise-1---composing-a-kafka-cluster).
-        1. Enable stateful ingestion under the advaced settings.
+        1. Fill the field with Bootstrap Servers:
+            - `preq-kafka:9092` using the internal Kafka cluster in the DataHub platform
+            - `kafka:9092` if you will you the approach from [lecture 3 exercise 1](../03/README.md#exercise-1---deploy-a-kafka-cluster).
+        1. Enable stateful ingestion under the advanced settings.
         1. This will end up in a similar configuration as below:
             ```yaml
             source:
@@ -200,7 +207,6 @@ Once your Kafka cluster has been deployed, you can then add the cluster as an in
                     bootstrap: 'preq-kafka:9092'
                 stateful_ingestion:
                     enabled: true
-
             ```
     1. Schedule Ingestion: Toggle "Run on a schedule"
     1. Finish up: Provide a name (`Kafka`) for your ingestion source.
@@ -213,7 +219,7 @@ Once your Kafka cluster has been deployed, you can then add the cluster as an in
 
 **Task: Look at the Kafka platform.**
 
-You may or may not see any topcs for Kafka on Datahub. If there are no topics, then it is because your Kafka cluster has no topics. Try to create a topic.
+You may or may not see any topics for Kafka on Datahub. If there are no topics, then it is because your Kafka cluster has no topics. Try to create a topic.
 
 **Task: Create a Kafka topic (Optional).**
 
@@ -222,12 +228,12 @@ Now that you have created a topic you can then try to check if it is available o
 **Task: Manually trigger the ingestion source.**
 
 You can manually trigger the ingestion source here [localhost:9002/ingestion](http://localhost:9002/ingestion).
-When it is done, you can look for the your newly created topic and this topic should be explorable in Datahub.
+When it is done, you can look for the newly created topic and this topic should be explorable in Datahub.
 
 **Task: Enrich the metadata for a Kafka topic.**
 
 1. Select a given topic.
-1. Update the metadata fields for the given topic. If the current tags, terms, domains etc. is not suffienct. Then add additional tags, terms and domains to represent the given topic.
+1. Update the metadata fields for the given topic. If the current tags, terms, domains etc. is not sufficient. Then add additional tags, terms and domains to represent the given topic.
     - About
     - Owners
     - Tags
@@ -238,10 +244,10 @@ When it is done, you can look for the your newly created topic and this topic sh
 ### Exercise 5 - Add a MySQL database as ingestion source
 This exercise is about adding a secondary ingestion source. The source is an already existing MySQL database.
 
-**Task: Create an ingestion source for the MySQL databse cluster.**
+**Task: Create an ingestion source for the MySQL database cluster.**
 
 1. Navigate to [localhost:9002/ingestion](http://localhost:9002/ingestion).
-1. Create a secret for the database password. Click on "Create new srecet" in the Secrets tab.
+1. Create a secret for the database password. Click on "Create new secret" in the Secrets tab.
     1. Provide a name: `pw-mysl-db`
     1. Provide the database password generated in [Exercise 1](#exercise-1---compose-a-datahub-platform).
     1. Click Create.
@@ -277,6 +283,8 @@ This exercise is about adding a secondary ingestion source. The source is an alr
     1. Finish up: Provide a name (`MySQL`) for your ingestion source.
 1. Once you have created the ingestion source it will then run. Make sure that the run is succeeded. If not then you can check the logs to figure out the problem.
 
+**Note:** If you get the error `sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1045, "Access denied for user 'root'@'10.1.155.37' (using password: YES)")`, just have the MySQL password as plaintext
+
 ### Exercise 6 - Adding a custom dataset to DataHub
 The objective of this exercise is to add a custom dataset to DataHub. The exercise consists of an already complete example. However, you are more than welcome to modify the existing example to fit your selected project.
 
@@ -286,7 +294,7 @@ The example is about tracking experiments. In this case, a simple experiment whe
 Decide whether to go with the existing example or modify and create your content to match to project.
 
 **Task: Familiarize your self with [hints/experiment.py](./hints/experiment.py) Python file.**
-- Which framework is used to interact with the databse?
+- Which framework is used to interact with the database?
 
 **Task: Denote the schemas for the `experiment` and `results` tables in the database.**
 
@@ -311,7 +319,7 @@ Decide whether to go with the existing example or modify and create your content
 
 **Task: Validate the three newly created datasets in the MySQL platform.**
 
-**Hint:** Nagivate to [http://localhost:9002/search?filter_platform=urn:li:dataPlatform:mysql](http://localhost:9002/search?filter_platform=urn:li:dataPlatform:mysql)
+**Hint:** Navigate to [http://localhost:9002/search?filter_platform=urn:li:dataPlatform:mysql](http://localhost:9002/search?filter_platform=urn:li:dataPlatform:mysql)
 
 **Task: Update metadata to the three newly created datasets.**
 
@@ -328,7 +336,7 @@ Decide whether to go with the existing example or modify and create your content
 #### Exercise 6.3 - Enable data provenance
 Data provenance is important in analytical applications to understand underlying dependencies. The objective of this sub-exercise is to update the lineage between the three newly created datasets.
 
-This exercise is motivated and inspired by [About DataHub Lineage](https://datahubproject.io/docs/lineage/lineage-feature-guide/) and [Lineage - Why Would You Use Lineage?](https://datahubproject.io/docs/api/tutorials/lineage/). There is a Python file here: [hints/linage.py](./hints/linage.py) which updates the lineage between the three datasets.
+This exercise is motivated and inspired by [About DataHub Lineage](https://datahubproject.io/docs/lineage/lineage-feature-guide/) and [Lineage - Why Would You Use Lineage?](https://datahubproject.io/docs/api/tutorials/lineage/). There is a Python file here: [hints/linage.py](./hints/lineage.py) which updates the lineage between the three datasets.
 
 **Task: Familiarize yourself with [hints/lineage.py](./hints/lineage.py) Python file.**
 
@@ -336,7 +344,7 @@ This exercise is motivated and inspired by [About DataHub Lineage](https://datah
 
 **Note:** This task assumes you already have access to Datahub GMS from your localhost. If not please enable the port-forwarding: `kubectl port-forward svc/datahub-datahub-gms 8080:8080`.
 
-**Task: Navigate to [View/MySQL/datahub/analysis - lineage](http://localhost:9002/dataset/urn:li:dataset:(urn:li:dataPlatform:mysql,datahub.analysis,PROD)/Schema?end_time_millis&is_lineage_mode=true&schemaFilter=&start_time_millis) and identify the two upstram datasets.**
+**Task: Navigate to [View/MySQL/datahub/analysis - lineage](http://localhost:9002/dataset/urn:li:dataset:(urn:li:dataPlatform:mysql,datahub.analysis,PROD)/Schema?end_time_millis&is_lineage_mode=true&schemaFilter=&start_time_millis) and identify the two upstream datasets.**
 
 **Task: Navigate to [View/MySQL/datahub/analysis - lineage](http://localhost:9002/dataset/urn:li:dataset:(urn:li:dataPlatform:mysql,datahub.analysis,PROD)/Schema?end_time_millis&is_lineage_mode=true&schemaFilter=&start_time_millis) and take a screenshot.**
 
@@ -349,14 +357,39 @@ We are now interested in updating to column-level lineage from the general linea
 
 **Task: Create a new Python file which encounter for column-level lineage.**
 
-**Hint: You may look into [Exercise 6.1](#exercise-61---Simulate-experiments) and examene the `analyis` view to understand the lineage bewteen the three datasets.**
+**Hint: You may look into [Exercise 6.1](#exercise-61---Simulate-experiments) and examine the `analyis` view to understand the lineage between the three datasets.**
 
 ## Clean up - So far so good. 💪🏼
 You are able to clean up your environment by running the commands in the chunk below:
 
-```
-helm uninstall datahub
-helm uninstall preq
+- Today's exercises.
+  1. `helm uninstall datahub`
+  1. `helm uninstall preq`
+  1. `kubectl delete secret mysql-secrets`
+  1. `kubectl delete secret neo4j-secrets`
+  1. `kubectl delete pvc data-preq-kafka-broker-0`
+  1. `kubectl delete pvc data-preq-mysql-0`
+  1. `kubectl delete pvc data-preq-neo4j-0`
+  1. `kubectl delete pvc data-preq-zookeeper-0`
+  1. `kubectl delete pvc elasticsearch-master-elasticsearch-master-0`
+  
+- `cd` into the `lecture/03` folder in the repository (in case you installed the Kafka cluster manually)
+    1. `kubectl delete -f redpanda.yaml`
+    1. `kubectl delete -f kafka-schema-registry.yaml`
+    1. `kubectl delete -f kafka-connect.yaml`
+    1. `kubectl delete -f kafka-ksqldb.yaml`
+    1. `helm uninstall kafka`
+    1. `kubectl delete pvc data-kafka-controller-0 \
+      data-kafka-controller-1 \
+      data-kafka-controller-2
+        `
 
-kubectl delete namespace meta
-```
+You can get a list of the resources to verify that they are deleted.
+
+- `kubectl get pods`
+- `kubectl get services`
+- `kubectl get deployments`
+- `kubectl get statefulsets`
+- `kubectl get configmap`
+- `kubectl get secret` (DO NOT DELETE `<NAMESPACE>-sa-manual-secret`, you WILL lose access to the Kubernetes cluster)
+- `kubectl get pvc`
