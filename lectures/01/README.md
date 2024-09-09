@@ -118,7 +118,14 @@ You read more about the CLI and how to install it here: [install kubectl](https:
 
 #### The kubeconfig file
 
-You will receive a kubeconfig file before starting on lecture 1. Your personal config file will be shared by email and is needed to access the Kubernetes cluster. The kubeconfig file contains the necessary information to connect to the cluster and authenticate with it. The file is used by the `kubectl` CLI to connect to the cluster.
+You will receive a kubeconfig file before starting on lecture 1. Your personal config file will be shared by email and is needed to access the Kubernetes cluster.
+
+The kubeconfig file is located in the `~/.kube` directory in your home directory. The file is named `config` and is used by default when running the `kubectl` command.
+The kubeconfig file contains the necessary information to connect to the cluster and authenticate with it. The file is used by the `kubectl` CLI to connect to the cluster.
+
+**Task**: Please update the `~/.kube/config` file with the provided content.
+
+**Note**: You are able to specify the kubeconfig file to use by using the `--kubeconfig` flag.
 
 #### Wrap up
 
