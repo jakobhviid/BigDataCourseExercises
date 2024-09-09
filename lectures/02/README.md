@@ -193,7 +193,7 @@ We will now try to save a Parquet file to HDFS.
 
 1. Copy the script to the interactive container.
 1. Install required libraries (if needed).
-1. Run the [`counting-avro.py`](./counting-avro.py) file.
+1. Run the [`counting-parquet`](./counting-parquet.py) file.
 1. Read and output the result of the stored files directly from HDFS using HDFS CLI.
     1. How many column do the dataframe have?
 
