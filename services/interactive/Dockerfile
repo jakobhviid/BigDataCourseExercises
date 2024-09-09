@@ -18,6 +18,7 @@ RUN apt-get update && apt install software-properties-common -yq tzdata \
     && apt install -y curl \
     && curl -sS https://bootstrap.pypa.io/get-pip.py | python3.12 \
     && update-alternatives --install /usr/bin/python python /usr/bin/python3.12 1 \
+    && update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1 \
     # Install HDFS CLI
     && curl -O https://archive.apache.org/dist/hadoop/common/hadoop-3.2.1/hadoop-3.2.1.tar.gz \
     && tar xzf hadoop-3.2.1.tar.gz \
