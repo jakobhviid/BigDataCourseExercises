@@ -183,7 +183,7 @@ To manually scale a deployment, you would modify the `replicas` field of the dep
 
 When scaling the amount of replicas, the service will automatically start/stop routing traffic to the new/old pods without disrupting existing connections.
 
-### Exercise 5 - Deploy application using Helm
+### Exercise 5 - Deploy the application using Helm
 
 [Helm](https://helm.sh/) is a package manager for Kubernetes. Helm simplifies the process of deploying and managing applications on Kubernetes by providing a standardized way to package, distribute and manage Kubernetes resources. Helm packares are called "charts". A chart is a collection of files that describes a set of Kubernetes resources along with configurations. Charts can be customized to suit specific deployment requirements.
 
