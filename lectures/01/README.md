@@ -139,7 +139,7 @@ Inspect the yaml manifest and understand the different parts of it:
 Now that you have looked through the yaml you may have figured out the following:
 
 - The deployment creates 3 pods.
-- The pods have 3 environment variables that uses a `fieldRef`.
+- The pods have 3 environment variables that use a `fieldRef`.
 - The container listens on port 8080.
 - The service listens for traffic on port 8080 and routes it to port 8080 inside the pod.
 
