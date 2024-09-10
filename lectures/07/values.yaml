@@ -1,13 +1,10 @@
 datahub-gms:
   enabled: true
   image:
-    repository: linkedin/datahub-gms
-    tag: v0.11.0
-  service:
-    type: ClusterIP
+    repository: acryldata/datahub-gms
   resources:
     limits:
-      memory: 2Gi
+      memory: 1Gi
     requests:
       cpu: 100m
       memory: 1Gi
@@ -19,14 +16,26 @@ datahub-gms:
     initialDelaySeconds: 120
     periodSeconds: 30
     failureThreshold: 8
+  # Optionaly specify service type for datahub-gms: LoadBalancer, ClusterIP or NodePort, by default: LoadBalancer
+  # service:
+  #   type: ClusterIP
+  # Optionally set a GMS specific SQL login (defaults to global login)
+  # sql:
+  #   datasource:
+  #     username: "gms-login"
+  #     password:
+  #       secretRef: gms-secret
+  #       secretKey: gms-password
 
 datahub-frontend:
   enabled: true
   image:
-    repository: linkedin/datahub-frontend-react
-    tag: v0.11.0
-  service:
-    type: ClusterIP
+    repository: acryldata/datahub-frontend-react
+    # tag: "v0.11.0" # # defaults to .global.datahub.version
+    # Add custom command / arguments to this job.  Useful if you need a custom startup or shutdown script
+    # to run
+    # command: customCommand
+    # args: []
   resources:
     limits:
       memory: 1400Mi
@@ -37,12 +46,30 @@ datahub-frontend:
   ingress:
     enabled: false
   defaultUserCredentials: {}
+  service:
+    extraLabels: {}
+    # randomAdminPassword: true
+    # You can also set specific passwords for default users
+    manualValues: |
+      datahub:manualPassword
+    #   initialViewer:manualPassword
+  # Optionaly specify service type for datahub-frontend: LoadBalancer, ClusterIP or NodePort, by default: LoadBalancer
+  # service:
+  #   type: ClusterIP
 
 acryl-datahub-actions:
   enabled: true
   image:
     repository: acryldata/datahub-actions
-    tag: "v0.0.11"
+    tag: "v0.1.0"
+    # Add custom command / arguments to this job.  Useful if you need a custom startup or shutdown script
+    # to run
+    # command: customCommand
+    # args: []
+  # mount the k8s secret as a volume in the container, each key name is mounted as a file on the mount path /etc/datahub/ingestion-secret-files
+  # ingestionSecretFiles:
+  #   name: ${K8S_SECRET_NAME}
+  #   defaultMode: "0444"
   resources:
     limits:
       memory: 512Mi
@@ -51,10 +78,13 @@ acryl-datahub-actions:
       memory: 256Mi
 
 datahub-mae-consumer:
-  enabled: true
   image:
-    repository: linkedin/datahub-mae-consumer
-    tag: v0.11.0
+    repository: acryldata/datahub-mae-consumer
+    # tag: "v0.11.0" # defaults to .global.datahub.version
+    # Add custom command / arguments to this job.  Useful if you need a custom startup or shutdown script
+    # to run
+    # command: customCommand
+    # args: []
   resources:
     limits:
       memory: 1536Mi
@@ -63,10 +93,13 @@ datahub-mae-consumer:
       memory: 256Mi
 
 datahub-mce-consumer:
-  enabled: true
   image:
-    repository: linkedin/datahub-mce-consumer
-    tag: v0.11.0
+    repository: acryldata/datahub-mce-consumer
+    # tag: "v0.11.0" # defaults to .global.datahub.version
+    # Add custom command / arguments to this job.  Useful if you need a custom startup or shutdown script
+    # to run
+    # command: customCommand
+    # args: []
   resources:
     limits:
       memory: 1536Mi
@@ -78,13 +111,17 @@ datahub-ingestion-cron:
   enabled: false
   image:
     repository: acryldata/datahub-ingestion
-    tag: v0.11.0
+    # tag: "v0.11.0" # defaults to .global.datahub.version
 
 elasticsearchSetupJob:
   enabled: true
   image:
-    repository: linkedin/datahub-elasticsearch-setup
-    tag: v0.11.0
+    repository: acryldata/datahub-elasticsearch-setup
+    # tag: "v0.11.0" # defaults to .global.datahub.version
+    # Add custom command / arguments to this job.  Useful if you need a custom startup or shutdown script
+    # to run
+    # command: customCommand
+    # args: []
   resources:
     limits:
       cpu: 500m
@@ -104,14 +141,25 @@ elasticsearchSetupJob:
     helm.sh/hook-weight: "-5"
     helm.sh/hook-delete-policy: before-hook-creation
   podAnnotations: {}
+  # If you want to use OpenSearch instead of ElasticSearch add the USE_AWS_ELASTICSEARCH environment variable below
+  # extraEnvs:
+  #   - name: USE_AWS_ELASTICSEARCH
+  #     value: "true"
   # Add extra sidecar containers to job pod
   extraSidecars: []
+    # - name: my-image-name
+    #   image: my-image
+    #   imagePullPolicy: Always
 
 kafkaSetupJob:
   enabled: true
   image:
-    repository: linkedin/datahub-kafka-setup
-    tag: v0.11.0
+    repository: acryldata/datahub-kafka-setup
+    # tag: "v0.11.0" # defaults to .global.datahub.version
+    # Add custom command / arguments to this job.  Useful if you need a custom startup or shutdown script
+    # to run
+    # command: customCommand
+    # args: []
   resources:
     limits:
       cpu: 500m
@@ -133,12 +181,19 @@ kafkaSetupJob:
   podAnnotations: {}
   # Add extra sidecar containers to job pod
   extraSidecars: []
+    # - name: my-image-name
+    #   image: my-image
+    #   imagePullPolicy: Always
 
 mysqlSetupJob:
   enabled: true
   image:
     repository: acryldata/datahub-mysql-setup
-    tag: v0.11.0
+    # tag: "v0.11.0" # defaults to .global.datahub.version
+    # Add custom command / arguments to this job.  Useful if you need a custom startup or shutdown script
+    # to run
+    # command: customCommand
+    # args: []
   resources:
     limits:
       cpu: 500m
@@ -158,20 +213,80 @@ mysqlSetupJob:
     helm.sh/hook-weight: "-5"
     helm.sh/hook-delete-policy: before-hook-creation
   podAnnotations: {}
+  # Optionally set a set-up job specific login (defaults to global login)
+  # username: "mysqlSetupJob-login"
+  # password:
+  #   secretRef: mysqlSetupJob-secret
+  #   secretKey: mysqlSetupJob-password
+  # Add extra sidecar containers to job pod
   extraSidecars: []
+    # - name: my-image-name
+    #   image: my-image
+    #   imagePullPolicy: Always
+
+postgresqlSetupJob:
+  enabled: false
+  image:
+    repository: acryldata/datahub-postgres-setup
+    # tag: "v0.11.0" # defaults to .global.datahub.version
+    # Add custom command / arguments to this job.  Useful if you need a custom startup or shutdown script
+    # to run
+    # command: customCommand
+    # args: []
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 300m
+      memory: 256Mi
+  extraInitContainers: []
+  podSecurityContext:
+    fsGroup: 1000
+  securityContext:
+    runAsUser: 1000
+  annotations:
+    # This is what defines this resource as a hook. Without this line, the
+    # job is considered part of the release.
+    helm.sh/hook: pre-install,pre-upgrade
+    helm.sh/hook-weight: "-5"
+    helm.sh/hook-delete-policy: before-hook-creation
+  podAnnotations: {}
+  # Optionally set a set-up job specific login (defaults to global login)
+  # username: "postgresqlSetupJob-login"
+  # password:
+  #   secretRef: postgresqlSetupJob-secret
+  #   secretKey: postgresqlSetupJob-password
+  # Add extra sidecar containers to job pod
+  extraSidecars: []
+    # - name: my-image-name
+    #   image: my-image
+    #   imagePullPolicy: Always
+  # Optionally set a specific database using extraEnvs
+  # extraEnvs: []
+  #   - name: "DATAHUB_DB_NAME"
+  #     value: "dh"
 
 ## No code data migration
 datahubUpgrade:
   enabled: true
   image:
     repository: acryldata/datahub-upgrade
-    tag: v0.11.0
+    # tag: "v0.11.0"  # defaults to .global.datahub.version
   batchSize: 1000
   batchDelayMs: 100
   noCodeDataMigration:
+    image:
+      # Add custom command / arguments to this job.  Useful if you need a custom startup or shutdown script
+      # to run
+      command:
+      args: []
     sqlDbType: "MYSQL"
-  podSecurityContext: {} # fsGroup: 1000
-  securityContext: {} # runAsUser: 1000
+    # sqlDbType: "POSTGRES"
+  podSecurityContext: {}
+    # fsGroup: 1000
+  securityContext: {}
+    # runAsUser: 1000
   annotations:
     # This is what defines this resource as a hook. Without this line, the
     # job is considered part of the release.
@@ -181,7 +296,15 @@ datahubUpgrade:
   podAnnotations: {}
   # Add extra sidecar containers to job pod
   extraSidecars: []
+    # - name: my-image-name
+    #   image: my-image
+    #   imagePullPolicy: Always
   cleanupJob:
+    image:
+      # Add custom command / arguments to this job.  Useful if you need a custom startup or shutdown script
+      # to run
+      command:
+      args: []
     resources:
       limits:
         cpu: 500m
@@ -189,9 +312,19 @@ datahubUpgrade:
       requests:
         cpu: 300m
         memory: 256Mi
+    # Add the concurrency Policy flexibility via values
+    concurrencyPolicy: Allow
     # Add extra sidecar containers to job pod
     extraSidecars: []
+      # - name: my-image-name
+      #   image: my-image
+      #   imagePullPolicy: Always
   restoreIndices:
+    image:
+      # Add custom command / arguments to this job.  Useful if you need a custom startup or shutdown script
+      # to run
+      command:
+      args: []
     resources:
       limits:
         cpu: 500m
@@ -199,8 +332,19 @@ datahubUpgrade:
       requests:
         cpu: 300m
         memory: 256Mi
+    # Schedule of CronJob when enabled
+    schedule: "0 0 * * 0"
+    # Add the concurrency Policy flexibility via values
+    concurrencyPolicy: Allow
     # Add extra sidecar containers to job pod
     extraSidecars: []
+      # - name: my-image-name
+      #   image: my-image
+      #   imagePullPolicy: Always
+    # Optionally set a specific PostgreSQL database name using extraEnvs
+    # extraEnvs:
+    #   - name: "DATAHUB_DB_NAME"
+    #    value: "dh"
   extraInitContainers: []
 
 ## Runs system update processes
@@ -208,15 +352,40 @@ datahubUpgrade:
 datahubSystemUpdate:
   image:
     repository: acryldata/datahub-upgrade
-    tag: v0.11.0
-  podSecurityContext: {} # fsGroup: 1000
-  securityContext: {} # runAsUser: 1000
+    # tag:
+    # Add custom command / arguments to this job.  Useful if you need a custom startup or shutdown script
+    # to run
+    # command: customCommand
+    # args: []
+  podSecurityContext: {}
+    # fsGroup: 1000
+  securityContext: {}
+    # runAsUser: 1000
   annotations:
     # This is what defines this resource as a hook. Without this line, the
     # job is considered part of the release.
     helm.sh/hook: pre-install,pre-upgrade
     helm.sh/hook-weight: "-4"
     helm.sh/hook-delete-policy: before-hook-creation
+  # !! Requires version v0.13.0 or greater
+  # Split the system update into 2 jobs, one that is blocking the rest of
+  # the deployment and the other which is non-blocking. Once the blocking
+  # steps are completed, the non-blocking job runs while the rest of the
+  # system is starting.
+  nonblocking:
+    enabled: false
+    # When mode = 'nonblocking' the nonblocking job should not include the above helm.sh/hook annotations
+    annotations:
+      # This is what defines this resource as a hook. Without this line, the
+      # job is considered part of the release.
+      helm.sh/hook: post-install,post-upgrade
+      helm.sh/hook-delete-policy: before-hook-creation
+    image:
+      args:
+      # Add custom command / arguments to this job.  Useful if you need a custom startup or shutdown script
+      # to run
+      # command: customCommand
+      # args: []
   podAnnotations: {}
   resources:
     limits:
@@ -227,6 +396,9 @@ datahubSystemUpdate:
       memory: 256Mi
   # Add extra sidecar containers to job pod
   extraSidecars: []
+    # - name: my-image-name
+    #   image: my-image
+    #   imagePullPolicy: Always
   extraInitContainers: []
 
 global:
@@ -234,9 +406,12 @@ global:
   graph_service_impl: elasticsearch
   datahub_analytics_enabled: true
   datahub_standalone_consumers_enabled: false
+  imageRegistry: "docker.io"
 
   elasticsearch:
     host: "elasticsearch-master"
+    # If you want to use OpenSearch instead of ElasticSearch use different hostname below
+    # host: "opensearch-cluster-master"
     port: "9200"
     skipcheck: "false"
     insecure: "false"
@@ -256,8 +431,18 @@ global:
 
       ## Index settings can be overridden for entity indices or other indices on an index by index basis
       ## Some index settings, such as # of shards, requires reindexing while others, i.e. replicas, do not
+      ## The index settings options can be specified as a string or a map (which is converted to a string
+      ## representation)
+      ##
       ## Non-Entity indices do not require the prefix
       # settingsOverrides: '{"graph_service_v1":{"number_of_shards":"5"},"system_metadata_service_v1":{"number_of_shards":"5"}}'
+      ## or
+      # settingsOverrides:
+      #   graph_service_v1:
+      #     number_of_shards: '5'
+      #   system_metadata_service_v1:
+      #     number_of_shards: '6'
+      #
       ## Entity indices do not require the prefix or suffix
       # entitySettingsOverrides: '{"dataset":{"number_of_shards":"10"}}'
 
@@ -324,7 +509,7 @@ global:
 
           queryConfigurations:
             # Select *
-            - queryRegex: "[*]|"
+            - queryRegex: '[*]|'
               simpleQuery: false
               prefixMatchQuery: false
               exactMatchQuery: false
@@ -386,10 +571,10 @@ global:
 
   kafka:
     bootstrap:
-      server: "preq-kafka:9092"
+      server: "kafka:9092"
     zookeeper:
       enabled: false
-      # server: "preq-zookeeper:2181"
+      # server: "prerequisites-zookeeper:2181"
     # This section defines the names for the kafka topics that DataHub depends on, at a global level. Do not override this config
     # at a sub-chart level.
     topics:
@@ -403,55 +588,103 @@ global:
       metadata_change_log_timeseries_topic_name: "MetadataChangeLog_Timeseries_v1"
       platform_event_topic_name: "PlatformEvent_v1"
       datahub_upgrade_history_topic_name: "DataHubUpgradeHistory_v1"
-    ## For production set this to a number larger than 1
+    metadataChangeLog:
+      hooks:
+        siblings:
+          enabled: true
+          consumerGroupSuffix: ''
+        updateIndices:
+          enabled: true
+          consumerGroupSuffix: ''
+        ingestionScheduler:
+          enabled: true
+          consumerGroupSuffix: ''
+        incidents:
+          enabled: true
+          consumerGroupSuffix: ''
+        entityChangeEvents:
+          enabled: true
+          consumerGroupSuffix: ''
+        forms:
+          enabled: true
+          consumerGroupSuffix: ''
+    maxMessageBytes: "5242880"  # 5MB
+    producer:
+      compressionType: none
+      maxRequestSize: "5242880"  # 5MB
+    consumer:
+      maxPartitionFetchBytes: "5242880"  # 5MB
+      stopContainerOnDeserializationError: true
+    ## For AWS MSK set this to a number larger than 1
     # partitions: 3
     # replicationFactor: 3
     schemaregistry:
-      # GMS Implementation - `url` configured based on component context
       type: INTERNAL
       # Confluent Kafka Implementation
       # type: KAFKA
-      # url: "http://preq-cp-schema-registry:8081"
+      # url: "http://prerequisites-cp-schema-registry:8081"
 
   neo4j:
-    host: "preq-neo4j:7474"
-    uri: "bolt://preq-neo4j"
-    usernameFromSecret: neo4j-secrets
-    passwordFromSecret: neo4j-secrets
+    host: "prerequisites-neo4j:7474"
+    uri: "bolt://prerequisites-neo4j"
+    username: "neo4j"
+    password:
+      secretRef: neo4j-secrets
+      secretKey: neo4j-password
 
   sql:
     datasource:
-      host: "preq-mysql:3306"
-      hostForMysqlClient: "preq-mysql"
+      host: "prerequisites-mysql:3306"
+      hostForMysqlClient: "prerequisites-mysql"
       port: "3306"
-      url: "jdbc:mysql://preq-mysql:3306/datahub?verifyServerCertificate=false&useSSL=true&useUnicode=yes&characterEncoding=UTF-8&enabledTLSProtocols=TLSv1.2"
+      url: "jdbc:mysql://prerequisites-mysql:3306/datahub?verifyServerCertificate=false&useSSL=true&useUnicode=yes&characterEncoding=UTF-8&enabledTLSProtocols=TLSv1.2"
       driver: "com.mysql.cj.jdbc.Driver"
-      usernameFromSecret: mysql-secrets
-      passwordFromSecret: mysql-secrets
+      username: "root"
+      password:
+        secretRef: mysql-secrets
+        secretKey: mysql-root-password
 
   datahub:
-    version: v0.11.0
+    version: v0.14.0.2
     gms:
+      protocol: "http"
       port: "8080"
       nodePort: "30001"
+
+    frontend:
+      validateSignUpEmail: true
+
     monitoring:
       enablePrometheus: true
+      # Set a custom name for the monitoring port
+      portName: jmx
+
     mae_consumer:
       port: "9091"
       nodePort: "30002"
+
     appVersion: "1.0"
     systemUpdate:
+      ## The following options control settings for datahub-upgrade job which will
+      ## managed ES indices and other update related work
       enabled: true
+
     encryptionKey:
       secretRef: "datahub-encryption-secrets"
       secretKey: "encryption_key_secret"
+      # Set to false if you'd like to provide your own secret.
       provisionSecret:
         enabled: true
         autoGenerate: true
         annotations: {}
+      # Only specify if autoGenerate set to false
+      #  secretValues:
+      #    encryptionKey: <encryption key value>
+
     managed_ingestion:
       enabled: true
-      defaultCliVersion: "0.11.0"
+      defaultCliVersion: "0.14.0"
+
     metadata_service_authentication:
       enabled: false
       systemClientId: "__datahub_system"
@@ -465,16 +698,80 @@ global:
         salt:
           secretRef: "datahub-auth-secrets"
           secretKey: "token_service_salt"
+      # Set to false if you'd like to provide your own auth secrets
       provisionSecrets:
         enabled: true
         autoGenerate: true
         annotations: {}
-    # Enables always emitting a MCL even when no changes are detected. Used for Time Based Lineage when no changes occur.
+      # Only specify if autoGenerate set to false
+      #  secretValues:
+      #    secret: <secret value>
+      #    signingKey: <signing key value>
+      #    salt: <salt value>
+
+    ## Enables always emitting a MCL even when no changes are detected. Used for Time Based Lineage when no changes occur.
     alwaysEmitChangeLog: false
-    # Enables diff mode for graph writes, uses a different code path that produces a diff from previous to next to write relationships instead of wholesale deleting edges and reading
+
+    ## Enables diff mode for graph writes, uses a different code path that produces a diff from previous to next to write relationships instead of wholesale deleting edges and reading
     enableGraphDiffMode: true
-    # Values specific to the unified search and browse feature.
+
+    ## Values specific to the unified search and browse feature.
     search_and_browse:
-      show_search_v2: true # If on, show the new search filters experience as of v0.10.5
-      show_browse_v2: true # If on, show the new browse experience as of v0.10.5
-      backfill_browse_v2: true # If on, run the backfill upgrade job that generates default browse paths for relevant entities
+      show_search_v2: true  # If on, show the new search filters experience as of v0.10.5
+      show_browse_v2: true  # If on, show the new browse experience as of v0.10.5
+      backfill_browse_v2: true  # If on, run the backfill upgrade job that generates default browse paths for relevant entities
+
+    ## v0.13.4+
+    mcp:
+      throttle:
+        # updateIntervalMs: 60000
+        ## Versioned MCL topic
+        versioned:
+          ## Whether to throttle MCP processing based on MCL backlog
+          enabled: true
+        #  threshold: 4000
+        #  maxAttempts: 1000
+        #  initialIntervalMs: 100
+        #  multiplier: 10
+        #  maxIntervalMs:  30000
+        # Timeseries MCL topic
+        timeseries:
+          ## Whether to throttle MCP processing based on MCL backlog
+          enabled: false
+        #  threshold: 4000
+        #  maxAttempts: 1000
+        #  initialIntervalMs: 100
+        #  multiplier: 10
+        #  maxIntervalMs: 30000
+
+#  hostAliases:
+#    - ip: "192.168.0.104"
+#      hostnames:
+#        - "broker"
+#        - "mysql"
+#        - "postgresql"
+#        - "elasticsearch"
+#        - "neo4j"
+
+## Add below to enable SSL for kafka
+#  credentialsAndCertsSecrets:
+#    name: datahub-certs
+#    path: /mnt/datahub/certs
+#    secureEnv:
+#      ssl.key.password: datahub.linkedin.com.KeyPass
+#      ssl.keystore.password: datahub.linkedin.com.KeyStorePass
+#      ssl.truststore.password: datahub.linkedin.com.TrustStorePass
+#      kafkastore.ssl.truststore.password: datahub.linkedin.com.TrustStorePass
+#
+#  springKafkaConfigurationOverrides:
+#    ssl.keystore.location: /mnt/datahub/certs/datahub.linkedin.com.keystore.jks
+#    ssl.truststore.location: /mnt/datahub/certs/datahub.linkedin.com.truststore.jks
+#    kafkastore.ssl.truststore.location: /mnt/datahub/certs/datahub.linkedin.com.truststore.jks
+#    security.protocol: SSL
+#    kafkastore.security.protocol: SSL
+#    ssl.keystore.type: JKS
+#    ssl.truststore.type: JKS
+#    ssl.protocol: TLS
+#    ssl.endpoint.identification.algorithm:
+#    basic.auth.credentials.source: USER_INFO
+#    basic.auth.user.info:

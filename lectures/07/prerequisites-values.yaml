@@ -1,30 +1,70 @@
+# Default configuration for pre-requisites to get you started
+# Copy this file and update to the configuration of choice
 elasticsearch:
   enabled: true
-  # image: docker.elastic.co/elasticsearch/elasticsearch:7.17.3 This will not work...
-  # If you're running in production, set this to 3 and comment out antiAffinity below
   replicas: 1
   minimumMasterNodes: 1
-  # Set replicas to 1 and uncomment this to allow the instance to be scheduled on
-  # a master node when deploying on a single node Minikube / Kind / etc cluster.
   antiAffinity: "soft"
-  # If you are running a multi-replica cluster, comment this out
   clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
-  # # Shrink default JVM heap.
-  esJavaOpts: "-Xmx384m -Xms384m"
-  # Allocate smaller chunks of memory per pod.
+  esJavaOpts: "-Xmx512m -Xms512m"
   resources:
     requests:
       cpu: "100m"
-      memory: "768M"
+      memory: "1024M"
     limits:
       cpu: "1000m"
-      memory: "768M"
+      memory: "1024M"
 
+  # Request smaller persistent volumes.
+  # volumeClaimTemplate:
+  #   accessModes: ["ReadWriteOnce"]
+  #   storageClassName: "standard"
+  #   resources:
+  #     requests:
+  #       storage: 100M
+
+# opensearch:
+#   enabled: false
+
+#   # If you're running in production, set this to false, replicas to 3 and uncomment antiAffinity below
+#   # Or alternatively if you're running production, bring your own OpenSearch
+#   singleNode: true
+#   # replicas: 3
+#   # antiAffinity: "hard"
+
+#   # By default security is enabled for OpenSearch, disable it here.
+#   config:
+#     opensearch.yml: |
+#       plugins:
+#         security:
+#           disabled: true
+
+#   extraEnvs:
+#     - name: DISABLE_INSTALL_DEMO_CONFIG
+#       value: "true"
+
+#   image:
+#     tag: "2.11.0"
+
+#   # opensearchJavaOpts: "-Xmx512M -Xms512M"
+
+#   # resources:
+#   #   requests:
+#   #     cpu: "1000m"
+#   #     memory: "100Mi"
+
+#   # Request smaller persistent volumes.
+#   # persistence:
+#   #   storageClass: "standard"
+#   #   accessModes:
+#   #     - ReadWriteOnce
+#   #   size: 100M
+
+# Official neo4j chart, supports both community and enterprise editions
+# see https://neo4j.com/docs/operations-manual/current/kubernetes/ for more information
+# source: https://github.com/neo4j/helm-charts
 neo4j:
   enabled: true
-  image:
-    repository: neo4j
-    tag: 5.11.0
   nameOverride: neo4j
   neo4j:
     name: neo4j
@@ -32,6 +72,7 @@ neo4j:
     acceptLicenseAgreement: "yes"
     defaultDatabase: "graph.db"
     passwordFromSecret: neo4j-secrets
+
   # Set security context for pod
   securityContext:
     runAsNonRoot: true
@@ -39,32 +80,35 @@ neo4j:
     runAsGroup: 7474
     fsGroup: 7474
     fsGroupChangePolicy: "Always"
+
   # Disallow privilegeEscalation on container level
   containerSecurityContext:
     allowPrivilegeEscalation: false
+
+  # Create a volume for neo4j, SSD storage is recommended
   volumes:
     data:
       mode: "defaultStorageClass"
-      defaultStorageClass:
-        requests:
-          storage: 1Gi
+      # mode: "dynamic"
+      # dynamic:
+      #   storageClassName: managed-csi-premium
+
+  env:
+    NEO4J_PLUGINS: '["apoc"]'
 
 mysql:
   enabled: true
   image:
-    repository: bitnami/mysql
     tag: 8.0.32-debian-11-r26
   auth:
+    # For better security, add mysql-secrets k8s secret with mysql-root-password, mysql-replication-password and mysql-password
     existingSecret: mysql-secrets
   primary:
     extraFlags: "--character-set-server=utf8mb4 --collation-server=utf8mb4_bin"
 
 # Bitnami version of Kafka that deploys open source Kafka https://artifacthub.io/packages/helm/bitnami/kafka
 kafka:
-  enabled: true
-  image:
-    repository: bitnami/kafka
-    tag: 3.6.1-debian-12-r12
+  enabled: false
   listeners:
     client:
       protocol: PLAINTEXT
