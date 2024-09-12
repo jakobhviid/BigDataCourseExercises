@@ -24,7 +24,7 @@ def main() -> None:
         else:
 
             print(new_image_name)
-            # pull_save_import(new_image_name)
+            pull_save_import(new_image_name)
             print("\n\n")
 
 
