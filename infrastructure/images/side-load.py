@@ -3,7 +3,7 @@ from utils import (
     MAPPING,
     TARGET_REGISTRY,
     get_new_image_name,
-    pull_tag_push,
+    pull_save_import,
     read_images_file,
 )
 
@@ -14,16 +14,17 @@ def main() -> None:
     assert len(images) > 0, f"No images found in {FILENAME}"
 
     for image_name in images:
-        if image_name.startswith(TARGET_REGISTRY):
-            continue
         try:
-            new_image_name = get_new_image_name(**MAPPING.get(image_name))
+            if image_name.startswith(TARGET_REGISTRY):
+                new_image_name = image_name
+            else:
+                new_image_name = get_new_image_name(**MAPPING.get(image_name))
         except Exception as e:
             print(f"ERROR: {e} - {image_name}")
-
         else:
-            print(image_name, new_image_name)
-            pull_tag_push(image_name, new_image_name)
+
+            print(new_image_name)
+            # pull_save_import(new_image_name)
             print("\n\n")
 
 
