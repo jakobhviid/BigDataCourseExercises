@@ -1,5 +1,5 @@
 paulbouwer/hello-kubernetes:1.10.1
-ubuntu:latest
+ubuntu:24.04
 registry.gitlab.sdu.dk/jah/bigdatarepo/interactive:latest
 bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
 bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
