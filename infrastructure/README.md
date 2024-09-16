@@ -34,7 +34,7 @@ microk8s enable observability (Will also enable hostpath-storage and storage)
 df -h
 ````
 
-**Output example: **
+**Output example:**
 
 ````text
 Filesystem                         Size  Used Avail Use% Mounted on
