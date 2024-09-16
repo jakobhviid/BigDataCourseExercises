@@ -73,7 +73,7 @@ kubectl create secret generic neo4j-secrets --from-literal=neo4j-password=datahu
 
 </details>
 
-**Task**: Deploy the four main components to power the DataHub platform. Execute the following cmd: `helm install preq datahub/datahub-prerequisites --values preq-values.yaml --version 0.1.13`
+**Task**: Deploy the four main components to power the DataHub platform. Execute the following cmd: `helm install preq datahub/datahub-prerequisites --values prerequisites-values.yaml --version 0.1.13`
 
 **Note**: This may take several minutes. To keep track of the progress you can either run `kubectl get pods -w` in a secondary terminal session.
 
