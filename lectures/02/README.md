@@ -4,9 +4,9 @@ The exercises for this week's lecture will be about HDFS and file formats. You w
 
 Please open issues [here](https://github.com/jakobhviid/BigDataCourseExercises/issues) if you encounter unclear information or experience bugs in our examples!
 
-## Attach Visual Studio Code to a runing container in Kubernetes
+## Attach Visual Studio Code to a running container in Kubernetes
 
-For progressing in today's exercises we recommend you to look into attaching Visual Studio Code to a running container in Kubernetes. This will shorten the development time of services that depend on resources inside Kubernetes. Furthermore, a simpler access to the HDFS deployment in Kubernetes. You can navigate to the `services/interactive` folder in the repository and read the [README](../../services/interactive/README.md) file to get a better understanding of how to attach Visual Studio Code to an interactive container in Kubernetes in this course and you can read further about the concept [here](https://code.visualstudio.com/docs/devcontainers/containers) to get a complete overview.
+For progressing in today's exercises we recommend you to look into attaching Visual Studio Code to a running container in Kubernetes. This will shorten the development time of services that depend on resources inside Kubernetes. Furthermore, a simpler access to the HDFS deployment in Kubernetes. You can navigate to the `services/interactive` folder in the repository and read the [README](../../services/interactive/README.md) file to get a better understanding of how to attach Visual Studio Code to an interactive container in Kubernetes in this course, and you can read further about the concept [here](https://code.visualstudio.com/docs/devcontainers/containers) to get a complete overview.
 
 ## Exercises
 
@@ -31,7 +31,7 @@ datanode-2                     1/1     Running   0          11s
 
 Now that we have a HDFS cluster lets now try and use it. HDFS has a CLI tool for interacting with HDFS clusters. Because the cluster is running inside of Kubernetes, we also need to access it from inside Kubernetes.
 
-You need to create an interactive container using either the `apache/hadoop:3` image or the image described in the [README](../../services/interactive/README.md) similar to how you created an interactive container with Ubuntu [last week](../01/README.md#exercise-6---interactive-container). The latter image contains the majority of the logic nedded for the future exercises.
+You need to create an interactive container using either the `apache/hadoop:3` image or the image described in the [README](../../services/interactive/README.md) similar to how you created an interactive container with Ubuntu [last week](../01/README.md#exercise-6---interactive-container). The latter image contains the majority of the logic needed for the future exercises.
 
 **Task**: Create interactive container with the either `apache/hadoop:3` image or [interactive.yaml](../../services/interactive/interactive.yaml).
 
@@ -45,7 +45,7 @@ HDFS works much like a normal file system. The commands to interact with HDFS ar
 2. Compare the output to `ls -laL /`
 
 **Task**: Try to list the files inside the root directory in the HDFS cluster.
-**Validate**: Verfify there are no files in the root directory. The following exercises will be about creating files, reading files, uploading files, and deleting files in HDFS. The HDFS CLI tool is used for this.
+**Validate**: Verify there are no files in the root directory. The following exercises will be about creating files, reading files, uploading files, and deleting files in HDFS. The HDFS CLI tool is used for this.
 
 **Task**: Create a file inside the interactive container called "test.txt" and append random lines of text to the file.
 
@@ -141,11 +141,11 @@ We now want to try to interact with the HDFS cluster using Python. To do this, t
 
 **Tasks**:
 
-1. Create an [interactive container](#attach-visual-studio-code-to-a-runing-container-in-kubernetes) and attach Visual Studio Code to it.
+1. Create an [interactive container](../../services/interactive/README.md#attach-visual-studio-code-to-a-running-container) and attach Visual Studio Code to it.
 1. Copy the [example.py](./example.py) and [src/client.py](./src/client.py) files to the container.
-1. Install `hdfs` library using `pip install hdfs` in the container, if nedded.
+1. Install `hdfs` library using `pip install hdfs` in the container, if needed.
 1. Verify the [src/client.py](./src/client.py) module uses the correct namenode.
-1. Run the [example.py](./example.py) script and observe whats happening.
+1. Run the [example.py](./example.py) script and observe what's happening.
 
 **Notice**: You should see that the script prints the entire Alice in Wonderland text to the console and that it then creates a file called "write.txt" with some text.
 
@@ -174,7 +174,7 @@ Instead of saving the result as a JSON file, we will now try to save it as an Av
 
 **Task**: Open the [`counting-avro.py`](./counting-avro.py) file and try to understand it.
 
-You should see that the script reads the Alice in Wonderland file similarly to [exercise 6](#exercise-6---analyzing-file-and-saving-result-in-json-format-using-python). However, saving the file is different.
+You should see that the script reads the Alice in Wonderland file similarly to [exercise 6](#exercise-7---analyzing-file-and-saving-result-in-json-format-using-python). However, saving the file is different.
 
 **Tasks**:
 
@@ -193,7 +193,7 @@ We will now try to save a Parquet file to HDFS.
 
 1. Copy the script to the interactive container.
 1. Install required libraries (if needed).
-1. Run the [`counting-avro.py`](./counting-avro.py) file.
+1. Run the [`counting-parquet`](./counting-parquet.py) file.
 1. Read and output the result of the stored files directly from HDFS using HDFS CLI.
     1. How many column do the dataframe have?
 
@@ -263,11 +263,11 @@ It is now up to you to take the components and gue them together in the [`data-s
 
 **Discord:** Ask questions on Discord if you are not in class.
 
-**NB:** Use a interactive container for the development.
+**NB:** Use an interactive container for the development.
 
 </details>
 
-## Step by step guide to clean up
+## Step-by-step guide to clean up
 
 You will be using HDFS and the interactive container in next lecture. However, if you will clean up the resources created in this lecture, you can follow the steps below:
 

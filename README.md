@@ -28,7 +28,7 @@ Information about the `kubeconfig` file(s) can be discoreved here: [Configure Ac
 
 The root of this repository will be related to the content of the current semester and the folder `archive` will contain material for the previous semester. The `lectures` folder and `services` folder contain the exercise material for the current semester.
 
-```bash
+```text
 .
 ├── LICENSE
 ├── README.md
@@ -40,14 +40,22 @@ The root of this repository will be related to the content of the current semest
 │   ├── create-admin-kubeconfig.sh
 │   ├── create-user.sh
 │   ├── create-users.sh
-│   ├── images.txt
+│   ├── images
+│   │   ├── README.md
+│   │   ├── __init__.py
+│   │   ├── images.txt
+│   │   ├── persist-images.py
+│   │   ├── side-load.py
+│   │   ├── side-load.sh
+│   │   └── utils.py
 │   ├── share_kubeconfigs
+│   │   ├── parse_students.ipynb
+│   │   ├── sent_msg.ipynb
 │   │   ├── sent_msg.py
 │   │   └── src
 │   │       ├── __init__.py
 │   │       ├── msg.py
 │   │       └── students.py
-│   ├── side-load.sh
 │   └── users.txt
 ├── lectures
 │   └── {01,02,03,...,07}
