@@ -10,10 +10,10 @@ ROLE="${NAMESPACE_GROUP}-${NAMESPACE_USER}-role"
 ROLE_BINDING="${NAMESPACE_GROUP}-${NAMESPACE_USER}-rolebinding"
 
 # Create namespace if it doesn't exist
-microk8s kubectl get namespace $NAMESPACE_GROUP || microk8s kubectl create namespace $NAMESPACE_GROUP || { echo "Failed to create namespace. Exiting."; exit 1; }
+kubectl get namespace $NAMESPACE_GROUP || kubectl create namespace $NAMESPACE_GROUP || { echo "Failed to create namespace. Exiting."; exit 1; }
 
 # Create Role for full CRUD permissions denoted by (*) within the specific namespace
-cat <<EOF | microk8s kubectl apply -f -
+cat <<EOF | kubectl apply -f -
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -26,7 +26,7 @@ rules:
 EOF
 
 # Create RoleBinding for full CRUD permissions within the specific namespace
-cat <<EOF | microk8s kubectl apply -f -
+cat <<EOF | kubectl apply -f -
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
