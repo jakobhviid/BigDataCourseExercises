@@ -62,7 +62,69 @@ kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic test --from-begi
 
 </details>
 
-### Exercise 2 - The Redpanda console
+### Exercise 2 - Additional deployments of Kafka Connect, Kafka Schema Registry, and Kafka KSQL
+
+We will also use Kafka Connect, Kafka Schema Registry, and Kafka KSQL to facilitate a distributed transport and streaming of records in Kafka. These services are included in the given in the manifest files:
+
+- [kafka-schema-registry.yaml](./kafka-schema-registry.yaml)
+- [kafka-connect.yaml](./kafka-connect.yaml)
+- [kafka-ksqldb.yaml](./kafka-ksqldb.yaml)
+
+**Task**: Familiarize yourself with the three mentioned files.
+**Task**: Create additional deployments of Kafka Connect, Kafka Schema Registry, and Kafka KSQL using the following commands:
+
+1. Apply the Kafka Schema Registry manifest file to your namespace. `kubectl apply -f kafka-schema-registry.yaml`
+1. Apply the Kafka Connect module to your namespace. `kubectl apply -f kafka-connect.yaml`
+1. Apply the Kafka Ksqldb server to your namespace. `kubectl apply -f kafka-ksqldb.yaml`
+1. Toggle the following values in the redpanda config map ([redpanda.yaml](./redpanda.yaml)) to enable Kafka modules.
+    - `KAFKA_SCHEMAREGISTRY_ENABLED`=`true`
+    - `CONNECT_ENABLED`=`true`
+
+The list below summarises the extra services and briefly demonstrate how to interact with them:
+
+- Registry (kafka-schema-registry)
+  - `kubectl port-forward svc/kafka-schema-registry 8081`. Make a `curl` cmd in a terminal using the URL [http://127.0.0.1:8081](http://127.0.0.1:8081) and get this output:
+    
+    ```bash
+    curl http://127.0.0.1:8081
+    {}%                                  
+    ```
+
+- Connect (kafka-connect)
+  - `kubectl port-forward svc/kafka-connect 8083`. Make a `curl` cmd in a terminal using the URL [http://127.0.0.1:8083](http://127.0.0.1:8083) and get this output:
+    
+    ```bash
+    curl http://127.0.0.1:8083
+    {"version":"7.3.1-ce","commit":"a453cbd27246f7bb","kafka_cluster_id":"<kafka_cluster_id>"}%                                    
+    ```
+
+- KsqlDB (kafka-ksqldb-server) and KsqlDB CLI (kafka-ksqldb-cli)
+  - `kubectl exec --stdin --tty deployment/kafka-ksqldb-cli -- ksql http://kafka-ksqldb-server:8088` make sure you will reach a console similar to this:
+
+    ```bash
+                      
+                      ===========================================
+                      =       _              _ ____  ____       =
+                      =      | | _____  __ _| |  _ \| __ )      =
+                      =      | |/ / __|/ _` | | | | |  _ \      =
+                      =      |   <\__ \ (_| | | |_| | |_) |     =
+                      =      |_|\_\___/\__, |_|____/|____/      =
+                      =                   |_|                   =
+                      =        The Database purpose-built       =
+                      =        for stream processing apps       =
+                      ===========================================
+
+    Copyright 2017-2022 Confluent Inc.
+
+    CLI v7.3.1, Server v7.3.1 located at http://kafka-ksqldb-server:8088
+    Server Status: RUNNING
+
+    Having trouble? Type 'help' (case-insensitive) for a rundown of how things work!
+
+    ksql> 
+    ```
+
+### Exercise 3 - The Redpanda console
 
 We will use the [Redpanda Console](https://redpanda.com/redpanda-console-kafka-ui) to interact with Kafka. The console is a web-based user interface that allows you to interact with Kafka topics, schema registry, and Kafka connectors.
 
@@ -97,68 +159,6 @@ kubectl apply -f redpanda.yaml
 1. Find the button "Delete Records" inside the newly generated topic `test-redpanda`: [topics/test-redpanda](http://127.0.0.1:8080/topics/test-redpanda). Select "All Partitions" -> press "Choose End Offset" -> select "High Watermark" -> press "Delete Records" -> done.
 
 </details>
-
-### Exercise 3 - Additional deployments of Kafka Connect, Kafka Schema Registry, and Kafka KSQL
-
-We will also use Kafka Connect, Kafka Schema Registry, and Kafka KSQL to facilitate a distributed transport and streaming of records in Kafka. These services are included in the given in the manifest files:
-
-- [kafka-schema-registry.yaml](./kafka-schema-registry.yaml)
-- [kafka-connect.yaml](./kafka-connect.yaml)
-- [kafka-ksqldb.yaml](./kafka-ksqldb.yaml)
-
-**Task**: Familiarize yourself with the three mentioned files.
-**Task**: Create additional deployments of Kafka Connect, Kafka Schema Registry, and Kafka KSQL using the following commands:
-
-1. Apply the Kafka Schema Registry manifest file to your namespace. `kubectl apply -f kafka-schema-registry.yaml`
-1. Apply the Kafka Connect module to your namespace. `kubectl apply -f kafka-connect.yaml`
-1. Apply the Kafka Ksqldb server to your namespace. `kubectl apply -f kafka-ksqldb.yaml`
-1. Toggle the following values in the redpanda config map ([redpanda.yaml](./redpanda.yaml)) to enable Kafka modules.
-    - `KAFKA_SCHEMAREGISTRY_ENABLED`=`true`
-    - `CONNECT_ENABLED`=`true`
-
-The list below summarises the extra services and briefly demonstrate how to interact with them:
-
-- Registry (kafka-schema-registry)
-  - `kubectl port-forward svc/kafka-schema-registry 8081`. Make a `curl` cmd in a terminal using the URL [http://127.0.0.1:8081](http://127.0.0.1:8081) and get this output:
-    
-    ```bash
-    curl http://127.0.0.1:8081
-    {}%                                  
-    ```
-
-- Connect (kafka-connect)
-  - `kubectl port-forward svc/kafka-connect  8083`. Make a `curl` cmd in a terminal using the URL [http://127.0.0.1:8083](http://127.0.0.1:8083) and get this output:
-    
-    ```bash
-    curl http://127.0.0.1:8083
-    {"version":"7.3.1-ce","commit":"a453cbd27246f7bb","kafka_cluster_id":"<kafka_cluster_id>"}%                                    
-    ```
-
-- KsqlDB (kafka-ksqldb-server) and KsqlDB CLI (kafka-ksqldb-cli)
-  - `kubectl exec --stdin --tty deployment/kafka-ksqldb-cli -- ksql http://kafka-ksqldb-server:8088` make sure you will reach a console similar to this:
-
-    ```bash
-                      
-                      ===========================================
-                      =       _              _ ____  ____       =
-                      =      | | _____  __ _| |  _ \| __ )      =
-                      =      | |/ / __|/ _` | | | | |  _ \      =
-                      =      |   <\__ \ (_| | | |_| | |_) |     =
-                      =      |_|\_\___/\__, |_|____/|____/      =
-                      =                   |_|                   =
-                      =        The Database purpose-built       =
-                      =        for stream processing apps       =
-                      ===========================================
-
-    Copyright 2017-2022 Confluent Inc.
-
-    CLI v7.3.1, Server v7.3.1 located at http://kafka-ksqldb-server:8088
-    Server Status: RUNNING
-
-    Having trouble? Type 'help' (case-insensitive) for a rundown of how things work!
-
-    ksql> 
-    ```
 
 ### Exercise 4 - Produce messages to Kafka using Python
 
@@ -331,6 +331,17 @@ WHERE
 
 **Task**: Validate your newly created streams using ksql commands in its CLI.
 
+<details>
+<summary><strong>Hint</strong>: ksqlDB SELECT STREAM with EMIT CHANGES</summary>
+
+```sql
+SELECT * FROM SENSOR_ID_<sensor_id> EMIT CHANGES;
+```
+
+The `EMIT CHANGES` clause makes the query a continuous query, meaning it will keep listening for new events as they arrive
+
+</details>
+
 ### Exercise 7 - Kafka Connect and HDFS
 
 The objective of this exercise is apply and configure a Kafka Connect module to write the records from the `INGESTION` topic into HDFS as mentioned in [exercise 03](README.md#exercise-2---additional-deployments-of-kafka-connect-kafka-schema-registry-and-kafka-ksql).
@@ -366,13 +377,20 @@ http://127.0.0.1:8083/connectors \
         "format.class": "io.confluent.connect.hdfs.json.JsonFormat",
         "key.converter.schemas.enable":"false",
         "key.converter": "org.apache.kafka.connect.storage.StringConverter",
-        "key.converter.schema.registry.url": "http://kafka-schema-registry.kafka:8081", 
+        "key.converter.schema.registry.url": "http://kafka-schema-registry:8081", 
         "value.converter.schemas.enable":"false",
-        "value.converter.schema.registry.url": "http://kafka-schema-registry.kafka:8081", 
+        "value.converter.schema.registry.url": "http://kafka-schema-registry:8081", 
         "value.converter": "org.apache.kafka.connect.json.JsonConverter"
     }
 }'
 ```
+
+**Note:** If this does not work for you (Windows), then you can use this command (using Command Prompt NOT Powershell):
+
+````bash
+curl -X POST -H "Content-Type: application/json" -d @hints/configuration.json http://127.0.0.1:8083/connectors
+````
+
 </details>
 
 
@@ -396,7 +414,7 @@ The objective of this exercise is to ingest data from a command-line program int
 
 **Task**: Deploy the Flume manifest [flume.yaml](flume.yaml).
 
-**Task**: Open an interactive container with Python 3.12.
+**Task**: Open an interactive container with Python 3.12 or use the interactive pod provided.
 
 <details>
 <summary><strong>Hint</strong>: kubectl run</summary>
