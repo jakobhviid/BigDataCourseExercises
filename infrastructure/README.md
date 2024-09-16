@@ -26,6 +26,89 @@ microk8s enable dns
 microk8s enable observability (Will also enable hostpath-storage and storage)
 ```
 
+## Adjust allocated memory on root partition on host machine 
+
+1. Check the currently used storage split across the different storage partitions 
+
+````bash
+df -h
+````
+
+**Output example: **
+
+````text
+Filesystem                         Size  Used Avail Use% Mounted on
+tmpfs                              101G  6.5M  101G   1% /run
+/dev/mapper/ubuntu--vg-ubuntu--lv   98G   76G   18G   4% /
+tmpfs                              504G     0  504G   0% /dev/shm
+tmpfs                              5.0M     0  5.0M   0% /run/lock
+/dev/sda2                          2.0G  255M  1.6G  14% /boot
+/dev/sda1                          1.1G  6.1M  1.1G   1% /boot/efi
+````
+
+**Note:** In this case the root partition is `/dev/mapper/ubuntu--vg-ubuntu--lv`
+
+2. Check the total storage capacity for the host machine 
+
+````bash
+sudo vgdisplay
+````
+
+**Output example:**
+
+````text
+--- Volume group ---
+  VG Name               ubuntu-vg
+  System ID
+  Format                lvm2
+  Metadata Areas        1
+  Metadata Sequence No  5
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                1
+  Open LV               1
+  Max PV                0
+  Cur PV                1
+  Act PV                1
+  VG Size               6.98 TiB
+  PE Size               4.00 MiB
+  Total PE              1830606
+  Alloc PE / Size       524288 / 2.00 TiB
+  Free  PE / Size       1306318 / 4.98 TiB
+  VG UUID               kbU86C-AtdF-bRrG-3GO3-qh4R-h4Ec-xF9x6y
+````
+
+3. Extend the Logical Volume
+
+````text
+lvextend -L <DESIRED SIZE> <FILE-SYSTEM-NAME>
+````
+
+**Example:**
+
+````bash
+sudo lvextend -L 1T /dev/ubuntu-vg/ubuntu-lv
+````
+
+4. Resize the Filesystem
+
+````text
+sudo resize2fs <FILE-SYSTEM-NAME>
+````
+
+**Example:**
+
+````bash
+sudo resize2fs /dev/ubuntu-vg/ubuntu-lv
+````
+
+5. Check the storage was updated for the storage partition
+
+````bash
+df -h
+````
+
 
 ## Create workspace and service accounts for students
 We will create a namespace, a service account, and a role for each namespace. The service account will be used together with a role binding to create a kubeconfig file for each of the students.
