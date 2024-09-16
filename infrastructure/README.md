@@ -26,6 +26,23 @@ microk8s enable dns
 microk8s enable observability (Will also enable hostpath-storage and storage)
 ```
 
+## Check Kubernetes default storage partition
+
+1. Run the following command:
+
+````bash
+df -h /var/snap/microk8s/common/default-storage/
+````
+
+**Example output:**
+
+````text
+Filesystem                         Size  Used Avail Use% Mounted on
+/dev/mapper/ubuntu--vg-ubuntu--lv  4.0T   76G  3.8T   2% /
+````
+
+**Note:** It should point for the root storage partition
+
 ## Adjust allocated memory on root partition on host machine 
 
 1. Check the currently used storage split across the different storage partitions 
