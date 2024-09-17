@@ -1,5 +1,11 @@
 elasticsearch:
   enabled: true
+  image: docker.elastic.co/elasticsearch/elasticsearch
+  imageTag: 7.17.3
+  volumeClaimTemplate:
+    resources:
+      requests:
+        storage: 1Gi
   replicas: 1
   minimumMasterNodes: 1
   antiAffinity: "soft"
@@ -12,9 +18,12 @@ elasticsearch:
     limits:
       cpu: "1000m"
       memory: "1024M"
-
 neo4j:
   enabled: true
+  image:
+    repository: neo4j
+    tag: 5.11.0
+    # tag: 5.11.0-community
   nameOverride: neo4j
   neo4j:
     name: neo4j
@@ -38,18 +47,18 @@ neo4j:
       defaultStorageClass:
         requests:
           storage: 1Gi
-
   env:
     NEO4J_PLUGINS: '["apoc"]'
-
 mysql:
   enabled: true
   image:
+    repository: bitnami/mysql
     tag: 8.0.32-debian-11-r26
   auth:
     existingSecret: mysql-secrets
   primary:
     extraFlags: "--character-set-server=utf8mb4 --collation-server=utf8mb4_bin"
-
+    persistence:
+      size: 1Gi
 kafka:
   enabled: false
