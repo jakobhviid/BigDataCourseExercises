@@ -13,7 +13,7 @@ redpandadata/console:v2.7.1
 bitnami/postgresql:15.1.0-debian-11-r12
 dvoros/sqoop:latest
 bde2020/flume:latest
-bitnami/spark:3.5.2-debian-12-r0
+bitnami/spark:3.5.2-debian-12-r1
 rtdl/hive-metastore:3.1.2
 apache/hive:3.1.3
 mongo:latest
