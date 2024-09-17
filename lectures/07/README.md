@@ -17,7 +17,7 @@ Please open issues [here](https://github.com/jakobhviid/BigDataCourseExercises/i
 
 ### Exercise 1 - Compose a DataHub Platform
 
-This exercise will compose a DataHub platform which you will use in the upcoming exercises. We recommend following the steps in this exercise and using the two included value files [preq-values.yaml](preq-values.yaml) and [values.yaml](values.yaml) for the helm installation processes. The following steps have been inspired by this guide [Deploying DataHub with Kubernetes](https://datahubproject.io/docs/deploy/kubernetes/).
+This exercise will compose a DataHub platform which you will use in the upcoming exercises. We recommend following the steps in this exercise and using the two included value files [prerequisites-values.yaml](prerequisites-values.yaml) and [values.yaml](values.yaml) for the helm installation processes. The following steps have been inspired by this guide [Deploying DataHub with Kubernetes](https://datahubproject.io/docs/deploy/kubernetes/).
 
 **Task**: Add the helm repository for DataHub by running the following command.
 
@@ -25,7 +25,7 @@ This exercise will compose a DataHub platform which you will use in the upcoming
 helm repo add datahub https://helm.datahubproject.io/
 ```
 
-**Task**: Look into the [preq-values.yaml](preq-values.yaml) file and familiarize yourself with the four prerequisites components.
+**Task**: Look into the [prerequisites-values.yaml](prerequisites-values.yaml) file and familiarize yourself with the four prerequisites components.
 
 DataHub is composed by four main components:
 
@@ -73,11 +73,11 @@ kubectl create secret generic neo4j-secrets --from-literal=neo4j-password=datahu
 
 </details>
 
-**Task**: Deploy the four main components to power the DataHub platform. Execute the following cmd: `helm install preq datahub/datahub-prerequisites --values prerequisites-values.yaml --version 0.1.13`
+**Task**: Deploy the four main components to power the DataHub platform. Execute the following cmd: `helm install prerequisites datahub/datahub-prerequisites --values prerequisites-values.yaml --version 0.1.13`
 
 **Note**: This may take several minutes. To keep track of the progress you can either run `kubectl get pods -w` in a secondary terminal session.
 
-**Task**: Deploy the DataHub platform. Execute the following cmd: `helm install datahub datahub/datahub --values values.yaml`
+**Task**: Deploy the DataHub platform. Execute the following cmd: `helm install datahub datahub/datahub --values values.yaml --version 0.4.25`
 
 **Note**: This may take several minutes. To keep track of the progress you can either run `kubectl get pods -w` in a secondary terminal session. It can happen that the datahub-nocode-migration-job-XXXXX pod(s) can run more than once because it cannot connect to `datahub-gms` so please wait for one of the pods to say `Completed`.
 
@@ -108,7 +108,7 @@ kubectl delete jobs --field-selector=status.successful=1
 
 Steps:
 
-1. Set up port-forwarding: `kubectl port-forward svc/preq-mysql 3306`
+1. Set up port-forwarding: `kubectl port-forward svc/prerequisites-mysql 3306`
 1. Connect to the MySQL database with your favorite editor.
     - Host: `127.0.0.1`
     - Port: `3306`
@@ -187,8 +187,7 @@ Once your Kafka cluster has been deployed, you can then add the cluster as an in
     1. Choose type: `Kafka`.
     1. Configure recipe:
         1. Fill the field with Bootstrap Servers:
-            - `preq-kafka:9092` using the internal Kafka cluster in the DataHub platform
-            - `kafka:9092` if you will you the approach from [lecture 3 exercise 1](../03/README.md#exercise-1---deploy-a-kafka-cluster).
+            - `kafka:9092` to use your kafka approach from [lecture 3 exercise 1](../03/README.md#exercise-1---deploy-a-kafka-cluster).
         1. Enable stateful ingestion under the advanced settings.
         1. This will end up in a similar configuration as below:
 
@@ -199,7 +198,7 @@ Once your Kafka cluster has been deployed, you can then add the cluster as an in
                 connection:
                     consumer_config:
                         security.protocol: PLAINTEXT
-                    bootstrap: 'preq-kafka:9092'
+                    bootstrap: 'kafka:9092'
                 stateful_ingestion:
                     enabled: true
             ```
@@ -250,7 +249,7 @@ This exercise is about adding a secondary ingestion source. The source is an alr
 1. Click on "Create new source" in the Sources tab.
     1. Choose type: `MySQL`.
     1. Configure recipe:
-        1. Host and Port: `preq-mysql:3306`
+        1. Host and Port: `prerequisites-mysql:3306`
         1. Username: `root`
         1. Password: `${pw-mysl-db}`
         1. Add a database allowance filter: `datahub`
@@ -260,7 +259,7 @@ This exercise is about adding a secondary ingestion source. The source is an alr
             source:
                 type: mysql
                 config:
-                    host_port: 'preq-mysql:3306'
+                    host_port: 'prerequisites-mysql:3306'
                     database: null
                     username: root
                     include_tables: true
@@ -300,7 +299,7 @@ Decide whether to go with the existing example or modify and create your content
 
 **Task**: Execute the [hints/experiment.py](./hints/experiment.py) Python file.
 
-**Note**: This task assumes you already have access to the database from your localhost. If not please enable the port-forwarding: `kubectl port-forward svc/preq-mysql 3306:3306`.
+**Note**: This task assumes you already have access to the database from your localhost. If not please enable the port-forwarding: `kubectl port-forward svc/prerequisites-mysql 3306:3306`.
 
 **Task**: Create an `analysis` view in the database to summarise the experiments.
 
@@ -369,10 +368,10 @@ You are able to clean up your environment by running the commands in the chunk b
   1. `helm uninstall preq`
   1. `kubectl delete secret mysql-secrets`
   1. `kubectl delete secret neo4j-secrets`
-  1. `kubectl delete pvc data-preq-kafka-broker-0`
-  1. `kubectl delete pvc data-preq-mysql-0`
-  1. `kubectl delete pvc data-preq-neo4j-0`
-  1. `kubectl delete pvc data-preq-zookeeper-0`
+  1. `kubectl delete pvc data-prerequisites-kafka-broker-0`
+  1. `kubectl delete pvc data-prerequisites-mysql-0`
+  1. `kubectl delete pvc data-prerequisites-neo4j-0`
+  1. `kubectl delete pvc data-prerequisites-zookeeper-0`
   1. `kubectl delete pvc elasticsearch-master-elasticsearch-master-0`
   
 - `cd` into the `lecture/03` folder in the repository (in case you installed the Kafka cluster manually)
