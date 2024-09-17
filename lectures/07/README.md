@@ -13,7 +13,7 @@ The objective of these exercises is to play with a metadata platform that enable
 
 Please open issues [here](https://github.com/jakobhviid/BigDataCourseExercises/issues) if you encounter unclear information or experience bugs in our examples!
 
-> Before you start working on the exercises you are strongly encouraged to clean up your Kubernetes cluster.
+> Before you start working on todays exercises you are strongly encouraged to clean up everything but the kafka brookers (created in [lecture 3](../03/README.md#exercise-1---deploy-a-kafka-cluster)) in your Kubernetes namespace.
 
 ### Exercise 1 - Compose a DataHub Platform
 
@@ -40,9 +40,9 @@ DataHub is composed by four main components:
 
 The main components are power by the following technologies:
 
-- Kafka
+- **Kafka**
 - Local relational database: **MySQL**, Postgres, MariaDB
-- Search Index: Elasticsearch
+- Search Index: **Elasticsearch**
 - Graph Index: **Neo4j** or Elasticsearch
 
 **Note**: The technologies in **bold** have been chosen for these exercises.
@@ -73,11 +73,34 @@ kubectl create secret generic neo4j-secrets --from-literal=neo4j-password=datahu
 
 </details>
 
-**Task**: Deploy the four main components to power the DataHub platform. Execute the following cmd: `helm install prerequisites datahub/datahub-prerequisites --values prerequisites-values.yaml --version 0.1.13`
+**Task**: Deploy the three main components to power the DataHub platform with the name `prerequisites` using value file [`prerequisites-values.yaml`](./prerequisites-values.yaml) and schema version `0.1.13` using `helm`.
+
+<details>
+<summary><strong>Hint:</strong> Deploy prerequisites in Kubernetes.</summary>
+
+Run the following two cmd's:
+
+```bash
+helm install prerequisites datahub/datahub-prerequisites --values prerequisites-values.yaml --version 0.1.13
+```
+
+</details>
 
 **Note**: This may take several minutes. To keep track of the progress you can either run `kubectl get pods -w` in a secondary terminal session.
 
-**Task**: Deploy the DataHub platform. Execute the following cmd: `helm install datahub datahub/datahub --values values.yaml --version 0.4.25`
+
+**Task**: Deploy the DataHub platform with the name `datahub` using value file [`values.yaml`](./values.yaml) and schema version `0.4.25` using `helm`.
+
+<details>
+<summary><strong>Hint:</strong> Deploy datahub in Kubernetes.</summary>
+
+Run the following two cmd's:
+
+```bash
+helm install datahub datahub/datahub --values values.yaml --version 0.4.25
+```
+
+</details>
 
 **Note**: This may take several minutes. To keep track of the progress you can either run `kubectl get pods -w` in a secondary terminal session. It can happen that the datahub-nocode-migration-job-XXXXX pod(s) can run more than once because it cannot connect to `datahub-gms` so please wait for one of the pods to say `Completed`.
 
