@@ -2,9 +2,10 @@ datahub-gms:
   enabled: true
   image:
     repository: acryldata/datahub-gms
+    tag: v0.14.0
   resources:
     limits:
-      memory: 1Gi
+      memory: 2Gi
     requests:
       cpu: 100m
       memory: 1Gi
@@ -21,6 +22,7 @@ datahub-frontend:
   enabled: true
   image:
     repository: acryldata/datahub-frontend-react
+    tag: v0.14.0
   resources:
     limits:
       memory: 1400Mi
@@ -46,6 +48,7 @@ acryl-datahub-actions:
 datahub-mae-consumer:
   image:
     repository: acryldata/datahub-mae-consumer
+    tag: v0.14.0
   resources:
     limits:
       memory: 1536Mi
@@ -56,6 +59,7 @@ datahub-mae-consumer:
 datahub-mce-consumer:
   image:
     repository: acryldata/datahub-mce-consumer
+    tag: v0.14.0
   resources:
     limits:
       memory: 1536Mi
@@ -67,11 +71,13 @@ datahub-ingestion-cron:
   enabled: false
   image:
     repository: acryldata/datahub-ingestion
+    tag: v0.14.0
 
 elasticsearchSetupJob:
   enabled: true
   image:
     repository: acryldata/datahub-elasticsearch-setup
+    tag: v0.14.0
   resources:
     limits:
       cpu: 500m
@@ -97,6 +103,7 @@ kafkaSetupJob:
   enabled: true
   image:
     repository: acryldata/datahub-kafka-setup
+    tag: v0.14.0
   resources:
     limits:
       cpu: 500m
@@ -122,6 +129,7 @@ mysqlSetupJob:
   enabled: true
   image:
     repository: acryldata/datahub-mysql-setup
+    tag: v0.14.0
   resources:
     limits:
       cpu: 500m
@@ -148,7 +156,7 @@ datahubUpgrade:
   enabled: true
   image:
     repository: acryldata/datahub-upgrade
-    # tag: "v0.11.0"  # defaults to .global.datahub.version
+    tag: v0.14.0
   batchSize: 1000
   batchDelayMs: 100
   noCodeDataMigration:
@@ -183,8 +191,6 @@ datahubUpgrade:
     extraSidecars: []
   restoreIndices:
     image:
-      # Add custom command / arguments to this job.  Useful if you need a custom startup or shutdown script
-      # to run
       command:
       args: []
     resources:
@@ -214,26 +220,15 @@ datahubUpgrade:
 datahubSystemUpdate:
   image:
     repository: acryldata/datahub-upgrade
-    # tag:
-    # Add custom command / arguments to this job.  Useful if you need a custom startup or shutdown script
-    # to run
-    # command: customCommand
-    # args: []
-  podSecurityContext: {}
-    # fsGroup: 1000
-  securityContext: {}
-    # runAsUser: 1000
+    tag: v0.14.0
+  podSecurityContext: {} # fsGroup: 1000
+  securityContext: {} # runAsUser: 1000
   annotations:
     # This is what defines this resource as a hook. Without this line, the
     # job is considered part of the release.
     helm.sh/hook: pre-install,pre-upgrade
     helm.sh/hook-weight: "-4"
     helm.sh/hook-delete-policy: before-hook-creation
-  # !! Requires version v0.13.0 or greater
-  # Split the system update into 2 jobs, one that is blocking the rest of
-  # the deployment and the other which is non-blocking. Once the blocking
-  # steps are completed, the non-blocking job runs while the rest of the
-  # system is starting.
   nonblocking:
     enabled: false
     # When mode = 'nonblocking' the nonblocking job should not include the above helm.sh/hook annotations
@@ -272,8 +267,6 @@ global:
 
   elasticsearch:
     host: "elasticsearch-master"
-    # If you want to use OpenSearch instead of ElasticSearch use different hostname below
-    # host: "opensearch-cluster-master"
     port: "9200"
     skipcheck: "false"
     insecure: "false"
@@ -434,11 +427,6 @@ global:
   kafka:
     bootstrap:
       server: "kafka:9092"
-    zookeeper:
-      enabled: false
-      # server: "prerequisites-zookeeper:2181"
-    # This section defines the names for the kafka topics that DataHub depends on, at a global level. Do not override this config
-    # at a sub-chart level.
     topics:
       metadata_change_event_name: "MetadataChangeEvent_v4"
       failed_metadata_change_event_name: "FailedMetadataChangeEvent_v4"
@@ -477,12 +465,11 @@ global:
     consumer:
       maxPartitionFetchBytes: "5242880"  # 5MB
       stopContainerOnDeserializationError: true
-    ## For AWS MSK set this to a number larger than 1
+    ## For production set this to a number larger than 1
     # partitions: 3
     # replicationFactor: 3
     schemaregistry:
       type: INTERNAL
-      # Confluent Kafka Implementation
       # type: KAFKA
       # url: "http://prerequisites-cp-schema-registry:8081"
 
@@ -503,7 +490,7 @@ global:
       passwordFromSecret: mysql-secrets
 
   datahub:
-    version: v0.14.0.2
+    version: v0.14.0
     gms:
       protocol: "http"
       port: "8080"
@@ -519,7 +506,6 @@ global:
     appVersion: "1.0"
     systemUpdate:
       enabled: true
-
     encryptionKey:
       secretRef: "datahub-encryption-secrets"
       secretKey: "encryption_key_secret"
@@ -558,54 +544,7 @@ global:
     ## v0.13.4+
     mcp:
       throttle:
-        # updateIntervalMs: 60000
-        ## Versioned MCL topic
-        versioned:
-          ## Whether to throttle MCP processing based on MCL backlog
+        versioned:          
           enabled: true
-        #  threshold: 4000
-        #  maxAttempts: 1000
-        #  initialIntervalMs: 100
-        #  multiplier: 10
-        #  maxIntervalMs:  30000
-        # Timeseries MCL topic
         timeseries:
-          ## Whether to throttle MCP processing based on MCL backlog
           enabled: false
-        #  threshold: 4000
-        #  maxAttempts: 1000
-        #  initialIntervalMs: 100
-        #  multiplier: 10
-        #  maxIntervalMs: 30000
-
-#  hostAliases:
-#    - ip: "192.168.0.104"
-#      hostnames:
-#        - "broker"
-#        - "mysql"
-#        - "postgresql"
-#        - "elasticsearch"
-#        - "neo4j"
-
-## Add below to enable SSL for kafka
-#  credentialsAndCertsSecrets:
-#    name: datahub-certs
-#    path: /mnt/datahub/certs
-#    secureEnv:
-#      ssl.key.password: datahub.linkedin.com.KeyPass
-#      ssl.keystore.password: datahub.linkedin.com.KeyStorePass
-#      ssl.truststore.password: datahub.linkedin.com.TrustStorePass
-#      kafkastore.ssl.truststore.password: datahub.linkedin.com.TrustStorePass
-#
-#  springKafkaConfigurationOverrides:
-#    ssl.keystore.location: /mnt/datahub/certs/datahub.linkedin.com.keystore.jks
-#    ssl.truststore.location: /mnt/datahub/certs/datahub.linkedin.com.truststore.jks
-#    kafkastore.ssl.truststore.location: /mnt/datahub/certs/datahub.linkedin.com.truststore.jks
-#    security.protocol: SSL
-#    kafkastore.security.protocol: SSL
-#    ssl.keystore.type: JKS
-#    ssl.truststore.type: JKS
-#    ssl.protocol: TLS
-#    ssl.endpoint.identification.algorithm:
-#    basic.auth.credentials.source: USER_INFO
-#    basic.auth.user.info:
