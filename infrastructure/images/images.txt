@@ -6,7 +6,6 @@ bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
 apache/hadoop:3
 registry.gitlab.sdu.dk/jah/bigdatarepo/kafka-connect:7.3.1
 bitnami/kafka:3.8.0-debian-12-r3
-bitnami/kafka:3.6.1-debian-12-r12
 confluentinc/cp-schema-registry:7.3.1
 confluentinc/cp-ksqldb-server:7.3.1
 confluentinc/cp-ksqldb-cli:7.3.1

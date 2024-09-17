@@ -52,6 +52,55 @@ MAPPING = {
     "apache/hive:3.1.3": {"image_name": "hive", "image_tag": "3.1.2"},
     "mongo:latest": {"image_name": "mongo", "image_tag": "latest"},
     "mongo-express:latest": {"image_name": "mongo-express", "image_tag": "latest"},
+    "docker.elastic.co/elasticsearch/elasticsearch:7.17.3": {
+        "image_name": "elasticsearch",
+        "image_tag": "7.17.3",
+    },
+    "neo4j:5.11.0-community": {"image_name": "neo4j", "image_tag": "5.11.0-community"},
+    "acryldata/datahub-gms:v0.14.0": {
+        "image_name": "datahub-gms",
+        "image_tag": "v0.14.0",
+    },
+    "acryldata/datahub-frontend-react:v0.14.0": {
+        "image_name": "datahub-frontend-react",
+        "image_tag": "v0.14.0",
+    },
+    "acryldata/datahub-actions:v0.1.0": {
+        "image_name": "datahub-actions",
+        "image_tag": "v0.1.0",
+    },
+    "acryldata/datahub-mae-consumer:v0.14.0": {
+        "image_name": "datahub-mae-consumer",
+        "image_tag": "v0.14.0",
+    },
+    "acryldata/datahub-mce-consumer:v0.14.0": {
+        "image_name": "datahub-mce-consumer",
+        "image_tag": "v0.14.0",
+    },
+    "acryldata/datahub-ingestion:v0.14.0": {
+        "image_name": "datahub-ingestion",
+        "image_tag": "v0.14.0",
+    },
+    "acryldata/datahub-elasticsearch-setup:v0.14.0": {
+        "image_name": "datahub-elasticsearch-setup",
+        "image_tag": "v0.14.0",
+    },
+    "acryldata/datahub-kafka-setup:v0.14.0": {
+        "image_name": "datahub-kafka-setup",
+        "image_tag": "v0.14.0",
+    },
+    "acryldata/datahub-mysql-setup:v0.14.0": {
+        "image_name": "datahub-mysql-setup",
+        "image_tag": "v0.14.0",
+    },
+    "acryldata/datahub-upgrade:v0.14.0": {
+        "image_name": "datahub-upgrade",
+        "image_tag": "v0.14.0",
+    },
+    "bitnami/mysql:8.0.32-debian-11-r26": {
+        "image_name": "mysql",
+        "image_tag": "8.0.32-debian-11-r26",
+    },
 }
 
 
