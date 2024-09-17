@@ -388,14 +388,12 @@ You are able to clean up your environment by running the commands in the chunk b
 
 - Today's exercises.
   1. `helm uninstall datahub`
-  1. `helm uninstall preq`
-  1. `kubectl delete secret mysql-secrets`
-  1. `kubectl delete secret neo4j-secrets`
-  1. `kubectl delete pvc data-prerequisites-kafka-broker-0`
-  1. `kubectl delete pvc data-prerequisites-mysql-0`
-  1. `kubectl delete pvc data-prerequisites-neo4j-0`
-  1. `kubectl delete pvc data-prerequisites-zookeeper-0`
-  1. `kubectl delete pvc elasticsearch-master-elasticsearch-master-0`
+  1. `helm uninstall prerequisites`
+  1. `kubectl delete secret mysql-secrets neo4j-secrets`
+  1. `kubectl delete pvc data-prerequisites-mysql-0 \
+      data-prerequisites-neo4j-0 \
+      elasticsearch-master-elasticsearch-master-0
+     `
   
 - `cd` into the `lecture/03` folder in the repository (in case you installed the Kafka cluster manually)
     1. `kubectl delete -f redpanda.yaml`
