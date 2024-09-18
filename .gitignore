@@ -4,7 +4,7 @@ dev/
 .python-version
 *.ipynb
 .idea/
-
+.env
 
 *.csr
 *.crt

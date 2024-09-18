@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from .students import STUDENT_MAIL_PATTERN
+from .students import STUDENT_MAIL_PATTERN, get_created_students
 
 GROUP_PATTERN: str = "group-"
 
@@ -26,3 +26,14 @@ def parse_groups_from_form(filename: Path, col_id: str = "Id") -> pd.DataFrame:
     df.sort_values(by=col_id, inplace=True)
 
     return df
+
+
+def get_students_outside_group(config_path: Path, form_filename: Path) -> None:
+
+    created_students = get_created_students(config_path=config_path)
+    df = parse_groups_from_form(form_filename)
+
+    difference = created_students - set(df["value"].to_list())
+    difference = list(difference)
+    difference.sort()
+    return len(difference), difference
