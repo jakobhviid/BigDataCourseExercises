@@ -11,10 +11,11 @@ def apply_group_pattern(x: str, n_fill: int = 2) -> str:
     return f"{GROUP_PATTERN}{str(x).zfill(n_fill)}"
 
 
-def parse_groups_from_form(filename: Path, col_id: str = "Id") -> pd.DataFrame:
+def parse_groups_from_form(filename: Path, col_id: str = "ID") -> pd.DataFrame:
     form_col_pattern: str = "SDU student mail"
 
-    df = pd.read_csv(filename, sep=";")
+    df = pd.read_excel(filename, sheet_name="Sheet1")
+    # df = pd.read_csv(filename, sep=";")
     df = df[[col_id] + [col for col in df.columns if col.startswith(form_col_pattern)]]
 
     df = df.melt(id_vars=[col_id])[[col_id, "value"]]

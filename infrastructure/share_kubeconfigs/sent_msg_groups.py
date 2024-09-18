@@ -3,39 +3,43 @@ import time
 from pathlib import Path
 
 from dotenv import load_dotenv
+from src.groups import parse_groups_from_form
 from src.msg import EmailClient
 from src.students import KUBECONFIG_PATTERN, STUDENT_MAIL_PATTERN
-
-# batch into N emails
-N = 10
 
 if __name__ == "__main__":
 
     load_dotenv(Path(__file__).resolve().parent / ".env")
 
-    # Path to folder with kubeconfig files
-    data_path: Path = Path(os.getenv("KUBECONFIGS_DIR", "..."))
+    data_path: Path = Path(os.getenv("DATA_DIR", "..."))
     assert data_path != "...", "Please cd into directory of this file."
-    k8sconfigs = list(data_path.rglob(f"*{KUBECONFIG_PATTERN}"))
 
-    k8sconfigs_batches = [
-        k8sconfigs[i * N : (i + 1) * N] for i in range((len(k8sconfigs) + N - 1) // N)
-    ]
+    filename: Path = (
+        data_path
+        / "/Big data and data science technologies_ Project groups(Sheet1).csv"
+    )
+    df = parse_groups_from_form(filename)
 
-    for k8sconfigs in k8sconfigs_batches:
+    # Path to folder with kubeconfig files
+    data_path_kubeconfig: Path = data_path / os.getenv("KUBECONFIGS_DIR_GROUPS", "...")
+    k8sconfigs = list(data_path_kubeconfig.rglob(f"*{KUBECONFIG_PATTERN}"))
+
+    for k8sconfig in k8sconfigs:
         ec = EmailClient(
             email=os.getenv("EMAIL", "<client_email>"),
             password=os.getenv("PASSWORD", "<client_password>"),
         )
-        for k8sconfig in k8sconfigs:
 
-            receiver_email = k8sconfig.name.replace(
-                KUBECONFIG_PATTERN, STUDENT_MAIL_PATTERN
-            )
+        group_id = k8sconfig.name.replace(KUBECONFIG_PATTERN, "")
+        for receiver_email in df.loc[df["ID"] == group_id, "value"]:
+            receiver_email += STUDENT_MAIL_PATTERN
+
+            # TODO:
+            receiver_email = "anders@launer.dk"
             msg = ec.create_msg(
                 receiver_email=receiver_email,
                 subject="Kubeconfig for Kubernetes in Big Data and Data Science Technology, E24",
-                body="Dear student,\n\nHere is the kubeconfig file for the Kubernetes cluster you need for exercises in the course Big Data and Data Science Technology, E24.\n\nBest regards,\nAnders Launer Bæk-Petersen\n\n",
+                body="Dear student,\n\nHere is the kubeconfig file for the Kubernetes cluster you need for your project in the course Big Data and Data Science Technology, E24.\n\nBest regards,\nAnders Launer Bæk-Petersen\n\n",
                 attachment=k8sconfig,
             )
             ec.send_msg(receiver_email, msg)

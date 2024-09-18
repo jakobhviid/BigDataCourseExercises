@@ -13,10 +13,12 @@ if __name__ == "__main__":
 
     load_dotenv(Path(__file__).resolve().parent / ".env")
 
-    # Path to folder with kubeconfig files
-    data_path: Path = Path(os.getenv("KUBECONFIGS_DIR", "..."))
+    data_path: Path = Path(os.getenv("DATA_DIR", "..."))
     assert data_path != "...", "Please cd into directory of this file."
-    k8sconfigs = list(data_path.rglob(f"*{KUBECONFIG_PATTERN}"))
+
+    # Path to folder with kubeconfig files
+    data_path_kubeconfig: Path = data_path / os.getenv("KUBECONFIGS_DIR", "...")
+    k8sconfigs = list(data_path_kubeconfig.rglob(f"*{KUBECONFIG_PATTERN}"))
 
     k8sconfigs_batches = [
         k8sconfigs[i * N : (i + 1) * N] for i in range((len(k8sconfigs) + N - 1) // N)
@@ -32,6 +34,8 @@ if __name__ == "__main__":
             receiver_email = k8sconfig.name.replace(
                 KUBECONFIG_PATTERN, STUDENT_MAIL_PATTERN
             )
+            # TODO:
+            receiver_email = "anders@launer.dk"
             msg = ec.create_msg(
                 receiver_email=receiver_email,
                 subject="Kubeconfig for Kubernetes in Big Data and Data Science Technology, E24",
