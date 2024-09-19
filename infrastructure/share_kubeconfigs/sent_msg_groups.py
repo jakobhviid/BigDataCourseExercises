@@ -4,7 +4,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 from src.groups import parse_groups_from_form
-from src.msg import EmailClient
+from src.msg import SLEEP_TIME, EmailClient
 from src.students import KUBECONFIG_PATTERN, STUDENT_MAIL_PATTERN
 
 if __name__ == "__main__":
@@ -14,10 +14,7 @@ if __name__ == "__main__":
     data_path: Path = Path(os.getenv("DATA_DIR", "..."))
     assert data_path != "...", "Please cd into directory of this file."
 
-    filename: Path = (
-        data_path
-        / "/Big data and data science technologies_ Project groups(Sheet1).csv"
-    )
+    filename: Path = data_path / os.getenv("FORM_FILENAME_GROUPS")
     df = parse_groups_from_form(filename)
 
     # Path to folder with kubeconfig files
@@ -34,8 +31,6 @@ if __name__ == "__main__":
         for receiver_email in df.loc[df["ID"] == group_id, "value"]:
             receiver_email += STUDENT_MAIL_PATTERN
 
-            # TODO:
-            receiver_email = "anders@launer.dk"
             msg = ec.create_msg(
                 receiver_email=receiver_email,
                 subject="Kubeconfig for Kubernetes in Big Data and Data Science Technology, E24",
@@ -44,5 +39,4 @@ if __name__ == "__main__":
             )
             ec.send_msg(receiver_email, msg)
 
-        # Sleep for 1 minute to avoid spamming the email server
-        time.sleep(60)
+        time.sleep(SLEEP_TIME)

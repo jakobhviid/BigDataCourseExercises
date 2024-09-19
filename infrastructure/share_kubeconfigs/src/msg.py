@@ -18,6 +18,10 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from pathlib import Path
 
+# batch into N emails
+N_EMAILS = 10
+SLEEP_TIME: int = 60
+
 
 @dataclass
 class EmailClient:

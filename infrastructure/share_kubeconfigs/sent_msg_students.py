@@ -3,11 +3,8 @@ import time
 from pathlib import Path
 
 from dotenv import load_dotenv
-from src.msg import EmailClient
+from src.msg import N_EMAILS, SLEEP_TIME, EmailClient
 from src.students import KUBECONFIG_PATTERN, STUDENT_MAIL_PATTERN
-
-# batch into N emails
-N = 10
 
 if __name__ == "__main__":
 
@@ -21,7 +18,8 @@ if __name__ == "__main__":
     k8sconfigs = list(data_path_kubeconfig.rglob(f"*{KUBECONFIG_PATTERN}"))
 
     k8sconfigs_batches = [
-        k8sconfigs[i * N : (i + 1) * N] for i in range((len(k8sconfigs) + N - 1) // N)
+        k8sconfigs[i * N_EMAILS : (i + 1) * N_EMAILS]
+        for i in range((len(k8sconfigs) + N_EMAILS - 1) // N_EMAILS)
     ]
 
     for k8sconfigs in k8sconfigs_batches:
@@ -34,8 +32,7 @@ if __name__ == "__main__":
             receiver_email = k8sconfig.name.replace(
                 KUBECONFIG_PATTERN, STUDENT_MAIL_PATTERN
             )
-            # TODO:
-            receiver_email = "anders@launer.dk"
+
             msg = ec.create_msg(
                 receiver_email=receiver_email,
                 subject="Kubeconfig for Kubernetes in Big Data and Data Science Technology, E24",
@@ -44,5 +41,4 @@ if __name__ == "__main__":
             )
             ec.send_msg(receiver_email, msg)
 
-        # Sleep for 1 minute to avoid spamming the email server
-        time.sleep(60)
+        time.sleep(SLEEP_TIME)
