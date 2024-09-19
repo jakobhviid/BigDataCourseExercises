@@ -2,13 +2,14 @@ name: Build and push - service/interactive
 
 on:
   push:
-    paths:
-      - "services/interactive/**"
-      - ".github/workflows/**"
-    branches: ["main"]
     tags: ["v*"]
   pull_request:
-    branches: ["main"]
+    branches:
+      - main
+      - 'releases/**'
+    paths: 
+      - "services/interactive/**"
+      - ".github/workflows/**interactive.yml"
 
 env:
   USERNAME: jah

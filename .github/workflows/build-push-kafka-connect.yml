@@ -2,13 +2,15 @@ name: Build and push - service/kafka-connect
 
 on:
   push:
-    paths:
-      - "services/kafka-connect/**"
-      - ".github/workflows/**"
-    branches: ["main"]
-    tags: ["v*"]
+    tags: 
+      - "v*"
   pull_request:
-    branches: ["main"]
+    branches:
+      - main
+      - "releases/**"
+    paths: 
+      - "services/kafka-connect/**"
+      - ".github/workflows/**kafka-connect.yml"
 
 env:
   USERNAME: jah
