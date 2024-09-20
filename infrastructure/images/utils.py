@@ -44,9 +44,9 @@ MAPPING = {
     },
     "dvoros/sqoop:latest": {"image_name": "sqoop", "image_tag": "latest"},
     "bde2020/flume:latest": {"image_name": "flume", "image_tag": "latest"},
-    "bitnami/spark:3.5.2-debian-12-r0": {
+    "bitnami/spark:3.5.2-debian-12-r1": {
         "image_name": "spark",
-        "image_tag": "3.5.2-debian-12-r0",
+        "image_tag": "3.5.2-debian-12-r1",
     },
     "rtdl/hive-metastore:3.1.2": {"image_name": "hive-metastore", "image_tag": "3.1.2"},
     "apache/hive:3.1.3": {"image_name": "hive", "image_tag": "3.1.2"},

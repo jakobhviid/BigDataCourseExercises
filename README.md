@@ -58,7 +58,7 @@ The root of this repository will be related to the content of the current semest
 │   │       └── students.py
 │   └── users.txt
 ├── lectures
-│   └── {01,02,03,...,07}
+│   └── {01,02,03,04,05,07}
 │       ├── ...
 │       └── exercises.md
 └── services
