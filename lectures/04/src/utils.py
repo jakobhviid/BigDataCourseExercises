@@ -38,7 +38,12 @@ class SPARK_ENV(Enum):
     ]
 
 
-def get_spark_context(app_name: str, config: SPARK_ENV) -> SparkSession:
-    """Get a Spark context with the given configuration."""
+def get_spark_context(app_name: str, config: SPARK_ENV, additional_conf: dict = None) -> SparkSession:
+    """Get a Spark context with the given configuration and optional additional configurations."""
     spark_conf = SparkConf().setAll(config.value).setAppName(app_name)
+
+    # Apply additional configurations if provided
+    if additional_conf:
+        spark_conf.setAll(additional_conf.items())
+
     return SparkSession.builder.config(conf=spark_conf).getOrCreate()

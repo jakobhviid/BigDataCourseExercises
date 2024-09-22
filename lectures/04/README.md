@@ -61,9 +61,9 @@ The previous program you ran was estimating pi. This program only used compute r
 
 ### Exercise 4 - Average sample values from JSON files stored in HDFS
 
-Let us assume that you have a dataset of sample records stored in HDFS. The dataset is stored in JSON format and contains defined by the [exercise 9 from lecture 02](../02/README.md#exercise-10---create-six-fictive-data-sources).
+Let us assume that you have a dataset of sample records stored in HDFS. The dataset is stored in Avro format and contains defined by the [exercise 10 from lecture 02](../02/README.md#exercise-10---create-six-fictive-data-sources).
 
-In this exercise you will run a Spark job that will read all the JSON files and computes the average value of the `payload.modality` field for each station.
+In this exercise you will run a Spark job that will read all the Avro files and computes the average value of the `payload.modality` field for each station.
 
 **Task**: Inspect the [avg-modalities.py](./avg-modalities.py).
 
