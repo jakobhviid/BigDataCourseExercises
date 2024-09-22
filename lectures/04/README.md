@@ -59,7 +59,7 @@ The previous program you ran was estimating pi. This program only used compute r
 
 **Notice**:You can read about the word count program from Apache Spark [here](https://spark.apache.org/examples.html) and [here](https://github.com/apache/spark/blob/c1b12bd56429b98177e5405900a08dedc497e12d/examples/src/main/python/wordcount.py).
 
-### Exercise 4 - Average sample values from JSON files stored in HDFS
+### Exercise 4 - Average sample values from Avro files stored in HDFS
 
 Let us assume that you have a dataset of sample records stored in HDFS. The dataset is stored in Avro format and contains defined by the [exercise 10 from lecture 02](../02/README.md#exercise-10---create-six-fictive-data-sources).
 
