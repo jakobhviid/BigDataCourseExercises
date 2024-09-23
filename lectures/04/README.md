@@ -82,10 +82,26 @@ In this exercise you will run a Spark job that will read all the JSON files and 
 
 **Task**: Inspect the [avg-modalities.py](./avg-modalities.py).
 
-**Task**: Ensure you have records stored in HDFS on the proper location. If not upload the records to HDFS.
+**Task**: Ensure you have records stored in HDFS on the proper location. If not upload the records to HDFS
+using [exercise 4 from lecture 03](./../03/README.md#exercise-4---produce-messages-to-kafka-using-python)
+and [exercise 7 from lecture 3](../03/README.md#exercise-7---kafka-connect-and-hdfs)
 **Task**: Run the Spark application on the cluster. What is the `payload.modality` average value for each station?
 
-### Exercise 5 - Running Spark Streaming Jobs - Kafka
+### Exercise 5 - Average sample values from Avro files stored in HDFS (optional)
+
+Let us assume that you have a dataset of sample records stored in HDFS. The dataset is stored in Avro format and
+contains defined by the [exercise 10 from lecture 02](../02/README.md#exercise-10---create-six-fictive-data-sources)
+
+In this exercise you will run a Spark job that will read all the Avro files and computes the average value of the
+`payload.modality` field for each station.
+
+**Task**: Inspect the [avg-modalities-avro.py](./avg-modalities-avro.py).
+
+**Task**: Ensure you have records stored in HDFS on the proper location. If not upload the records to HDFS
+using [exercise 10 from lecture 02](../02/README.md#exercise-10---create-six-fictive-data-sources)
+**Task**: Run the Spark application on the cluster. This should produce the same results as in [Exercise 4](#exercise-4---average-sample-values-from-json-files-stored-in-hdfs)
+
+### Exercise 6 - Running Spark Streaming Jobs - Kafka
 
 The objective of this exercise is to create a Spark streaming job that reads from a Kafka topic. This exercise requires
 to have a Kafka producer which produces records in the given topic. For convenience, we recommend revisiting
