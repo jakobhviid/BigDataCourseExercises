@@ -14,7 +14,7 @@ data:
         """
             Usage: pi [partitions]
         """
-        spark = get_spark_context(app_name="Pi estimation", config=SPARK_ENV.LOCAL)
+        spark = get_spark_context(app_name="Pi estimation", config=SPARK_ENV.K8S)
         sc = spark.sparkContext
 
         partitions = int(sys.argv[1]) if len(sys.argv) > 1 else 2
@@ -43,6 +43,7 @@ data:
 
     from pyspark import SparkConf
     from pyspark.sql import SparkSession
+    from py4j.java_gateway import java_import
 
     locale.getdefaultlocale()
     locale.getpreferredencoding()
@@ -56,7 +57,6 @@ data:
     SPARK_DRIVER_HOST = re.sub(rf"\s*127.0.0.1\s*", "", SPARK_DRIVER_HOST)
     os.environ["SPARK_LOCAL_IP"] = SPARK_DRIVER_HOST
 
-
     class SPARK_ENV(Enum):
         LOCAL = [
             ("spark.master", "local"),
@@ -68,13 +68,28 @@ data:
             ("spark.driver.host", SPARK_DRIVER_HOST),
             ("spark.driver.port", "7077"),
             ("spark.submit.deployMode", "client"),
+            # Disable Hadoop security
+            ("spark.kerberos.enabled", "false"),
+            ("spark.hadoop.security.authentication", "simple"),
+            ("spark.hadoop.security.authorization", "false"),
+            # Set HDFS settings
+            ("spark.hadoop.fs.defaultFS", "hdfs://namenode:9000"),
+            ("spark.hadoop.dfs.client.use.datanode.hostname", "true"),
         ]
-
 
     def get_spark_context(app_name: str, config: SPARK_ENV) -> SparkSession:
         """Get a Spark context with the given configuration."""
         spark_conf = SparkConf().setAll(config.value).setAppName(app_name)
-        return SparkSession.builder.config(conf=spark_conf).getOrCreate()
+        spark = SparkSession.builder.config(conf=spark_conf).getOrCreate()
+        sc = spark.sparkContext
+    
+        sc.setLogLevel("DEBUG")
+    
+        # Set the user programmatically
+        java_import(sc._gateway.jvm, "org.apache.hadoop.security.UserGroupInformation")
+        sc._gateway.jvm.UserGroupInformation.setLoginUser(sc._gateway.jvm.UserGroupInformation.createRemoteUser("root"))
+    
+        return spark
 ---
 apiVersion: batch/v1
 kind: Job
@@ -87,11 +102,15 @@ spec:
     spec:
       containers:
         - name: spark-pi-estimation
-          image: bitnami/spark:3.5.2-debian-12-r0
+          image: bitnami/spark:3.5.2-debian-12-r1
           command: [ "sh", "-c" ]
           args:
             - |
-              /opt/bitnami/spark/bin/spark-submit --master spark://spark-master-svc:7077 --conf spark.driver.extraJavaOptions=-Duser.home=/root /opt/bitnami/spark/examples/pi-estimation.py 4;
+              /opt/bitnami/spark/bin/spark-submit \
+                --master spark://spark-master-svc:7077 \
+                --conf spark.driver.extraJavaOptions=-Duser.home=/root \
+                /opt/bitnami/spark/examples/pi-estimation.py \
+                4;
           env:
             - name: SPARK_LOCAL_DIRS
               value: "/tmp/spark"
@@ -101,16 +120,9 @@ spec:
               value: "/root"
           volumeMounts:
             - name: pi-scripts
-              mountPath: /opt/bitnami/spark/examples/pi-estimation.py
-              subPath: pi-estimation.py
-            - name: pi-scripts
-              mountPath: /opt/bitnami/spark/examples/utils.py
-              subPath: utils.py
+              mountPath: /opt/bitnami/spark/examples
             - name: ivy-cache
               mountPath: /root/.ivy2
-          ports:
-            - containerPort: 7077
-              name: spark
       volumes:
         - name: pi-scripts
           configMap:
