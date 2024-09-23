@@ -3,12 +3,12 @@ import platform
 import json
 import time
 
-UBUNTU_IMAGE="ubuntu"
-INTERACTIVE_DEPLOYMENT_PATH="../../services/interactive/interactive.yaml"
-TIME_TO_SLEEP=3
+UBUNTU_IMAGE = "ubuntu"
+INTERACTIVE_DEPLOYMENT_PATH = "../../services/interactive/interactive.yaml"
+TIME_TO_SLEEP = 3
 
 
-def run_command(command, show_output = True):
+def run_command(command, show_output=True):
     """Run a command in the shell and print the output."""
     try:
         result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
@@ -18,6 +18,7 @@ def run_command(command, show_output = True):
     except subprocess.CalledProcessError as e:
         print(f"Error running command: {command}")
         print(e.stderr)
+
 
 def get_pod_name_by_image(image_name):
     """Get the name of the pod running a specified image."""
@@ -35,6 +36,7 @@ def get_pod_name_by_image(image_name):
     print(f"No pod found running image: {image_name}")
     return None
 
+
 def delete_pod_by_image(image_name):
     """Delete a pod running a specified image."""
     pod_name = get_pod_name_by_image(image_name)
@@ -44,10 +46,12 @@ def delete_pod_by_image(image_name):
     else:
         print(f"No pod found to delete for image: {image_name}")
 
+
 def delete_yaml_resources(file_path):
     """Delete Kubernetes resources defined in a YAML file."""
     print(f"Deleting resources defined in {file_path}...")
     run_command(f"kubectl delete -f {file_path}")
+
 
 def delete_helm_resource(release_name):
     """Delete a Helm release."""
@@ -55,12 +59,18 @@ def delete_helm_resource(release_name):
     run_command(f"helm uninstall {release_name}")
 
 
+def delete_interactive_container():
+    """Delete Kubernetes resources defined in interactive services directory"""
+    print(f"Deleting resources defined in {INTERACTIVE_DEPLOYMENT_PATH}...")
+    run_command(f"kubectl delete -f {INTERACTIVE_DEPLOYMENT_PATH}")
+
+
 def cleanup():
     print("Starting cleanup process...")
 
     # Step 1: Delete the interactive pod based on the ubuntu image or custom interactive container
     delete_pod_by_image(UBUNTU_IMAGE)
-    delete_yaml_resources(INTERACTIVE_DEPLOYMENT_PATH)
+    delete_interactive_container()
 
     # Step 2: Delete the hello-kubernetes deployment
     delete_yaml_resources("hello-kubernetes.yaml")
@@ -77,6 +87,7 @@ def cleanup():
     run_command("kubectl get all")
 
     print("Cleanup completed.")
+
 
 if __name__ == "__main__":
     cleanup()

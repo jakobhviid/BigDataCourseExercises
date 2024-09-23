@@ -3,7 +3,8 @@ import platform
 import json
 import time
 
-HADOOP_IMAGE = "apache/hadoop:3"
+REDIS_CLUSTER_CLIENT_IMAGE = "docker.io/bitnami/redis-cluster:7.2.1-debian-11-r0"
+KAFKA_PATH = "../03/"
 HDFS_SERVICES_PATH = "../../services/hdfs"
 INTERACTIVE_DEPLOYMENT_PATH = "../../services/interactive/interactive.yaml"
 TIME_TO_SLEEP = 3
@@ -54,6 +55,20 @@ def delete_HDFS_sources():
     run_command(f"kubectl delete -f {HDFS_SERVICES_PATH}")
 
 
+def delete_kafka_resources():
+    """Delete Kubernetes resources defined Kafka Lecture 3 directory."""
+    print(f"Deleting resources defined in {KAFKA_PATH}...")
+
+    delete_yaml_resources(f"{KAFKA_PATH}sqoop.yaml")
+    delete_yaml_resources(f"{KAFKA_PATH}flume.yaml")
+    delete_yaml_resources(f"{KAFKA_PATH}redpanda.yaml")
+    delete_yaml_resources(f"{KAFKA_PATH}kafka-schema-registry.yaml")
+    delete_yaml_resources(f"{KAFKA_PATH}kafka-connect.yaml")
+    delete_yaml_resources(f"{KAFKA_PATH}kafka-ksqldb.yaml")
+    delete_helm_resource("kafka")
+    delete_pvc_resource("data-kafka-controller-0 data-kafka-controller-1 data-kafka-controller-2")
+
+
 def delete_interactive_container():
     """Delete Kubernetes resources defined in interactive services directory"""
     print(f"Deleting resources defined in {INTERACTIVE_DEPLOYMENT_PATH}...")
@@ -72,14 +87,45 @@ def delete_helm_resource(release_name):
     run_command(f"helm uninstall {release_name}")
 
 
+def delete_pvc_resource(pvc_name):
+    """Delete a Persistent Volume Claim (PVC)"""
+    print(f"Uninstalling PVC: {pvc_name}...")
+    run_command(f"kubectl delete pvc {pvc_name}")
+
+
 def cleanup():
     print("Starting cleanup process...")
 
-    # Step 1: Delete the interactive pod based on the apache/hadoop:3 image or custom interactive container
-    delete_pod_by_image(HADOOP_IMAGE)
+    # Step 1: Delete Redis resources
+    delete_pod_by_image(REDIS_CLUSTER_CLIENT_IMAGE)
+    delete_helm_resource("redis")
+    delete_pvc_resource(
+        "redis-data-redis-redis-cluster-0 "
+        "redis-data-redis-redis-cluster-1 "
+        "redis-data-redis-redis-cluster-2 "
+        "redis-data-redis-redis-cluster-3 "
+        "redis-data-redis-redis-cluster-4 "
+        "redis-data-redis-redis-cluster-5"
+    )
+
+    # Step 2: Delete MongoDB resources
+    delete_yaml_resources("mongodb.yaml")
+
+    # Step 3: Delete Hive resources
+    delete_yaml_resources("hive.yaml")
+    delete_yaml_resources("hive-metastore.yaml")
+
+    # Step 4: Delete Postgres resources
+    delete_helm_resource("postgresql")
+    delete_pvc_resource("data-postgresql-0")
+
+    # Step 5: Delete interactive container
     delete_interactive_container()
 
-    # Step 2: Delete HDFS resources
+    # Step 6: Delete Kafka resources
+    delete_kafka_resources()
+
+    # Step 7: Delete HDFS resources
     delete_HDFS_sources()
 
     # Wait 3 seconds for all resources to be deleted

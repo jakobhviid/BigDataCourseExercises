@@ -48,10 +48,10 @@ class PackageObj:
 
 
 def get_sensor_sample(
-    sensor_id: int = None,
-    modality: int = None,
-    unit: str = "MW",
-    temporal_aspect: str = VALID_TEMPORAL_ASPECTS[0],
+        sensor_id: int = None,
+        modality: int = None,
+        unit: str = "MW",
+        temporal_aspect: str = VALID_TEMPORAL_ASPECTS[0],
 ) -> SensorObj:
     if sensor_id is None:
         sensor_id = random.choice(VALID_SENSOR_IDS)
