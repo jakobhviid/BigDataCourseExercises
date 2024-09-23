@@ -58,9 +58,6 @@ def delete_HDFS_sources():
 def delete_kafka_resources():
     """Delete Kubernetes resources defined Kafka Lecture 3 directory."""
     print(f"Deleting resources defined in {KAFKA_PATH}...")
-
-    delete_yaml_resources(f"{KAFKA_PATH}sqoop.yaml")
-    delete_yaml_resources(f"{KAFKA_PATH}flume.yaml")
     delete_yaml_resources(f"{KAFKA_PATH}redpanda.yaml")
     delete_yaml_resources(f"{KAFKA_PATH}kafka-schema-registry.yaml")
     delete_yaml_resources(f"{KAFKA_PATH}kafka-connect.yaml")
