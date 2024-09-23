@@ -693,6 +693,11 @@ The script will delete all resources created in the exercises.
     1. `helm delete kafka`
 - cd into the `services/interactive` folder in the repository.
     1. `kubectl delete -f interactive.yaml`
+- cd into the `services/hdfs` folder in the repository.
+    1. `kubectl delete -f hdfs-cli.yaml` (if used)
+    1. `kubectl delete -f datanodes.yaml`
+    1. `kubectl delete -f namenode.yaml`
+    1. `kubectl delete -f configmap.yaml`
 
 You can get a list of the pods and services to verify that they are deleted.
 

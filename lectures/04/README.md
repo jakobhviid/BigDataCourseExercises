@@ -119,7 +119,7 @@ complete the streaming query:
 
 ## Step-by-step guide to clean up
 
-You will be using HDFS, Kafka, Spark and the interactive container in next lecture. However, if you will clean up the
+You will be using HDFS, Kafka and the interactive container in next lecture. However, if you will clean up the
 resources created in this lecture, you can follow the steps below:
 
 ### Automated clean up
@@ -156,9 +156,7 @@ The script will delete all resources created in the exercises.
         `
 - `cd` into the `services/interactive` folder in the repository.
     1. `kubectl delete -f interactive.yaml`
-
 - cd into the `services/hdfs` folder in the repository.
-
     1. `kubectl delete -f hdfs-cli.yaml` (if used)
     1. `kubectl delete -f datanodes.yaml`
     1. `kubectl delete -f namenode.yaml`
