@@ -2,8 +2,10 @@ from pyspark.sql import functions as F
 from pyspark.sql import types as T
 from src.utils import FS, SPARK_ENV, get_spark_context
 
+
 def get_avro_files(base_path: str = FS) -> str:
     return f"{base_path}/data/raw/sensor_id=*/temporal_aspect=*/year=*/month=*/day=*/*.avro"
+
 
 if __name__ == "__main__":
     additional_conf = {
