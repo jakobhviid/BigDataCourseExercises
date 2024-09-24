@@ -51,13 +51,21 @@ create a Spark job that both can run on your localhost and in your Spark environ
 - Using Python: ``python <SCRIPT.py> <NUMBER_OF_PARTITIONS>``
 - Using `spark-submit`: ``spark-submit <SCRIPT.py> <NUMBER_OF_PARTITIONS>``
 
-| **Aspect**            | `python <SCRIPT.py>`                                      | `spark-submit <SCRIPT.py>`                                      |
-|-----------------------|-----------------------------------------------------------|-----------------------------------------------------------------|
-| **Execution Mode**    | Local execution as a regular Python script                | Submit as a Spark job to a cluster                              |
-| **Spark Context**     | Must be created within the script                         | Created and managed by `spark-submit`                           |
-| **Cluster Integration**| Limited to local mode or simple clusters                  | Supports full integration with cluster managers (YARN, Kubernetes, etc.) |
-| **Resource Management**| Limited to local machine resources                        | Managed by the cluster, scalable                                |
-| **Use Case**          | Development and testing locally                           | Production and large-scale distributed jobs                     |
+| **Aspect**              | `python <SCRIPT.py>`                                     | `spark-submit <SCRIPT.py>`                                               |
+|-------------------------|----------------------------------------------------------|--------------------------------------------------------------------------|
+| **Execution Mode**      | Local execution as a regular Python script               | Submit as a Spark job to a cluster                                       |
+| **Spark Context**       | Must be created within the script                        | Created and managed by `spark-submit`                                    |
+| **Cluster Integration** | Limited to local mode or simple clusters                 | Supports full integration with cluster managers (YARN, Kubernetes, etc.) |
+| **Resource Management** | Limited to local machine resources                       | Managed by the cluster, scalable                                         |
+| **Use Case**            | Development and testing locally                          | Production and large-scale distributed jobs                              |
+| **Ease of Setup**       | Very easy; no additional setup required                  | Requires setup of cluster configuration and environment                  |
+| **Dependencies**        | Must be managed manually in the script                   | Can include dependencies via `--packages` or `--jars` options            |
+| **Error Handling**      | Errors shown in the console directly                     | Errors logged in cluster logs, more difficult to debug remotely          |
+| **Logging**             | Logs output to console                                   | Logs managed by cluster manager, accessible via web UI or files          |
+| **Deployment Modes**    | Supports only local mode                                 | Supports local, client, and cluster deployment modes                     |
+| **Job Configuration**   | Configuration is hard-coded or via environment variables | Can pass configurations via command-line options                         |
+| **Output and Results**  | Printed to console                                       | Can be redirected to files, databases, or external storage               |
+
 
 
 **Question**:
