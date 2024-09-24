@@ -11,13 +11,13 @@ TIME_TO_SLEEP = 3
 def run_command(command, show_output=True):
     """Run a command in the shell and print the output."""
     try:
+        print(f"Executing command: {command}")
         result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
         if show_output:
             print(result.stdout)
         return result.stdout
     except subprocess.CalledProcessError as e:
-        print(f"Error running command: {command}")
-        print(e.stderr)
+        print(f"Resources have already been deleted")
 
 
 def get_pod_name_by_image(image_name):

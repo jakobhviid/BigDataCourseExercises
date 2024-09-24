@@ -6,19 +6,20 @@ import time
 KAFKA_PATH = "../03/"
 HDFS_SERVICES_PATH = "../../services/hdfs"
 INTERACTIVE_DEPLOYMENT_PATH = "../../services/interactive/interactive.yaml"
+SPARK_SUBMIT_PATH = "./spark-submit"
 TIME_TO_SLEEP = 3
 
 
 def run_command(command, show_output=True):
     """Run a command in the shell and print the output."""
     try:
+        print(f"Executing command: {command}")
         result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
         if show_output:
             print(result.stdout)
         return result.stdout
     except subprocess.CalledProcessError as e:
-        print(f"Error running command: {command}")
-        print(e.stderr)
+        print(f"Resources have already been deleted")
 
 
 def get_pod_name_by_image(image_name):
@@ -48,7 +49,19 @@ def delete_pod_by_image(image_name):
         print(f"No pod found to delete for image: {image_name}")
 
 
-def delete_HDFS_sources():
+def delete_pod_by_selector(selector):
+    """Delete a pod(s) matching a specific selector."""
+    print(f"Deleting pod(s) with selector {selector}")
+    run_command(f"kubectl delete pod --field-selector={selector}")
+
+
+def delete_spark_submit_jobs():
+    """Delete Kubernetes resources defined Spark Submit directory."""
+    print(f"Deleting resources defined in {SPARK_SUBMIT_PATH}...")
+    run_command(f"kubectl delete -f {SPARK_SUBMIT_PATH}")
+
+
+def delete_hdfs_resources():
     """Delete Kubernetes resources defined HDFS services directory."""
     print(f"Deleting resources defined in {HDFS_SERVICES_PATH}...")
     run_command(f"kubectl delete -f {HDFS_SERVICES_PATH}")
@@ -89,20 +102,29 @@ def delete_pvc_resource(pvc_name):
     run_command(f"kubectl delete pvc {pvc_name}")
 
 
+def delete_jobs_by_selector(selector):
+    """Delete jobs matching a specific selector."""
+    print(f"Deleting jobs with selector {selector}")
+    run_command(f"kubectl delete jobs --field-selector={selector}")
+
+
 def cleanup():
     print("Starting cleanup process...")
 
     # Step 1: Delete interactive container
     delete_interactive_container()
 
-    # Step 2: Delete Spark
+    # Step 2: Delete completed Jobs
+    delete_spark_submit_jobs()
+
+    # Step 3: Delete Spark
     delete_helm_resource("spark")
 
-    # Step 5: Delete Kafka resources
+    # Step 4: Delete Kafka resources
     delete_kafka_resources()
 
-    # Step 6: Delete HDFS resources
-    delete_HDFS_sources()
+    # Step 5: Delete HDFS resources
+    delete_hdfs_resources()
 
     # Wait 3 seconds for all resources to be deleted
     print(f"Waiting {TIME_TO_SLEEP} seconds to resources to be deleted")

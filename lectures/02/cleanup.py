@@ -12,13 +12,13 @@ TIME_TO_SLEEP = 3
 def run_command(command, show_output=True):
     """Run a command in the shell and print the output."""
     try:
+        print(f"Executing command: {command}")
         result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
         if show_output:
             print(result.stdout)
         return result.stdout
     except subprocess.CalledProcessError as e:
-        print(f"Error running command: {command}")
-        print(e.stderr)
+        print(f"Resources have already been deleted")
 
 
 def get_pod_name_by_image(image_name):
@@ -48,7 +48,7 @@ def delete_pod_by_image(image_name):
         print(f"No pod found to delete for image: {image_name}")
 
 
-def delete_HDFS_sources():
+def delete_hdfs_resources():
     """Delete Kubernetes resources defined HDFS services directory."""
     print(f"Deleting resources defined in {HDFS_SERVICES_PATH}...")
     run_command(f"kubectl delete -f {HDFS_SERVICES_PATH}")
@@ -80,7 +80,7 @@ def cleanup():
     delete_interactive_container()
 
     # Step 2: Delete HDFS resources
-    delete_HDFS_sources()
+    delete_hdfs_resources()
 
     # Wait 3 seconds for all resources to be deleted
     print(f"Waiting {TIME_TO_SLEEP} seconds to resources to be deleted")
