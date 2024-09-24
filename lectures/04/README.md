@@ -66,7 +66,7 @@ create a Spark job that both can run on your localhost and in your Spark environ
 | **Job Configuration**   | Configuration is hard-coded or via environment variables | Can pass configurations via command-line options                         |
 | **Output and Results**  | Printed to console                                       | Can be redirected to files, databases, or external storage               |
 
-
+**Notice**: Have a look at the `spark-submit` documentation for [submitting-applications](https://spark.apache.org/docs/latest/submitting-applications.html).
 
 **Question**:
 - How will the number of partitions argument affect the result?
