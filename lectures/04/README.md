@@ -47,12 +47,37 @@ create a Spark job that both can run on your localhost and in your Spark environ
 
 **Task**: Run the [pi-estimation.py](./pi-estimation.py) file locally using Python 3.12.
 
+**Help**: Running Spark jobs
+- Using Python: ``python <SCRIPT.py> <NUMBER_OF_PARTITIONS>``
+- Using `spark-submit`: ``spark-submit <SCRIPT.py> <NUMBER_OF_PARTITIONS>``
+
+**Question**:
 - How will the number of partitions argument affect the result?
+
+<details>
+  <summary><strong>Hint</strong>: Run Spark locally</summary>
+
+  Change this line of code in [pi-estimation.py](./pi-estimation.py) to point to `SPARK_ENV.LOCAL`
+  ```text
+  spark = get_spark_context(app_name="Pi estimation", config=SPARK_ENV.LOCAL)
+  ```
+
+</details>
 
 **Task**: Update the [pi-estimation.py](./pi-estimation.py) file to be executed on the inside your Kubernetes cluster.
 
 - Does the number of partitions affect the runtime?
 - How does the runtime compare to running the program locally?
+
+<details>
+  <summary><strong>Hint</strong>: Run Spark within the Kubernetes cluster</summary>
+
+  Change this line of code in [pi-estimation.py](./pi-estimation.py) to point to `SPARK_ENV.K8S`
+  ```text
+  spark = get_spark_context(app_name="Pi estimation", config=SPARK_ENV.K8S)
+  ```
+
+</details>
 
 ### Exercise 3 - Analyzing files using Spark jobs
 
@@ -116,7 +141,7 @@ kafka. You can enable an interactive Spark streaming prompt using `pyspark` or s
 using `spark-submit` as demonstrated below:
 
 ```bash
-pyspark --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.2
+pyspark --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.2 
 ```
 
 ```bash
