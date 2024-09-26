@@ -21,7 +21,9 @@ def parse_groups_from_form(filename: Path, col_id: str = "ID") -> pd.DataFrame:
     df = df.melt(id_vars=[col_id])[[col_id, "value"]]
     df.dropna(inplace=True)
 
-    df["value"] = df["value"].apply(lambda x: x.replace(STUDENT_MAIL_PATTERN, ""))
+    df["value"] = df["value"].apply(
+        lambda x: x.replace(STUDENT_MAIL_PATTERN, "").lower()
+    )
     df[col_id] = df[col_id].apply(lambda x: apply_group_pattern(x))
 
     df.sort_values(by=col_id, inplace=True)
