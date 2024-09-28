@@ -57,7 +57,7 @@ if __name__ == "__main__":
         F.window("timestamp", "10 seconds"),  # Use a 10-second window for the running mean
         "sensor_id"
     ).agg(
-        F.mean("modality").alias("avg_modality")
+        F.mean("modality").alias("mean_modality")
     )
 
     # Write the result to the console
