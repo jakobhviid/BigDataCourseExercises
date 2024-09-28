@@ -37,27 +37,22 @@ create a Spark job that both can run on your localhost and in your Spark environ
 
 **Task**: Inspect the [pi-estimation.py](./pi-estimation.py) file.
 
-**Task**: Try to visualize the [DAG](https://en.wikipedia.org/wiki/Directed_acyclic_graph) this program will create.
-
-**Help**:
-
-- Take a look [here](https://stackoverflow.com/a/30685279/9698208) to better understand how the DAG is created for the
-  Spark program.
-- You are able to get other examples of Spark programs [here](https://spark.apache.org/examples.html).
-
-**Task**: Run the [pi-estimation.py](./pi-estimation.py) file locally using Python 3.12.
+**Task**: Run the [pi-estimation.py](./pi-estimation.py) file locally using Python.
 
 **Help**: Running Spark jobs
+
 - Using Python: ``python <SCRIPT.py> <NUMBER_OF_PARTITIONS>``
 - Using `spark-submit`: ``spark-submit <SCRIPT.py> <NUMBER_OF_PARTITIONS>``
-  - Have a look at the `spark-submit` documentation for [submitting-applications](https://spark.apache.org/docs/latest/submitting-applications.html).
+    - Have a look at the `spark-submit` documentation
+      for [submitting-applications](https://spark.apache.org/docs/latest/submitting-applications.html).
 
 **Question**: How will the number of partitions argument affect the result?
 
 <details>
   <summary><strong>Hint</strong>: Run Spark locally</summary>
 
-  Change this line of code in [pi-estimation.py](./pi-estimation.py) to point to `SPARK_ENV.LOCAL`
+Change this line of code in [pi-estimation.py](./pi-estimation.py) to point to `SPARK_ENV.LOCAL`
+
   ```text
   spark = get_spark_context(app_name="Pi estimation", config=SPARK_ENV.LOCAL)
   ```
@@ -72,7 +67,8 @@ create a Spark job that both can run on your localhost and in your Spark environ
 <details>
   <summary><strong>Hint</strong>: Run Spark within the Kubernetes cluster</summary>
 
-  Change this line of code in [pi-estimation.py](./pi-estimation.py) to point to `SPARK_ENV.K8S`
+Change this line of code in [pi-estimation.py](./pi-estimation.py) to point to `SPARK_ENV.K8S`
+
   ```text
   spark = get_spark_context(app_name="Pi estimation", config=SPARK_ENV.K8S)
   ```
@@ -96,7 +92,6 @@ create a Spark job that both can run on your localhost and in your Spark environ
 | **Job Configuration**   | Configuration is hard-coded or via environment variables | Can pass configurations via command-line options                         |
 | **Output and Results**  | Printed to console                                       | Can be redirected to files, databases, or external storage               |
 
-
 ### Exercise 3 - Analyzing files using Spark jobs
 
 The previous program you ran was estimating pi. This program only used compute resources and in this exercise you will
@@ -110,7 +105,19 @@ cluster. If not upload the file to HDFS.
 **Task**: Inspect the [word-count.py](./word-count.py). The program counts the occurrences of all unique "words" in the
 input file.
 
-- Try to run the program locally and in the cluster pointing towards different input files.
+**Task**: Try to visualize the [DAG](https://en.wikipedia.org/wiki/Directed_acyclic_graph) this program will create.
+
+**Help**:
+
+- Take a look [here](https://stackoverflow.com/a/30685279/9698208) to better understand how the DAG is created for the
+  Spark program.
+- You are able to get other examples of Spark programs [here](https://spark.apache.org/examples.html).
+
+**Task**: Run the program locally and in the cluster pointing towards different input files.
+
+```bash
+spark-submit word-count.py
+```
 
 **Notice**:You can read about the word count program from Apache Spark [here](https://spark.apache.org/examples.html)
 and [here](https://github.com/apache/spark/blob/c1b12bd56429b98177e5405900a08dedc497e12d/examples/src/main/python/wordcount.py).
@@ -128,7 +135,12 @@ In this exercise you will run a Spark job that will read all the JSON files and 
 **Task**: Ensure you have records stored in HDFS on the proper location. If not upload the records to HDFS
 using [exercise 4 from lecture 03](./../03/README.md#exercise-4---produce-messages-to-kafka-using-python)
 and [exercise 7 from lecture 3](../03/README.md#exercise-7---kafka-connect-and-hdfs)
+
 **Task**: Run the Spark application on the cluster. What is the `payload.modality` average value for each station?
+
+```bash
+spark-submit avg-modalities.py
+```
 
 ### Exercise 5 - Average sample values from Avro files stored in HDFS (optional)
 
@@ -142,7 +154,13 @@ In this exercise you will run a Spark job that will read all the Avro files and 
 
 **Task**: Ensure you have records stored in HDFS on the proper location. If not upload the records to HDFS
 using [exercise 10 from lecture 02](../02/README.md#exercise-10---create-six-fictive-data-sources)
-**Task**: Run the Spark application on the cluster. This should produce the same results as in [Exercise 4](#exercise-4---average-sample-values-from-json-files-stored-in-hdfs)
+
+**Task**: Run the Spark application on the cluster. This should produce the same results as
+in [Exercise 4](#exercise-4---average-sample-values-from-json-files-stored-in-hdfs)
+
+```bash
+spark-submit --packages org.apache.spark:spark-avro_2.12:3.5.2 avg-modalities-avro.py
+```
 
 ### Exercise 6 - Running Spark Streaming Jobs - Kafka
 
