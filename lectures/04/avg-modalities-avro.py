@@ -13,22 +13,15 @@ if __name__ == "__main__":
     }
 
     spark = get_spark_context(
-        app_name="Sample Sum",
+        app_name="Sample Sum Avro",
         config=SPARK_ENV.K8S,
         additional_conf=additional_conf
     )
 
-    df = spark.read.format("avro").load(get_avro_files()
+    df = spark.read.format("avro").load(get_avro_files())
 
     # Display schema to understand the data structure
     df.printSchema()
-
-    avro_schema = T.StructType([
-        T.StructField("payload", T.StringType(), False),
-        T.StructField("correlation_id", T.StringType(), False),
-        T.StructField("created_at", T.DoubleType(), False),
-        T.StructField("schema_version", T.IntegerType(), False),
-    ])
 
     payload_schema = T.StructType([
         T.StructField("sensor_id", T.StringType(), False),
