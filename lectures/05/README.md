@@ -63,11 +63,19 @@ A service has been created for Hive. Forward port 10002 of the Hive service.
 **Task**: Port-forward Web UI Hive and open the Hive Web UI webpage in your
 browser [localhost:10002](http://localhost:10002/).
 
+````bash
+kubectl port-forward svc/hiveserver2 10002:10002
+````
+
 You should see at least one active session and zero open queries.
 
 To connect to Hive's thrift API we have to port-forward the service as well. Forward port 10000 of the Hive service.
 
 **Task**: Port-forward thrift Hive service.
+
+````bash
+kubectl port-forward svc/hiveserver2 10000:10000
+````
 
 To connect to Hive we will use [DBeaver](https://dbeaver.io/). DBeaver is a cross-platform database tool that supports
 many different SQL databases.
@@ -505,28 +513,33 @@ curl -X POST \
 http://127.0.0.1:8083/connectors \
 -H 'Content-Type: application/json' \
 -d '{
-    "name": "mongodb-sink",
-    "config": {
-        "connection.password": "password",
-        "connection.uri": "mongodb://admin:password@mongodb.mongodb:27017",
-        "connection.url": "mongodb://mongodb.mongodb:27017",
-        "connection.username": "admin",
-        "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
-        "database": "kafka",
-        "key.converter": "org.apache.kafka.connect.storage.StringConverter",
-        "key.converter.schemas.enable": "true",
-        "name": "mongodb-sink-connector-cdfs",
-        "output.format.key": "json",
-        "output.format.value": "json",
-        "post.processor.chain": "com.mongodb.kafka.connect.sink.processor.DocumentIdAdder",
-        "tasks.max": "4",
-        "timeseries.timefield.auto.convert": "false",
-        "topics": "INGESTION",
-        "value.converter": "org.apache.kafka.connect.storage.StringConverter",
-        "value.converter.schemas.enable": "true"
-    }
+  "name": "mongodb-sink",
+  "config": {
+    "connection.password": "password",
+    "connection.uri": "mongodb://admin:password@mongodb:27017",
+    "connection.url": "mongodb://mongodb:27017",
+    "connection.username": "admin",
+    "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
+    "database": "kafka",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "key.converter.schemas.enable": "true",
+    "output.format.key": "json",
+    "output.format.value": "json",
+    "post.processor.chain": "com.mongodb.kafka.connect.sink.processor.DocumentIdAdder",
+    "tasks.max": "4",
+    "timeseries.timefield.auto.convert": "false",
+    "topics": "INGESTION",
+    "value.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter.schemas.enable": "true"
+  }
 }'
 ```
+
+**Note:** If this does not work for you (Windows), then you can use this command (using Command Prompt NOT Powershell):
+
+````bash
+curl -X POST -H "Content-Type: application/json" -d @hints/configuration.json http://127.0.0.1:8083/connectors
+````
 
 </details>
 
@@ -604,12 +617,21 @@ command:
 kubectl get secret redis-redis-cluster -o jsonpath="{.data.redis-password}"
 ```
 
-This will return the password in base64 format. You can decode it using the `base64 --decode` command on Unix (use WSL
+This will return the password in base64 format. You can decode it using the `base64 --decode` command on Unix (use PowerShell
 if you are on Windows):
+
+MacOS / Linux
 
 ```bash
 echo "<base64 password>" | base64 --decode
 ```
+
+Windows 
+
+````bash
+$encoded = "<base64 password>"
+[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($encoded))
+````
 
 We will now create an interactive container that will be used to connect to the redis cluster. Run the following
 command:
