@@ -376,39 +376,6 @@ transferring into a production environment.
 
 </details>
 
-**Task**: Validate your deployment of MongoDB.
-
-<details>
-<summary><strong>Hint:</strong> Get all the resources inside the `mongodb` namespace</summary>
-
-One approach for getting the current state of the deployed resources is by using the command below:
-
-```bash
-kubectl get all  
-```
-
-You should expect a similar output like the chunk below:
-
-```bash
-NAME                               READY   STATUS    RESTARTS   AGE
-pod/mongodb-f585b897b-f7bn6        1/1     Running   0          7m31s
-pod/mongo-express-f896d549-5gbz7   1/1     Running   0          2m51s
-
-NAME                               TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)           AGE
-service/mongodb                    NodePort   10.152.183.106   <none>        27017:32346/TCP   7m32s
-service/mongo-express              NodePort   10.152.183.163   <none>        8081:31280/TCP    7m32s
-
-NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/mongodb            1/1     1            1           7m32s
-deployment.apps/mongo-express      1/1     1            1           7m31s
-
-NAME                                     DESIRED   CURRENT   READY   AGE
-replicaset.apps/mongodb-f585b897b        1         1         1       7m31s
-replicaset.apps/mongo-express-f896d549   1         1         1       2m51s
-```
-
-</details>
-
 #### Exercise 4.1 - Interact with MongoDB
 
 We will briefly introduce two approaches for interacting with MongoDB. One approach is the web-based interface called
@@ -607,14 +574,15 @@ We will use the [Bitnami Redis Cluster helm chart](https://artifacthub.io/packag
 install the cluster, use the following command:
 
 ```bash
-helm install redis oci://registry-1.docker.io/bitnamicharts/redis-cluster
+helm install redis oci://registry-1.docker.io/bitnamicharts/redis-cluster --version 11.0.4
 ```
 
 The Bitnami chart will create a random password stored in a Kubernetes secret. To get the password, use the following
 command:
 
 ```bash
-kubectl get secret redis-redis-cluster -o jsonpath="{.data.redis-password}"
+export REDIS_PASSWORD_BASE64=$(kubectl get secret redis-redis-cluster -o jsonpath="{.data.redis-password}")
+echo $REDIS_PASSWORD_BASE64
 ```
 
 This will return the password in base64 format. You can decode it using the `base64 --decode` command on Unix (use PowerShell
@@ -623,21 +591,22 @@ if you are on Windows):
 MacOS / Linux
 
 ```bash
-echo "<base64 password>" | base64 --decode
+export REDIS_PASSWORD=$(echo $REDIS_PASSWORD_BASE64 | base64 --decode)
+echo $REDIS_PASSWORD
 ```
 
-Windows 
+Windows
 
 ````bash
-$encoded = "<base64 password>"
-[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($encoded))
+export REDIS_PASSWORD=$([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($REDIS_PASSWORD_BASE64)))
+echo $REDIS_PASSWORD
 ````
 
 We will now create an interactive container that will be used to connect to the redis cluster. Run the following
 command:
 
 ```bash
-kubectl run redis-cluster-client --rm --tty -i --env REDIS_PASSWORD=<password> --image docker.io/bitnami/redis-cluster:7.2.1-debian-11-r0 -- bash
+kubectl run redis-cluster-client --rm --tty -i --env REDIS_PASSWORD=$REDIS_PASSWORD --image docker.io/bitnami/redis-cluster:7.4.0-debian-12-r1 -- bash
 ```
 
 You can then use the following command inside the interactive container to connect to the redis cluster using redis-cli:
