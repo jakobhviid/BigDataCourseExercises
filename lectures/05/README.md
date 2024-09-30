@@ -580,10 +580,19 @@ helm install redis oci://registry-1.docker.io/bitnamicharts/redis-cluster --vers
 The Bitnami chart will create a random password stored in a Kubernetes secret. To get the password, use the following
 command:
 
+MacOS / Linux
+
 ```bash
 export REDIS_PASSWORD_BASE64=$(kubectl get secret redis-redis-cluster -o jsonpath="{.data.redis-password}")
 echo $REDIS_PASSWORD_BASE64
 ```
+
+Windows 
+
+````text
+$REDIS_PASSWORD_BASE64=$(kubectl get secret redis-redis-cluster -o jsonpath="{.data.redis-password}")
+echo $REDIS_PASSWORD_BASE64
+````
 
 This will return the password in base64 format. You can decode it using the `base64 --decode` command on Unix (use PowerShell
 if you are on Windows):
@@ -598,7 +607,7 @@ echo $REDIS_PASSWORD
 Windows
 
 ````bash
-export REDIS_PASSWORD=$([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($REDIS_PASSWORD_BASE64)))
+$REDIS_PASSWORD=$([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($REDIS_PASSWORD_BASE64)))
 echo $REDIS_PASSWORD
 ````
 
