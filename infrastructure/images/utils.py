@@ -52,6 +52,10 @@ MAPPING = {
     "apache/hive:3.1.3": {"image_name": "hive", "image_tag": "3.1.2"},
     "mongo:latest": {"image_name": "mongo", "image_tag": "latest"},
     "mongo-express:latest": {"image_name": "mongo-express", "image_tag": "latest"},
+    "bitnami/redis-cluster:7.4.0-debian-12-r1": {
+        "image_name": "redis-cluster",
+        "image_tag": "7.4.0-debian-12-r1",
+    },
 }
 
 
