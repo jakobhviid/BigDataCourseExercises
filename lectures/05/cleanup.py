@@ -1,9 +1,8 @@
-import subprocess
-import platform
 import json
+import subprocess
 import time
 
-REDIS_CLUSTER_CLIENT_IMAGE = "docker.io/bitnami/redis-cluster:7.2.1-debian-11-r0"
+REDIS_CLUSTER_CLIENT_IMAGE = "docker.io/bitnami/redis-cluster:7.4.0-debian-12-r1"
 KAFKA_PATH = "../03/"
 HDFS_SERVICES_PATH = "../../services/hdfs"
 INTERACTIVE_DEPLOYMENT_PATH = "../../services/interactive/interactive.yaml"
@@ -14,12 +13,14 @@ def run_command(command, show_output=True):
     """Run a command in the shell and print the output."""
     try:
         print(f"Executing command: {command}")
-        result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
+        result = subprocess.run(
+            command, shell=True, check=True, capture_output=True, text=True
+        )
         if show_output:
             print(result.stdout)
         return result.stdout
     except subprocess.CalledProcessError as e:
-        print(f"Resources have already been deleted")
+        print("Resources have already been deleted")
 
 
 def get_pod_name_by_image(image_name):
@@ -27,12 +28,12 @@ def get_pod_name_by_image(image_name):
     print(f"Searching for pod running image: {image_name}")
     pods_info = run_command("kubectl get pods -o json", False)
     if pods_info:
-        pods = json.loads(pods_info).get('items', [])
+        pods = json.loads(pods_info).get("items", [])
         for pod in pods:
-            containers = pod.get('spec', {}).get('containers', [])
+            containers = pod.get("spec", {}).get("containers", [])
             for container in containers:
-                if image_name in container.get('image', ''):
-                    pod_name = pod.get('metadata', {}).get('name', '')
+                if image_name in container.get("image", ""):
+                    pod_name = pod.get("metadata", {}).get("name", "")
                     print(f"Found pod: {pod_name} running image: {image_name}")
                     return pod_name
     print(f"No pod found running image: {image_name}")
@@ -63,7 +64,9 @@ def delete_kafka_resources():
     delete_yaml_resources(f"{KAFKA_PATH}kafka-connect.yaml")
     delete_yaml_resources(f"{KAFKA_PATH}kafka-ksqldb.yaml")
     delete_helm_resource("kafka")
-    delete_pvc_resource("data-kafka-controller-0 data-kafka-controller-1 data-kafka-controller-2")
+    delete_pvc_resource(
+        "data-kafka-controller-0 data-kafka-controller-1 data-kafka-controller-2"
+    )
 
 
 def delete_interactive_container():
