@@ -3,6 +3,8 @@ datahub-gms:
   image:
     repository: acryldata/datahub-gms
     tag: v0.14.0
+  service:
+    type: ClusterIP
   resources:
     limits:
       memory: 2Gi
@@ -23,6 +25,8 @@ datahub-frontend:
   image:
     repository: acryldata/datahub-frontend-react
     tag: v0.14.0
+  service:
+    type: ClusterIP
   resources:
     limits:
       memory: 1400Mi
@@ -46,6 +50,7 @@ acryl-datahub-actions:
       memory: 256Mi
 
 datahub-mae-consumer:
+  enabled: true
   image:
     repository: acryldata/datahub-mae-consumer
     tag: v0.14.0
@@ -57,6 +62,7 @@ datahub-mae-consumer:
       memory: 256Mi
 
 datahub-mce-consumer:
+  enabled: true
   image:
     repository: acryldata/datahub-mce-consumer
     tag: v0.14.0
@@ -426,18 +432,20 @@ global:
 
   kafka:
     bootstrap:
-      server: "kafka:9092"
+      server: "prerequisites-kafka:9092"
+    zookeeper:
+      enabled: false
     topics:
-      metadata_change_event_name: "MetadataChangeEvent_v4"
-      failed_metadata_change_event_name: "FailedMetadataChangeEvent_v4"
-      metadata_audit_event_name: "MetadataAuditEvent_v4"
-      datahub_usage_event_name: "DataHubUsageEvent_v1"
-      metadata_change_proposal_topic_name: "MetadataChangeProposal_v1"
-      failed_metadata_change_proposal_topic_name: "FailedMetadataChangeProposal_v1"
-      metadata_change_log_versioned_topic_name: "MetadataChangeLog_Versioned_v1"
-      metadata_change_log_timeseries_topic_name: "MetadataChangeLog_Timeseries_v1"
-      platform_event_topic_name: "PlatformEvent_v1"
-      datahub_upgrade_history_topic_name: "DataHubUpgradeHistory_v1"
+      metadata_change_event_name: "METADATACHANGEEVENTV4"
+      failed_metadata_change_event_name: "FAILEDMETADATACHANGEEVENTV4"
+      metadata_audit_event_name: "METADATAAUDITEVENTV4"
+      datahub_usage_event_name: "DATAHUBUSAGEEVENTV1"
+      metadata_change_proposal_topic_name: "METADATACHANGEPROPOSALV1"
+      failed_metadata_change_proposal_topic_name: "FAILEDMETADATACHANGEPROPOSALV1"
+      metadata_change_log_versioned_topic_name: "METADATACHANGELOGVERSIONEDV1"
+      metadata_change_log_timeseries_topic_name: "METADATACHANGELOGTIMESERIESV1"
+      platform_event_topic_name: "PLATFORMEVENTV1"
+      datahub_upgrade_history_topic_name: "DATAHUBUPGRADEHISTORYV1"
     metadataChangeLog:
       hooks:
         siblings:
