@@ -5,9 +5,7 @@ from src.utils import FS, SPARK_ENV, get_spark_context
 if __name__ == "__main__":
     spark = get_spark_context(app_name="Sample Sum", config=SPARK_ENV.K8S)
     sc = spark.sparkContext
-
     files = sc.wholeTextFiles(f"{FS}/topics/INGESTION/*/*.json")
-
     json_schema = T.StructType(
         [
             T.StructField("correlation_id", T.StringType(), False),

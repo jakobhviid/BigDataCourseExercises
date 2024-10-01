@@ -2,7 +2,7 @@ from src.utils import SPARK_ENV, get_spark_context
 
 if __name__ == "__main__":
     # Create a Spark session and context
-    spark = get_spark_context(app_name="Kafka Streamning", config=SPARK_ENV.K8S)
+    spark = get_spark_context(app_name="Kafka Streaming", config=SPARK_ENV.K8S)
     sc = spark.sparkContext
 
     kafka_options = {

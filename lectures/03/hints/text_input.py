@@ -2,6 +2,7 @@ import requests
 import json
 import random
 
+
 def main():
     flume_url = "http://flume:12345"
 
@@ -32,6 +33,7 @@ def main():
                 print(f"Failed to send data to Flume. Status code: {response.status_code}")
         except Exception as e:
             print(f"Error sending data to Flume: {e}")
+
 
 if __name__ == "__main__":
     main()

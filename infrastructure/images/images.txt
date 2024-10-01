@@ -21,6 +21,7 @@ mongo:latest
 mongo-express:latest
 docker.elastic.co/elasticsearch/elasticsearch:7.17.3
 neo4j:5.11.0-community
+bitnami/redis-cluster:7.4.0-debian-12-r1
 acryldata/datahub-gms:v0.14.0
 acryldata/datahub-frontend-react:v0.14.0
 acryldata/datahub-actions:v0.1.0
@@ -31,3 +32,4 @@ acryldata/datahub-elasticsearch-setup:v0.14.0
 acryldata/datahub-kafka-setup:v0.14.0
 acryldata/datahub-mysql-setup:v0.14.0
 acryldata/datahub-upgrade:v0.14.0
+

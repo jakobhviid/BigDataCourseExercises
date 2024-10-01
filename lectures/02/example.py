@@ -11,7 +11,7 @@ def main():
     try:
         # Reading a file, using a delimiter makes it return a list
         with client.read(
-            "/alice-in-wonderland.txt", encoding="utf-8", delimiter="\n"
+                "/alice-in-wonderland.txt", encoding="utf-8", delimiter="\n"
         ) as reader:
             for line in reader:
                 print(line)

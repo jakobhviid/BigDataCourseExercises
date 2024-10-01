@@ -9,11 +9,11 @@ def main():
 
     # Create an AvroWriter instance with the client and file name
     with client.read(
-        "/alice-in-wonderland.txt", encoding="utf-8"
+            "/alice-in-wonderland.txt", encoding="utf-8"
     ) as reader, AvroWriter(client, "/word-count.avro", overwrite=True) as writer:
         wordcount = Counter(reader.read().split()).most_common(10)
 
-        # Restructure the wordcount structure, so it now is a an array of objects, objects that contain a word and count key
+        # Restructure the wordcount structure, so it now is an array of objects, objects that contain a word and count key
         for key, count in wordcount:
             writer.write({"word": key, "count": count})
 
