@@ -57,6 +57,10 @@ MAPPING = {
         "image_tag": "7.17.3",
     },
     "neo4j:5.11.0-community": {"image_name": "neo4j", "image_tag": "5.11.0-community"},
+    "bitnami/zookeeper:3.9.1-debian-12-r13": {
+        "image_name": "zookeeper",
+        "image_tag": "3.9.1-debian-12-r13",
+    },
     "acryldata/datahub-gms:v0.14.0": {
         "image_name": "datahub-gms",
         "image_tag": "v0.14.0",
@@ -100,6 +104,7 @@ MAPPING = {
     "bitnami/mysql:8.0.32-debian-11-r26": {
         "image_name": "mysql",
         "image_tag": "8.0.32-debian-11-r26",
+    },
     "bitnami/redis-cluster:7.4.0-debian-12-r1": {
         "image_name": "redis-cluster",
         "image_tag": "7.4.0-debian-12-r1",
