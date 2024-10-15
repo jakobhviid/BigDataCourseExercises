@@ -18,6 +18,10 @@ MAPPING = {
         "image_tag": "2.0.0-hadoop3.2.1-java8",
     },
     "apache/hadoop:3": {"image_name": "hadoop", "image_tag": "3"},
+    "bitnami/kafka:3.6.1-debian-12-r12": {
+        "image_name": "kafka",
+        "image_tag": "3.6.1-debian-12-r12",
+    },
     "bitnami/kafka:3.8.0-debian-12-r3": {
         "image_name": "kafka",
         "image_tag": "3.8.0-debian-12-r3",
@@ -57,49 +61,53 @@ MAPPING = {
         "image_tag": "7.17.3",
     },
     "neo4j:5.11.0-community": {"image_name": "neo4j", "image_tag": "5.11.0-community"},
+    "bitnami/zookeeper:3.6.1-debian-12-r12": {
+        "image_name": "zookeeper",
+        "image_tag": "3.6.1-debian-12-r12",
+    },
     "bitnami/zookeeper:3.9.1-debian-12-r13": {
         "image_name": "zookeeper",
         "image_tag": "3.9.1-debian-12-r13",
     },
-    "acryldata/datahub-gms:v0.14.0": {
+    "linkedin/datahub-gms:v0.11.0": {
         "image_name": "datahub-gms",
-        "image_tag": "v0.14.0",
+        "image_tag": "v0.11.0",
     },
-    "acryldata/datahub-frontend-react:v0.14.0": {
+    "linkedin/datahub-frontend-react:v0.11.0": {
         "image_name": "datahub-frontend-react",
-        "image_tag": "v0.14.0",
+        "image_tag": "v0.11.0",
     },
-    "acryldata/datahub-actions:v0.1.0": {
+    "acryldata/datahub-actions:v0.0.11": {
         "image_name": "datahub-actions",
-        "image_tag": "v0.1.0",
+        "image_tag": "v0.0.11",
     },
-    "acryldata/datahub-mae-consumer:v0.14.0": {
+    "linkedin/datahub-mae-consumer:v0.11.0": {
         "image_name": "datahub-mae-consumer",
-        "image_tag": "v0.14.0",
+        "image_tag": "v0.11.0",
     },
-    "acryldata/datahub-mce-consumer:v0.14.0": {
+    "linkedin/datahub-mce-consumer:v0.11.0": {
         "image_name": "datahub-mce-consumer",
-        "image_tag": "v0.14.0",
+        "image_tag": "v0.11.0",
     },
-    "acryldata/datahub-ingestion:v0.14.0": {
+    "acryldata/datahub-ingestion:v0.11.0": {
         "image_name": "datahub-ingestion",
-        "image_tag": "v0.14.0",
+        "image_tag": "v0.11.0",
     },
-    "acryldata/datahub-elasticsearch-setup:v0.14.0": {
+    "linkedin/datahub-elasticsearch-setup:v0.11.0": {
         "image_name": "datahub-elasticsearch-setup",
-        "image_tag": "v0.14.0",
+        "image_tag": "v0.11.0",
     },
-    "acryldata/datahub-kafka-setup:v0.14.0": {
+    "acryldata/datahub-kafka-setup:v0.11.0": {
         "image_name": "datahub-kafka-setup",
-        "image_tag": "v0.14.0",
+        "image_tag": "v0.11.0",
     },
-    "acryldata/datahub-mysql-setup:v0.14.0": {
+    "acryldata/datahub-mysql-setup:v0.11.0": {
         "image_name": "datahub-mysql-setup",
-        "image_tag": "v0.14.0",
+        "image_tag": "v0.11.0",
     },
-    "acryldata/datahub-upgrade:v0.14.0": {
+    "acryldata/datahub-upgrade:v0.11.0": {
         "image_name": "datahub-upgrade",
-        "image_tag": "v0.14.0",
+        "image_tag": "v0.11.0",
     },
     "bitnami/mysql:8.0.32-debian-11-r26": {
         "image_name": "mysql",
