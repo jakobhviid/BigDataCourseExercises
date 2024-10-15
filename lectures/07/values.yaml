@@ -1,8 +1,7 @@
 datahub-gms:
   enabled: true
   image:
-    repository: acryldata/datahub-gms
-    tag: v0.14.0
+    repository: linkedin/datahub-gms
   service:
     type: ClusterIP
   resources:
@@ -23,8 +22,7 @@ datahub-gms:
 datahub-frontend:
   enabled: true
   image:
-    repository: acryldata/datahub-frontend-react
-    tag: v0.14.0
+    repository: linkedin/datahub-frontend-react
   service:
     type: ClusterIP
   resources:
@@ -33,15 +31,16 @@ datahub-frontend:
     requests:
       cpu: 100m
       memory: 512Mi
+  # Set up ingress to expose react front-end
   ingress:
     enabled: false
   defaultUserCredentials: {}
-  
+
 acryl-datahub-actions:
   enabled: true
   image:
     repository: acryldata/datahub-actions
-    tag: "v0.1.0"
+    tag: "v0.0.11"
   resources:
     limits:
       memory: 512Mi
@@ -52,8 +51,7 @@ acryl-datahub-actions:
 datahub-mae-consumer:
   enabled: true
   image:
-    repository: acryldata/datahub-mae-consumer
-    tag: v0.14.0
+    repository: linkedin/datahub-mae-consumer
   resources:
     limits:
       memory: 1536Mi
@@ -64,8 +62,7 @@ datahub-mae-consumer:
 datahub-mce-consumer:
   enabled: true
   image:
-    repository: acryldata/datahub-mce-consumer
-    tag: v0.14.0
+    repository: linkedin/datahub-mce-consumer
   resources:
     limits:
       memory: 1536Mi
@@ -77,13 +74,11 @@ datahub-ingestion-cron:
   enabled: false
   image:
     repository: acryldata/datahub-ingestion
-    tag: v0.14.0
 
 elasticsearchSetupJob:
   enabled: true
   image:
-    repository: acryldata/datahub-elasticsearch-setup
-    tag: v0.14.0
+    repository: linkedin/datahub-elasticsearch-setup
   resources:
     limits:
       cpu: 500m
@@ -103,13 +98,13 @@ elasticsearchSetupJob:
     helm.sh/hook-weight: "-5"
     helm.sh/hook-delete-policy: before-hook-creation
   podAnnotations: {}
+  # Add extra sidecar containers to job pod
   extraSidecars: []
 
-kafkaSetupJob:
+SetupJob:
   enabled: true
   image:
-    repository: acryldata/datahub-kafka-setup
-    tag: v0.14.0
+    repository: linkedin/datahub--setup
   resources:
     limits:
       cpu: 500m
@@ -129,13 +124,13 @@ kafkaSetupJob:
     helm.sh/hook-weight: "-5"
     helm.sh/hook-delete-policy: before-hook-creation
   podAnnotations: {}
+  # Add extra sidecar containers to job pod
   extraSidecars: []
 
 mysqlSetupJob:
   enabled: true
   image:
     repository: acryldata/datahub-mysql-setup
-    tag: v0.14.0
   resources:
     limits:
       cpu: 500m
@@ -162,15 +157,9 @@ datahubUpgrade:
   enabled: true
   image:
     repository: acryldata/datahub-upgrade
-    tag: v0.14.0
   batchSize: 1000
   batchDelayMs: 100
   noCodeDataMigration:
-    image:
-      # Add custom command / arguments to this job.  Useful if you need a custom startup or shutdown script
-      # to run
-      command:
-      args: []
     sqlDbType: "MYSQL"
   podSecurityContext: {} # fsGroup: 1000
   securityContext: {} # runAsUser: 1000
@@ -181,11 +170,9 @@ datahubUpgrade:
     helm.sh/hook-weight: "-2"
     helm.sh/hook-delete-policy: before-hook-creation
   podAnnotations: {}
+  # Add extra sidecar containers to job pod
   extraSidecars: []
   cleanupJob:
-    image:
-      command:
-      args: []
     resources:
       limits:
         cpu: 500m
@@ -193,32 +180,18 @@ datahubUpgrade:
       requests:
         cpu: 300m
         memory: 256Mi
-    concurrencyPolicy: Allow
-    extraSidecars: []
-  restoreIndices:
-    image:
-      command:
-      args: []
-    resources:
-      limits:
-        cpu: 500m
-        memory: 512Mi
-      requests:
-        cpu: 300m
-        memory: 256Mi
-    # Schedule of CronJob when enabled
-    schedule: "0 0 * * 0"
-    # Add the concurrency Policy flexibility via values
-    concurrencyPolicy: Allow
     # Add extra sidecar containers to job pod
     extraSidecars: []
-      # - name: my-image-name
-      #   image: my-image
-      #   imagePullPolicy: Always
-    # Optionally set a specific PostgreSQL database name using extraEnvs
-    # extraEnvs:
-    #   - name: "DATAHUB_DB_NAME"
-    #    value: "dh"
+  restoreIndices:
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 300m
+        memory: 256Mi
+    # Add extra sidecar containers to job pod
+    extraSidecars: []
   extraInitContainers: []
 
 ## Runs system update processes
@@ -226,7 +199,6 @@ datahubUpgrade:
 datahubSystemUpdate:
   image:
     repository: acryldata/datahub-upgrade
-    tag: v0.14.0
   podSecurityContext: {} # fsGroup: 1000
   securityContext: {} # runAsUser: 1000
   annotations:
@@ -235,20 +207,6 @@ datahubSystemUpdate:
     helm.sh/hook: pre-install,pre-upgrade
     helm.sh/hook-weight: "-4"
     helm.sh/hook-delete-policy: before-hook-creation
-  nonblocking:
-    enabled: false
-    # When mode = 'nonblocking' the nonblocking job should not include the above helm.sh/hook annotations
-    annotations:
-      # This is what defines this resource as a hook. Without this line, the
-      # job is considered part of the release.
-      helm.sh/hook: post-install,post-upgrade
-      helm.sh/hook-delete-policy: before-hook-creation
-    image:
-      args:
-      # Add custom command / arguments to this job.  Useful if you need a custom startup or shutdown script
-      # to run
-      # command: customCommand
-      # args: []
   podAnnotations: {}
   resources:
     limits:
@@ -259,9 +217,6 @@ datahubSystemUpdate:
       memory: 256Mi
   # Add extra sidecar containers to job pod
   extraSidecars: []
-    # - name: my-image-name
-    #   image: my-image
-    #   imagePullPolicy: Always
   extraInitContainers: []
 
 global:
@@ -269,7 +224,6 @@ global:
   graph_service_impl: elasticsearch
   datahub_analytics_enabled: true
   datahub_standalone_consumers_enabled: false
-  imageRegistry: "docker.io"
 
   elasticsearch:
     host: "elasticsearch-master"
@@ -292,18 +246,8 @@ global:
 
       ## Index settings can be overridden for entity indices or other indices on an index by index basis
       ## Some index settings, such as # of shards, requires reindexing while others, i.e. replicas, do not
-      ## The index settings options can be specified as a string or a map (which is converted to a string
-      ## representation)
-      ##
       ## Non-Entity indices do not require the prefix
       # settingsOverrides: '{"graph_service_v1":{"number_of_shards":"5"},"system_metadata_service_v1":{"number_of_shards":"5"}}'
-      ## or
-      # settingsOverrides:
-      #   graph_service_v1:
-      #     number_of_shards: '5'
-      #   system_metadata_service_v1:
-      #     number_of_shards: '6'
-      #
       ## Entity indices do not require the prefix or suffix
       # entitySettingsOverrides: '{"dataset":{"number_of_shards":"10"}}'
 
@@ -370,7 +314,7 @@ global:
 
           queryConfigurations:
             # Select *
-            - queryRegex: '[*]|'
+            - queryRegex: "[*]|"
               simpleQuery: false
               prefixMatchQuery: false
               exactMatchQuery: false
@@ -429,55 +373,31 @@ global:
                     weight: 0.8
                 score_mode: multiply
                 boost_mode: multiply
-
-  kafka:
     bootstrap:
       server: "prerequisites-kafka:9092"
     zookeeper:
-      enabled: false
+      enabled: true
+      server: "prerequisites-zookeeper:2181"
+    # This section defines the names for the kafka topics that DataHub depends on, at a global level. Do not override this config
+    # at a sub-chart level.
     topics:
-      metadata_change_event_name: "METADATACHANGEEVENTV4"
-      failed_metadata_change_event_name: "FAILEDMETADATACHANGEEVENTV4"
-      metadata_audit_event_name: "METADATAAUDITEVENTV4"
-      datahub_usage_event_name: "DATAHUBUSAGEEVENTV1"
-      metadata_change_proposal_topic_name: "METADATACHANGEPROPOSALV1"
-      failed_metadata_change_proposal_topic_name: "FAILEDMETADATACHANGEPROPOSALV1"
-      metadata_change_log_versioned_topic_name: "METADATACHANGELOGVERSIONEDV1"
-      metadata_change_log_timeseries_topic_name: "METADATACHANGELOGTIMESERIESV1"
-      platform_event_topic_name: "PLATFORMEVENTV1"
-      datahub_upgrade_history_topic_name: "DATAHUBUPGRADEHISTORYV1"
-    metadataChangeLog:
-      hooks:
-        siblings:
-          enabled: true
-          consumerGroupSuffix: ''
-        updateIndices:
-          enabled: true
-          consumerGroupSuffix: ''
-        ingestionScheduler:
-          enabled: true
-          consumerGroupSuffix: ''
-        incidents:
-          enabled: true
-          consumerGroupSuffix: ''
-        entityChangeEvents:
-          enabled: true
-          consumerGroupSuffix: ''
-        forms:
-          enabled: true
-          consumerGroupSuffix: ''
-    maxMessageBytes: "5242880"  # 5MB
-    producer:
-      compressionType: none
-      maxRequestSize: "5242880"  # 5MB
-    consumer:
-      maxPartitionFetchBytes: "5242880"  # 5MB
-      stopContainerOnDeserializationError: true
+      metadata_change_event_name: "MetadataChangeEvent_v4"
+      failed_metadata_change_event_name: "FailedMetadataChangeEvent_v4"
+      metadata_audit_event_name: "MetadataAuditEvent_v4"
+      datahub_usage_event_name: "DataHubUsageEvent_v1"
+      metadata_change_proposal_topic_name: "MetadataChangeProposal_v1"
+      failed_metadata_change_proposal_topic_name: "FailedMetadataChangeProposal_v1"
+      metadata_change_log_versioned_topic_name: "MetadataChangeLog_Versioned_v1"
+      metadata_change_log_timeseries_topic_name: "MetadataChangeLog_Timeseries_v1"
+      platform_event_topic_name: "PlatformEvent_v1"
+      datahub_upgrade_history_topic_name: "DataHubUpgradeHistory_v1"
     ## For production set this to a number larger than 1
     # partitions: 3
     # replicationFactor: 3
     schemaregistry:
+      # GMS Implementation - `url` configured based on component context
       type: INTERNAL
+      # Confluent Kafka Implementation
       # type: KAFKA
       # url: "http://prerequisites-cp-schema-registry:8081"
 
@@ -498,16 +418,12 @@ global:
       passwordFromSecret: mysql-secrets
 
   datahub:
-    version: v0.14.0
+    version: v0.11.0
     gms:
-      protocol: "http"
       port: "8080"
       nodePort: "30001"
-    frontend:
-      validateSignUpEmail: true
     monitoring:
       enablePrometheus: true
-      portName: jmx
     mae_consumer:
       port: "9091"
       nodePort: "30002"
@@ -523,7 +439,7 @@ global:
         annotations: {}
     managed_ingestion:
       enabled: true
-      defaultCliVersion: "0.14.0"
+      defaultCliVersion: "0.11.0"
     metadata_service_authentication:
       enabled: false
       systemClientId: "__datahub_system"
@@ -537,22 +453,16 @@ global:
         salt:
           secretRef: "datahub-auth-secrets"
           secretKey: "token_service_salt"
-      # Set to false if you'd like to provide your own auth secrets
       provisionSecrets:
         enabled: true
         autoGenerate: true
         annotations: {}
+    # Enables always emitting a MCL even when no changes are detected. Used for Time Based Lineage when no changes occur.
     alwaysEmitChangeLog: false
+    # Enables diff mode for graph writes, uses a different code path that produces a diff from previous to next to write relationships instead of wholesale deleting edges and reading
     enableGraphDiffMode: true
+    # Values specific to the unified search and browse feature.
     search_and_browse:
-      show_search_v2: true  # If on, show the new search filters experience as of v0.10.5
-      show_browse_v2: true  # If on, show the new browse experience as of v0.10.5
-      backfill_browse_v2: true  # If on, run the backfill upgrade job that generates default browse paths for relevant entities
-
-    ## v0.13.4+
-    mcp:
-      throttle:
-        versioned:          
-          enabled: true
-        timeseries:
-          enabled: false
+      show_search_v2: true # If on, show the new search filters experience as of v0.10.5
+      show_browse_v2: true # If on, show the new browse experience as of v0.10.5
+      backfill_browse_v2: true # If on, run the backfill upgrade job that generates default browse paths for relevant entities

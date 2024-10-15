@@ -89,7 +89,7 @@ helm install prerequisites datahub/datahub-prerequisites --values prerequisites-
 **Note**: This may take several minutes. To keep track of the progress you can either run `kubectl get pods -w` in a secondary terminal session.
 
 
-**Task**: Deploy the DataHub platform with the name `datahub` using value file [`values.yaml`](./values.yaml) and schema version `0.4.25` using `helm`.
+**Task**: Deploy the DataHub platform with the name `datahub` using value file [`values.yaml`](./values.yaml) and schema version `0.4.27` using `helm`.
 
 <details>
 <summary><strong>Hint:</strong> Deploy datahub in Kubernetes.</summary>
@@ -97,7 +97,7 @@ helm install prerequisites datahub/datahub-prerequisites --values prerequisites-
 Run the following two cmd's:
 
 ```bash
-helm install datahub datahub/datahub --values values.yaml --version 0.4.25
+helm install datahub datahub/datahub --values values.yaml --version 0.4.27
 ```
 
 </details>
