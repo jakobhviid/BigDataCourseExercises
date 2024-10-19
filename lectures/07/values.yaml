@@ -264,7 +264,7 @@ global:
 
         ## Typically when reindexing the document counts between the original and destination indices should match.
         ## In some cases reindexing might not be able to proceed due to incompatibilities between a document in the
-        ## orignal index and the new index's mappings. This document could be dropped and re-ingested or restored from
+        ## original index and the new index's mappings. This document could be dropped and re-ingested or restored from
         ## the SQL database.
         ##
         ## This setting allows continuing if and only if the cloneIndices setting is also enabled which
@@ -460,7 +460,7 @@ global:
         enabled: true
         autoGenerate: true
         annotations: { }
-    # Enables always emitting a MCL even when no changes are detected. Used for Time Based Lineage when no changes occur.
+    # Enables always emitting an MCL even when no changes are detected. Used for Time Based Lineage when no changes occur.
     alwaysEmitChangeLog: false
     # Enables diff mode for graph writes, uses a different code path that produces a diff from previous to next to write relationships instead of wholesale deleting edges and reading
     enableGraphDiffMode: true

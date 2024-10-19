@@ -17,8 +17,8 @@ Data and LinkedIn. They promote their platform by the following verbs:
 Please open issues [here](https://github.com/jakobhviid/BigDataCourseExercises/issues) if you encounter unclear
 information or experience bugs in our examples!
 
-> Before you start working on todays exercises you are strongly encouraged to clean up everything but the kafka
-> brookers (created in [lecture 3](../03/README.md#exercise-1---deploy-a-kafka-cluster)) in your Kubernetes namespace.
+> Before you start working on today's exercises you are strongly encouraged to clean up everything but the kafka
+> brokers (created in [lecture 3](../03/README.md#exercise-1---deploy-a-kafka-cluster)) in your Kubernetes namespace.
 
 ### Exercise 1 - Compose a DataHub Platform
 
@@ -94,7 +94,7 @@ file [`prerequisites-values.yaml`](./prerequisites-values.yaml) and schema versi
 <details>
 <summary><strong>Hint:</strong> Deploy prerequisites in Kubernetes.</summary>
 
-Run the following two cmd's:
+Run the following cmd:
 
 ```bash
 helm install prerequisites datahub/datahub-prerequisites --values prerequisites-values.yaml --version 0.1.13
@@ -111,7 +111,7 @@ version `0.4.27` using `helm`.
 <details>
 <summary><strong>Hint:</strong> Deploy datahub in Kubernetes.</summary>
 
-Run the following two cmd's:
+Run the following cmd:
 
 ```bash
 helm install datahub datahub/datahub --values values.yaml --version 0.4.27
