@@ -34,7 +34,7 @@ datahub-frontend:
   # Set up ingress to expose react front-end
   ingress:
     enabled: false
-  defaultUserCredentials: {}
+  defaultUserCredentials: { }
 
 acryl-datahub-actions:
   enabled: true
@@ -86,7 +86,7 @@ elasticsearchSetupJob:
     requests:
       cpu: 300m
       memory: 256Mi
-  extraInitContainers: []
+  extraInitContainers: [ ]
   podSecurityContext:
     fsGroup: 1000
   securityContext:
@@ -97,9 +97,9 @@ elasticsearchSetupJob:
     helm.sh/hook: pre-install,pre-upgrade
     helm.sh/hook-weight: "-5"
     helm.sh/hook-delete-policy: before-hook-creation
-  podAnnotations: {}
+  podAnnotations: { }
   # Add extra sidecar containers to job pod
-  extraSidecars: []
+  extraSidecars: [ ]
 
 SetupJob:
   enabled: true
@@ -112,7 +112,7 @@ SetupJob:
     requests:
       cpu: 300m
       memory: 768Mi
-  extraInitContainers: []
+  extraInitContainers: [ ]
   podSecurityContext:
     fsGroup: 1000
   securityContext:
@@ -123,9 +123,9 @@ SetupJob:
     helm.sh/hook: pre-install,pre-upgrade
     helm.sh/hook-weight: "-5"
     helm.sh/hook-delete-policy: before-hook-creation
-  podAnnotations: {}
+  podAnnotations: { }
   # Add extra sidecar containers to job pod
-  extraSidecars: []
+  extraSidecars: [ ]
 
 mysqlSetupJob:
   enabled: true
@@ -138,7 +138,7 @@ mysqlSetupJob:
     requests:
       cpu: 300m
       memory: 256Mi
-  extraInitContainers: []
+  extraInitContainers: [ ]
   podSecurityContext:
     fsGroup: 1000
   securityContext:
@@ -149,8 +149,8 @@ mysqlSetupJob:
     helm.sh/hook: pre-install,pre-upgrade
     helm.sh/hook-weight: "-5"
     helm.sh/hook-delete-policy: before-hook-creation
-  podAnnotations: {}
-  extraSidecars: []
+  podAnnotations: { }
+  extraSidecars: [ ]
 
 ## No code data migration
 datahubUpgrade:
@@ -161,17 +161,17 @@ datahubUpgrade:
   batchDelayMs: 100
   noCodeDataMigration:
     sqlDbType: "MYSQL"
-  podSecurityContext: {} # fsGroup: 1000
-  securityContext: {} # runAsUser: 1000
+  podSecurityContext: { } # fsGroup: 1000
+  securityContext: { } # runAsUser: 1000
   annotations:
     # This is what defines this resource as a hook. Without this line, the
     # job is considered part of the release.
     helm.sh/hook: post-install,post-upgrade
     helm.sh/hook-weight: "-2"
     helm.sh/hook-delete-policy: before-hook-creation
-  podAnnotations: {}
+  podAnnotations: { }
   # Add extra sidecar containers to job pod
-  extraSidecars: []
+  extraSidecars: [ ]
   cleanupJob:
     resources:
       limits:
@@ -181,7 +181,7 @@ datahubUpgrade:
         cpu: 300m
         memory: 256Mi
     # Add extra sidecar containers to job pod
-    extraSidecars: []
+    extraSidecars: [ ]
   restoreIndices:
     resources:
       limits:
@@ -191,23 +191,23 @@ datahubUpgrade:
         cpu: 300m
         memory: 256Mi
     # Add extra sidecar containers to job pod
-    extraSidecars: []
-  extraInitContainers: []
+    extraSidecars: [ ]
+  extraInitContainers: [ ]
 
 ## Runs system update processes
 ## Includes: Elasticsearch Indices Creation/Reindex (See global.elasticsearch.index for additional configuration)
 datahubSystemUpdate:
   image:
     repository: acryldata/datahub-upgrade
-  podSecurityContext: {} # fsGroup: 1000
-  securityContext: {} # runAsUser: 1000
+  podSecurityContext: { } # fsGroup: 1000
+  securityContext: { } # runAsUser: 1000
   annotations:
     # This is what defines this resource as a hook. Without this line, the
     # job is considered part of the release.
     helm.sh/hook: pre-install,pre-upgrade
     helm.sh/hook-weight: "-4"
     helm.sh/hook-delete-policy: before-hook-creation
-  podAnnotations: {}
+  podAnnotations: { }
   resources:
     limits:
       cpu: 500m
@@ -216,8 +216,8 @@ datahubSystemUpdate:
       cpu: 300m
       memory: 256Mi
   # Add extra sidecar containers to job pod
-  extraSidecars: []
-  extraInitContainers: []
+  extraSidecars: [ ]
+  extraInitContainers: [ ]
 
 global:
   strict_mode: true
@@ -436,7 +436,7 @@ global:
       provisionSecret:
         enabled: true
         autoGenerate: true
-        annotations: {}
+        annotations: { }
     managed_ingestion:
       enabled: true
       defaultCliVersion: "0.11.0"
@@ -456,7 +456,7 @@ global:
       provisionSecrets:
         enabled: true
         autoGenerate: true
-        annotations: {}
+        annotations: { }
     # Enables always emitting a MCL even when no changes are detected. Used for Time Based Lineage when no changes occur.
     alwaysEmitChangeLog: false
     # Enables diff mode for graph writes, uses a different code path that produces a diff from previous to next to write relationships instead of wholesale deleting edges and reading
