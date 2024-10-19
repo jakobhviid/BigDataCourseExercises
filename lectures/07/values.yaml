@@ -101,10 +101,10 @@ elasticsearchSetupJob:
   # Add extra sidecar containers to job pod
   extraSidecars: [ ]
 
-SetupJob:
+kafkaSetupJob:
   enabled: true
   image:
-    repository: linkedin/datahub--setup
+    repository: linkedin/datahub-kafka-setup
   resources:
     limits:
       cpu: 500m
@@ -373,6 +373,8 @@ global:
                     weight: 0.8
                 score_mode: multiply
                 boost_mode: multiply
+
+  kafka:
     bootstrap:
       server: "prerequisites-kafka:9092"
     zookeeper:
