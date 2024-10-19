@@ -1,3 +1,4 @@
+# Configuration values for the DataHub Helm chart: https://github.com/acryldata/datahub-helm/blob/master/charts/datahub/values.yaml
 datahub-gms:
   enabled: true
   image:

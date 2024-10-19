@@ -1,3 +1,4 @@
+# Configurations for the prerequisites: https://github.com/acryldata/datahub-helm/blob/master/charts/prerequisites/values.yaml
 elasticsearch:
   enabled: true
   # If you're running in production, set this to 3 and comment out antiAffinity below
