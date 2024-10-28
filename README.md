@@ -33,7 +33,7 @@ The root of this repository will be related to the content of the current semest
 ├── LICENSE
 ├── README.md
 ├── archive
-│   ├── E22 
+│   ├── E22
 │   └── E23
 ├── infrastructure
 │   ├── README.md
@@ -49,18 +49,18 @@ The root of this repository will be related to the content of the current semest
 │   │   ├── side-load.sh
 │   │   └── utils.py
 │   ├── share_kubeconfigs
-│   │   ├── parse_students.ipynb
-│   │   ├── sent_msg.ipynb
-│   │   ├── sent_msg.py
+│   │   ├── sent_msg_groups.py
+│   │   ├── sent_msg_students.py
 │   │   └── src
 │   │       ├── __init__.py
+│   │       ├── groups.py
 │   │       ├── msg.py
 │   │       └── students.py
 │   └── users.txt
 ├── lectures
-│   └── {01,02,03,04,05,07}
-│       ├── ...
-│       └── exercises.md
+│   ├── {01, 02, 03, 04, 05, 07}
+│   │   ├── README.md
+│   │   └── ...
 └── services
     ├── README.md
     ├── hdfs
@@ -72,7 +72,8 @@ The root of this repository will be related to the content of the current semest
     ├── interactive
     │   ├── Dockerfile
     │   ├── README.md
-    │   └── interactive.yaml
+    │   ├── interactive.yaml
+    │   └── requirements.txt
     └── kafka-connect
         ├── Dockerfile
         └── README.md
