@@ -7,10 +7,10 @@ concepts of the Data Mesh paradigm. The platform of choice for this course is ca
 Data and LinkedIn. They promote their platform by the following verbs:
 
 > "DataHub is an extensible metadata platform that enables data discovery, data observability and federated governance
-> to help tame the complexity of your data ecosystem." - [DataHub landing page](https://datahubproject.io)
+> to help tame the complexity of your data ecosystem." - [DataHub - [last seen 2023]](https://datahubproject.io)
 
 ![DataHub Metadata Platform](https://datahubproject.io/assets/ideal-img/datahub-flow-diagram-light.5ce651b.1600.png)
-*Image borrowed by [DataHub landing page](https://datahubproject.io)*.
+*Image borrowed by [DataHub](https://datahubproject.io)*.
 
 ## Exercises
 
@@ -166,8 +166,8 @@ Steps:
 1. Set up port-forwarding: `kubectl port-forward svc/datahub-datahub-frontend 9002`
 1. Connect to the fronted [localhost:9002](http://localhost:9002).
 1. Once you connect you should be able to log in with:
-    - Username: datahub
-    - Password: datahub
+    - Username: `datahub`
+    - Password: `datahub`
 
 ### Exercise 2 - Organizing metadata
 
@@ -202,8 +202,7 @@ YouTube to get a different explanation on this concept.
 **Note**: A solution for this exercise is all yours! However, it is important to state that this method enables version
 control - which all of us prefer!
 
-**Hint
-**: [GitHub: datahub/metadata-ingestion/examples/bootstrap_data/business_glossary.yml](https://github.com/datahub-project/datahub/blob/master/metadata-ingestion/examples/bootstrap_data/business_glossary.yml)
+**Hint**: [GitHub: datahub/metadata-ingestion/examples/bootstrap_data/business_glossary.yml](https://github.com/datahub-project/datahub/blob/master/metadata-ingestion/examples/bootstrap_data/business_glossary.yml)
 
 ### Exercise 3 - Checkout analytics overview in the UI
 
@@ -386,7 +385,7 @@ port-forwarding: `kubectl port-forward svc/prerequisites-mysql 3306:3306`.
 
 #### Exercise 6.2 - Data discovery and rich metadata on the newly create tables
 
-[Exercise 6.1](#exercise-61---Simulate-experiments) uses the internal database deployed by DataHub to store the results
+[Exercise 6.1](#exercise-61---simulate-experiments) uses the internal database deployed by DataHub to store the results
 of the experiments.
 
 **Task**: Navigate to [localhost:9002/ingestion](http://localhost:9002/ingestion) and run ingestion on the MySQL
@@ -444,9 +443,8 @@ lineage [here](https://datahubproject.io/docs/api/tutorials/lineage/#add-column-
 
 **Task**: Create a new Python file which encounter for column-level lineage.
 
-**Hint: You may look into [Exercise 6.1](#exercise-61---Simulate-experiments) and examine the `analyis` view to
+**Hint: You may look into [Exercise 6.1](#exercise-61---simulate-experiments) and examine the `analyis` view to
 understand the lineage between the three datasets.
-
 
 ## Step-by-step guide to clean up
 
