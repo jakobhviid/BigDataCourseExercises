@@ -16,6 +16,7 @@ microk8s status --wait-ready
 Addons enabled by default
 
 ````bash
+dns
 ha-cluster
 helm
 helm3
@@ -26,7 +27,6 @@ We will enable the following addons:
 ```bash
 microk8s enable cert-manager
 microk8s enable rbac
-microk8s enable dns
 microk8s enable observability (Will also enable hostpath-storage and storage)
 ```
 
