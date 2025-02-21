@@ -3,11 +3,12 @@
 # Accept server and namespace as arguments
 SERVER=$1
 NAMESPACE=$2
+SERVICE_ACCOUNT=$3
 
 # Variables
-SERVICE_ACCOUNT="${NAMESPACE}-sa"
+SERVICE_ACCOUNT="${SERVICE_ACCOUNT}-sa"
 ROLE="${NAMESPACE}-role"
-ROLE_BINDING="${NAMESPACE}-rolebinding"
+ROLE_BINDING="${SERVICE_ACCOUNT}-${NAMESPACE}-rolebinding"
 CLUSTER_ROLE="view-clusterrole"
 CLUSTER_ROLE_BINDING="${NAMESPACE}-view-clusterrolebinding"
 SECRET_NAME="${SERVICE_ACCOUNT}-manual-secret"
@@ -113,7 +114,7 @@ CERTIFICATE_AUTHORITY_DATA=$(cat $CA_CERT | base64 | tr -d '\n') || { echo "Fail
 mkdir -p $KUBECONFIG_DIR
 
 # Create kubeconfig file
-cat <<EOF > $KUBECONFIG_DIR/$NAMESPACE-kubeconfig.yaml
+cat <<EOF > $KUBECONFIG_DIR/$SERVICE_ACCOUNT-$NAMESPACE-kubeconfig.yaml
 apiVersion: v1
 kind: Config
 clusters:
@@ -125,11 +126,11 @@ contexts:
 - context:
     cluster: microk8s-cluster
     namespace: $NAMESPACE
-    user: $NAMESPACE
+    user: $SERVICE_ACCOUNT
   name: $NAMESPACE-context
 current-context: $NAMESPACE-context
 users:
-- name: $NAMESPACE
+- name: $SERVICE_ACCOUNT
   user:
     token: ${TOKEN}
 EOF
