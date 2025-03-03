@@ -11,6 +11,15 @@ sudo snap install microk8s --classic
 microk8s status --wait-ready
 ```
 
+
+## Remove Kubernetes distribution
+
+```bash
+sudo snap remove microk8s --purge
+```
+
+
+
 ### Addons
 
 Addons enabled by default
