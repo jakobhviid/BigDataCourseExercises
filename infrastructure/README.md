@@ -2,6 +2,13 @@
 
 The main idea is that the students only have to install the `kubectl` client. The instructors will setup the infrastructure and the students will only have to connect to the Kubernetes cluster though `<IP>:16443`.
 
+## Allow incoming TCP traffic to port 16443
+
+```bash
+sudo iptables -A INPUT -p tcp --dport 16443 -s 10.112.0.0/12 -j ACCEPT
+sudo iptables -A FORWARD -i cni0 -o cni0 -j ACCEPT
+```
+
 ## Install Kubernetes distribution
 
 We have chosen to use the [Microk8s](https://microk8s.io) distribution for this course. It is a lightweight distribution that is easy to install and manage. The distribution runs on bare metal and not containerized simulators like Minikube.
